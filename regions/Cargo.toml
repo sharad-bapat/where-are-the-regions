@@ -1,0 +1,29 @@
+[package]
+name = "regions"
+version = "0.1.0"
+edition = "2021"
+description = "Where are the regions? Every image a born-digital PDF draws, with its box, and the parts that need OCR. Deterministic, no rendering."
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[[bin]]
+name = "regions-cli"
+path = "src/main.rs"
+
+[dependencies]
+miniz_oxide = "0.8"
+# Decryption of PDFs that open with an empty user password (standard handler R2-R4: RC4, AES-128).
+md-5 = "0.10"
+aes = "0.8"
+wasm-bindgen = { version = "0.2", optional = true }
+
+[features]
+wasm = ["dep:wasm-bindgen"]
+
+[profile.release]
+opt-level = 3
+lto = true
+codegen-units = 1
+panic = "abort"
