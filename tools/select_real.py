@@ -9,6 +9,13 @@ images), the placement's box is rendered, and Tesseract reads it.
   none      no confident words
   unsure    in between; listed for a hand check and left out of the headline numbers
 
+Boxes are in displayed page coordinates (top-left origin, after /Rotate), like regions-cli.
+PyMuPDF gives image, word and text-trace boxes unrotated, so they go through page.rotation_matrix;
+a pixmap clip is already in displayed coordinates.
+
+A word counts when Tesseract is confident in it and it has at least 3 letters or 2 digits, so
+axis numbers count as text (D67: any text in an image needs OCR).
+
 It also records, per placement, how many visible digital words overlap it and whether invisible
 text (render mode 3, how OCR layers hide) covers it.
 
@@ -39,9 +46,14 @@ def ocr_words(pix):
     words = []
     for row in tsv.splitlines()[1:]:
         f = row.split("\t")
-        if len(f) == 12 and float(f[10]) >= MIN_CONF and sum(c.isalpha() for c in f[11]) >= 3:
+        if len(f) == 12 and float(f[10]) >= MIN_CONF and (sum(c.isalpha() for c in f[11]) >= 3 or sum(c.isdigit() for c in f[11]) >= 2):
             words.append(f[11])
     return words
+
+
+def shown(page, rect):
+    """An unrotated PyMuPDF box as displayed on the page."""
+    return fitz.Rect(rect) * page.rotation_matrix
 
 
 def text_spans(page):
@@ -49,17 +61,17 @@ def text_spans(page):
     vis, hidden = 0, []
     for s in page.get_texttrace():
         if s["type"] == 3 or s["opacity"] == 0:
-            hidden.append(fitz.Rect(s["bbox"]))
+            hidden.append(shown(page, s["bbox"]))
         else:
             vis += sum(1 for c in s["chars"] if chr(c[0]).strip())
-    return vis, [fitz.Rect(w[:4]) for w in page.get_text("words")], hidden
+    return vis, [shown(page, w[:4]) for w in page.get_text("words")], hidden
 
 
 def placements(page):
     r = page.rect
     out = []
     for info in page.get_image_info(xrefs=True):
-        b = fitz.Rect(info["bbox"]) & r
+        b = shown(page, info["bbox"]) & r
         if b.is_empty or min(b.width, b.height) < MIN_SIDE or b.get_area() < MIN_AREA * r.get_area():
             continue
         out.append((b, info))
@@ -71,7 +83,7 @@ def textless(doc, pno):
     one = fitz.open()
     one.insert_pdf(doc, from_page=pno, to_page=pno)
     p = one[0]
-    p.add_redact_annot(p.rect)
+    p.add_redact_annot(p.rect * p.derotation_matrix)  # redactions take unrotated coordinates
     p.apply_redactions(images=fitz.PDF_REDACT_IMAGE_NONE, graphics=fitz.PDF_REDACT_LINE_ART_NONE,
                        text=fitz.PDF_REDACT_TEXT_REMOVE)
     return one
