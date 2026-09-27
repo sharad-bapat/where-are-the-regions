@@ -16,6 +16,9 @@ use std::collections::HashMap;
 
 mod cmap;
 mod crypt;
+// regions: images to OCR regions
+pub mod filter;
+pub use filter::Region;
 mod font;
 mod tables;
 mod truetype;
@@ -660,7 +663,7 @@ pub struct Word {
     pub first: usize, pub count: usize,
 }
 
-pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image> }
+pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region> }
 
 // regions: images
 
@@ -932,6 +935,10 @@ impl<'p, 'a> Run<'p, 'a> {
                     // regions: its size comes from the dictionary between BI and ID
                     self.inline_image(&s[i..id.min(s.len())], &g);
                     let mut k = id + 2;
+                    // regions: ASCII-encoded data can hold "EI" itself, so skip to its end marker first
+                    if let Some(end) = ascii_data_end(&s[i..id.min(s.len())]) {
+                        if let Some(e) = find(s, end, k) { k = e + end.len(); }
+                    }
                     loop {
                         match find(s, b"EI", k) {
                             Some(e) if (e == 0 || is_ws(s[e - 1])) && (e + 2 >= s.len() || !is_regular(s[e + 2])) => { k = e + 2; break; }
@@ -1096,6 +1103,12 @@ fn flag(dict: &[u8], key: &[u8]) -> bool {
     false
 }
 
+/// The end marker of an inline image's data when its outer filter is ASCII85 (`~>`) or ASCIIHex (`>`).
+fn ascii_data_end(dict: &[u8]) -> Option<&'static [u8]> {
+    let has = |k: &[u8]| { let mut f = 0; while let Some(p) = find(dict, k, f) { let e = p + k.len(); if e >= dict.len() || !is_regular(dict[e]) { return true; } f = e; } false };
+    if has(b"/A85") || has(b"/ASCII85Decode") { Some(b"~>") } else if has(b"/AHx") || has(b"/ASCIIHexDecode") { Some(b">") } else { None }
+}
+
 fn dist(a: (f64, f64), b: (f64, f64)) -> f64 { ((a.0 - b.0).powi(2) + (a.1 - b.1).powi(2)).sqrt() }
 
 /// Each drawn image's unit square through its matrix and the page box, as a box clipped to the page.
@@ -1249,7 +1262,8 @@ pub fn extract(data: &[u8]) -> Doc {
         let (width, height) = pb.size();
         let v = verdict(&glyphs);
         let images = merge_strips(place_images(&std::mem::take(&mut r.drawn), &pb));
-        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images });
+        let regions = filter::regions(&images, &ws, width, height);
+        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions });
     }
     let fonts = r.fonts.list.iter().map(|f| FontInfo {
         base: f.base.clone(), kind: f.kind, encoding: f.encoding.clone(), to_unicode: f.has_to_unicode(), embedded: f.embedded, widths: f.metrics.source,
@@ -1323,8 +1337,16 @@ impl Doc {
                 if m.annot { ",\"annot\":true" } else { "" }, if m.clipped { ",\"clipped\":true" } else { "" },
                 if m.upright { "" } else { ",\"rotated\":true" }
             )).collect();
-            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"words\":[{}]{}}}",
-                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), words.join(","), gl)
+            // regions: kept regions, and dropped images with their reason (for debugging)
+            let region = |g: &Region| format!(
+                "{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"kind\":\"{}\",\"image\":{},\"obj\":{},\"dpi\":{},\"share\":{},\"text_cover\":{},\"layer_cover\":{},\"text_words\":{},\"layer_words\":{}{}{}{}}}",
+                r1(g.x0), r1(g.y0), r1(g.x1), r1(g.y1), g.kind, g.image, g.obj, r1(g.dpi), (g.share * 1e4).round() / 1e4,
+                (g.text_cover * 1e3).round() / 1e3, (g.layer_cover * 1e3).round() / 1e3, g.text_words, g.layer_words,
+                if g.mask { ",\"mask\":true" } else { "" }, if g.annot { ",\"annot\":true" } else { "" }, if g.small { ",\"small\":true" } else { "" });
+            let kept: Vec<String> = p.regions.iter().filter(|g| g.kept()).map(region).collect();
+            let dropped: Vec<String> = p.regions.iter().filter(|g| !g.kept()).map(region).collect();
+            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"regions\":[{}],\"dropped\":[{}],\"words\":[{}]{}}}",
+                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), kept.join(","), dropped.join(","), words.join(","), gl)
         }).collect();
         format!("{{\"status\":\"{}\",\"pages\":[{}],\"fonts\":[{}]}}", self.status, pages.join(","), self.fonts_json())
     }
@@ -1426,6 +1448,15 @@ mod tests {
         assert!(v[0].inline && v[0].px_w == 6 && v[0].px_h == 3 && v[0].obj == 0 && !v[0].mask);
         assert!((v[0].dpi_x - 6.0 / (30.0 / 72.0)).abs() < 1e-6);
         assert!(v[1].mask);
+    }
+
+    #[test]
+    fn ascii85_inline_data_holding_ei() {
+        // the A85 data has a line starting "EI(": without skipping to ~> the second image is lost
+        let v = images("q 10 0 0 10 10 10 cm BI /W 2 /H 1 /CS /G /BPC 8 /F /A85 ID ab
+EI(cd~> EI Q q 10 0 0 10 50 50 cm BI /W 2 /H 1 /CS /G /BPC 8 /F [/A85 /Fl] ID xy~> EI Q");
+        assert_eq!(v.len(), 2);
+        assert!((v[1].x0 - 50.0).abs() < 1e-6);
     }
 
     #[test]
