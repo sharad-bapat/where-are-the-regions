@@ -20,6 +20,8 @@ mod crypt;
 pub mod filter;
 pub use filter::Region;
 mod font;
+pub mod map;
+pub use map::{Entry, Line};
 mod tables;
 mod truetype;
 
@@ -647,6 +649,8 @@ pub struct Glyph {
     pub ox: f64, pub oy: f64,
     /// Font size on the page, in points.
     pub size: f64,
+    /// Drawing order on the page: glyphs and images share one count, so a higher number is drawn later (on top).
+    pub order: u32,
     // in default user space, for grouping: baseline start and end, unit direction, and the glyph's quad
     ux: f64, uy: f64, ex: f64, ey: f64, dx: f64, dy: f64, quad: [(f64, f64); 4],
 }
@@ -661,9 +665,11 @@ pub struct Word {
     pub invisible: bool, pub annot: bool, pub offpage: bool,
     /// Index of the word's first glyph in `Page::glyphs`, and how many glyphs it has.
     pub first: usize, pub count: usize,
+    /// Drawing order of its first-drawn glyph.
+    pub order: u32,
 }
 
-pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region> }
+pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region>, pub lines: Vec<Line>, pub map: Vec<Entry> }
 
 // regions: images
 
@@ -688,11 +694,15 @@ pub struct Image {
     pub clipped: bool,
     /// Axis-aligned on the page (the image's unit square isn't rotated or skewed).
     pub upright: bool,
+    /// Nothing of it is on the visible page; the box is then the drawn box, unclipped.
+    pub offpage: bool,
+    /// Drawing order (the first part's, for merged strips).
+    pub order: u32,
 }
 
 /// An image as drawn, before placement: its matrix (unit square to user space) and its pixels.
 #[derive(Clone)]
-struct Drawn { ctm: M, px_w: u32, px_h: u32, mask: bool, inline: bool, annot: bool, obj: u32 }
+struct Drawn { ctm: M, px_w: u32, px_h: u32, mask: bool, inline: bool, annot: bool, obj: u32, order: u32 }
 
 /// Strips are joined when their edges across the join agree within STRIP_EDGE points and they
 /// touch along it within STRIP_GAP points.
@@ -817,7 +827,7 @@ fn matrix_of(pdf: &Pdf, d: &[u8]) -> M {
     }
 }
 
-struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn> }
+struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn>, seq: u32 }
 
 impl<'p, 'a> Run<'p, 'a> {
     /// Show a string: one glyph per character code, each placed by the text rendering matrix
@@ -829,7 +839,8 @@ impl<'p, 'a> Run<'p, 'a> {
             // text shown before any font was set: it can't be decoded or measured
             for &b in bytes {
                 let (x, y) = apply(&mul(tm, &g.ctm), 0.0, 0.0);
-                self.out.push(blank(b as u32, invisible, self.annot, x, y));
+                self.out.push(blank(b as u32, invisible, self.annot, x, y, self.seq));
+                self.seq += 1;
             }
             return;
         } };
@@ -847,8 +858,9 @@ impl<'p, 'a> Run<'p, 'a> {
             let t = f.unicode(code);
             self.out.push(Glyph {
                 mapped: t.is_some(), text: t.unwrap_or_default(), code, font: fid, invisible, annot: self.annot, offpage: false,
-                x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size, ux, uy, ex, ey, dx, dy, quad,
+                x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size, order: self.seq, ux, uy, ex, ey, dx, dy, quad,
             });
+            self.seq += 1;
             let mut tx = w0 * g.size + g.tc;
             if f.is_word_space(code, len) { tx += g.tw; }
             *tm = mul(&translate(tx * th, 0.0), tm);
@@ -966,7 +978,8 @@ impl<'p, 'a> Run<'p, 'a> {
         if matches!(get(&d, b"/Subtype"), Some(Val::Name(s)) if s == b"Image") {
             let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
             let mask = flag(&d, b"/ImageMask");
-            self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/Width"), px_h: int(b"/Height"), mask, inline: false, annot: self.annot, obj: n });
+            self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/Width"), px_h: int(b"/Height"), mask, inline: false, annot: self.annot, obj: n, order: self.seq });
+            self.seq += 1;
             return;
         }
         if !matches!(get(&d, b"/Subtype"), Some(Val::Name(s)) if s == b"Form") { return; }
@@ -988,7 +1001,8 @@ impl<'p, 'a> Run<'p, 'a> {
         d.extend_from_slice(b">>");
         let int = |a: &[u8], b: &[u8]| match get(&d, a).or_else(|| get(&d, b)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
         let mask = flag(&d, b"/IM") || flag(&d, b"/ImageMask");
-        self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/W", b"/Width"), px_h: int(b"/H", b"/Height"), mask, inline: true, annot: self.annot, obj: 0 });
+        self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/W", b"/Width"), px_h: int(b"/H", b"/Height"), mask, inline: true, annot: self.annot, obj: 0, order: self.seq });
+        self.seq += 1;
     }
 
     /// Text drawn by the page's annotations: each shown annotation's normal appearance stream, placed
@@ -1038,9 +1052,9 @@ impl<'p, 'a> Run<'p, 'a> {
     }
 }
 
-fn blank(code: u32, invisible: bool, annot: bool, x: f64, y: f64) -> Glyph {
+fn blank(code: u32, invisible: bool, annot: bool, x: f64, y: f64, order: u32) -> Glyph {
     Glyph { text: String::new(), mapped: false, code, font: u32::MAX, invisible, annot, offpage: false,
-            x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size: 0.0,
+            x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size: 0.0, order,
             ux: x, uy: y, ex: x, ey: y, dx: 1.0, dy: 0.0, quad: [(x, y); 4] }
 }
 
@@ -1120,8 +1134,10 @@ fn place_images(drawn: &[Drawn], pb: &PageBox) -> Vec<Image> {
         let pts: Vec<(f64, f64)> = q.iter().map(|p| pb.map(p.0, p.1)).collect();
         let (bx0, bx1) = (pts.iter().map(|p| p.0).fold(f64::MAX, f64::min), pts.iter().map(|p| p.0).fold(f64::MIN, f64::max));
         let (by0, by1) = (pts.iter().map(|p| p.1).fold(f64::MAX, f64::min), pts.iter().map(|p| p.1).fold(f64::MIN, f64::max));
-        let (x0, y0, x1, y1) = (bx0.max(0.0), by0.max(0.0), bx1.min(w), by1.min(h));
-        if x1 <= x0 || y1 <= y0 { continue; }
+        let (mut x0, mut y0, mut x1, mut y1) = (bx0.max(0.0), by0.max(0.0), bx1.min(w), by1.min(h));
+        // kept in the map, flagged: an image placed off the visible page is still in the file
+        let offpage = x1 <= x0 || y1 <= y0;
+        if offpage { (x0, y0, x1, y1) = (bx0, by0, bx1, by1); }
         let (side_w, side_h) = (dist(pts[0], pts[1]), dist(pts[0], pts[3]));
         let dpi = |px: u32, len: f64| if len > 1e-9 { px as f64 / (len / 72.0) } else { 0.0 };
         let m = &d.ctm;
@@ -1129,7 +1145,8 @@ fn place_images(drawn: &[Drawn], pb: &PageBox) -> Vec<Image> {
         out.push(Image {
             x0, y0, x1, y1, px_w: d.px_w, px_h: d.px_h, dpi_x: dpi(d.px_w, side_w), dpi_y: dpi(d.px_h, side_h),
             mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1,
-            clipped: x0 > bx0 + 1e-6 || y0 > by0 + 1e-6 || x1 < bx1 - 1e-6 || y1 < by1 - 1e-6, upright,
+            clipped: offpage || x0 > bx0 + 1e-6 || y0 > by0 + 1e-6 || x1 < bx1 - 1e-6 || y1 < by1 - 1e-6, upright,
+            offpage, order: d.order,
         });
     }
     out
@@ -1145,7 +1162,7 @@ fn merge_strips(mut imgs: Vec<Image>) -> Vec<Image> {
             for b in 0..imgs.len() {
                 if a == b { continue; }
                 let (p, q) = (&imgs[a], &imgs[b]);
-                if !p.upright || !q.upright || p.mask != q.mask || p.annot != q.annot { continue; }
+                if !p.upright || !q.upright || p.offpage || q.offpage || p.mask != q.mask || p.annot != q.annot { continue; }
                 let vertical = (p.x0 - q.x0).abs() <= STRIP_EDGE && (p.x1 - q.x1).abs() <= STRIP_EDGE
                     && q.y0 >= p.y0 && (q.y0 - p.y1).abs() <= STRIP_GAP;
                 let horizontal = (p.y0 - q.y0).abs() <= STRIP_EDGE && (p.y1 - q.y1).abs() <= STRIP_EDGE
@@ -1159,7 +1176,7 @@ fn merge_strips(mut imgs: Vec<Image>) -> Vec<Image> {
         if vertical { p.px_h += q.px_h; p.px_w = p.px_w.max(q.px_w); } else { p.px_w += q.px_w; p.px_h = p.px_h.max(q.px_h); }
         p.x0 = p.x0.min(q.x0); p.y0 = p.y0.min(q.y0); p.x1 = p.x1.max(q.x1); p.y1 = p.y1.max(q.y1);
         p.dpi_x = p.dpi_x.min(q.dpi_x); p.dpi_y = p.dpi_y.min(q.dpi_y);
-        p.parts += q.parts; p.inline |= q.inline; p.clipped |= q.clipped;
+        p.parts += q.parts; p.inline |= q.inline; p.clipped |= q.clipped; p.order = p.order.min(q.order);
         p.obj = if p.obj == 0 { q.obj } else if q.obj == 0 { p.obj } else { p.obj.min(q.obj) };
         imgs.remove(b);
     }
@@ -1181,7 +1198,7 @@ fn words(glyphs: &[Glyph]) -> Vec<Word> {
             line: 0, font: gs[0].font, size: gs[0].size,
             unmapped: gs.iter().filter(|g| !g.mapped).count(),
             invisible: gs[0].invisible, annot: gs[0].annot, offpage: gs.iter().all(|g| g.offpage),
-            first, count: last - first + 1,
+            first, count: last - first + 1, order: gs.iter().map(|g| g.order).min().unwrap_or(0),
         });
     };
     for (i, g) in glyphs.iter().enumerate() {
@@ -1249,10 +1266,11 @@ pub fn extract(data: &[u8]) -> Doc {
     if find(data, b"/Encrypt", 0).is_some() && pdf.crypt.is_none() {
         return Doc { status: "encrypted", pages: Vec::new(), fonts: Vec::new() };
     }
-    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new() };
+    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new(), seq: 0 };
     let mut pages = Vec::new();
     for (k, p) in pdf.pages().iter().enumerate() {
         let (content, resources) = page_content(&pdf, *p);
+        r.seq = 0;
         r.run(&content, resources.as_deref(), GState::default(), 0);
         if let Some(d) = pdf.dict(*p) { r.annotations(&d); }
         let pb = PageBox::of(&pdf, *p);
@@ -1263,7 +1281,9 @@ pub fn extract(data: &[u8]) -> Doc {
         let v = verdict(&glyphs);
         let images = merge_strips(place_images(&std::mem::take(&mut r.drawn), &pb));
         let regions = filter::regions(&images, &ws, width, height);
-        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions });
+        let lines = map::lines(&ws);
+        let map = map::map(&lines, &images);
+        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, map });
     }
     let fonts = r.fonts.list.iter().map(|f| FontInfo {
         base: f.base.clone(), kind: f.kind, encoding: f.encoding.clone(), to_unicode: f.has_to_unicode(), embedded: f.embedded, widths: f.metrics.source,
@@ -1331,8 +1351,9 @@ impl Doc {
             } else { String::new() };
             let unmapped = p.glyphs.iter().filter(|g| !g.mapped).count();
             let images: Vec<String> = p.images.iter().map(|m| format!(
-                "{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"px\":[{},{}],\"dpi\":[{},{}],\"obj\":{},\"parts\":{}{}{}{}{}{}}}",
-                r1(m.x0), r1(m.y0), r1(m.x1), r1(m.y1), m.px_w, m.px_h, r1(m.dpi_x), r1(m.dpi_y), m.obj, m.parts,
+                "{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"px\":[{},{}],\"dpi\":[{},{}],\"obj\":{},\"parts\":{},\"order\":{}{}{}{}{}{}{}}}",
+                r1(m.x0), r1(m.y0), r1(m.x1), r1(m.y1), m.px_w, m.px_h, r1(m.dpi_x), r1(m.dpi_y), m.obj, m.parts, m.order,
+                if m.offpage { ",\"offpage\":true" } else { "" },
                 if m.mask { ",\"mask\":true" } else { "" }, if m.inline { ",\"inline\":true" } else { "" },
                 if m.annot { ",\"annot\":true" } else { "" }, if m.clipped { ",\"clipped\":true" } else { "" },
                 if m.upright { "" } else { ",\"rotated\":true" }
@@ -1347,8 +1368,20 @@ impl Doc {
                 r3(g.text_cover), r3(g.layer_cover), g.text_words, g.layer_words,
                 if g.mask { ",\"mask\":true" } else { "" }, if g.annot { ",\"annot\":true" } else { "" }, if g.small { ",\"small\":true" } else { "" });
             let regions: Vec<String> = p.regions.iter().map(region).collect();
-            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
-                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), regions.join(","), words.join(","), gl)
+            // map: every region in drawing order; text by line, with its words as a range into "words"
+            let map: Vec<String> = p.map.iter().enumerate().map(|(id, e)| {
+                let fl: Vec<String> = e.flags.iter().map(|f| format!("\"{}\"", f)).collect();
+                let src = if e.what == "text" {
+                    let l = &p.lines[e.index];
+                    format!("\"words\":[{},{}],\"t\":{}", l.first, l.count, json_str(&l.text))
+                } else {
+                    format!("\"image\":{},\"obj\":{}", e.index, p.images[e.index].obj)
+                };
+                format!("{{\"id\":{},\"what\":\"{}\",\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{},{},\"flags\":[{}]}}",
+                    id, e.what, r1(e.x0), r1(e.y0), r1(e.x1), r1(e.y1), e.order, src, fl.join(","))
+            }).collect();
+            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"map\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
+                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), map.join(","), regions.join(","), words.join(","), gl)
         }).collect();
         format!("{{\"status\":\"{}\",\"pages\":[{}],\"fonts\":[{}]}}", self.status, pages.join(","), self.fonts_json())
     }
@@ -1428,7 +1461,16 @@ mod tests {
         let v = images("q 100 0 0 100 550 -50 cm /A Do Q");
         let m = &v[0];
         assert!(m.clipped && (m.x1 - 600.0).abs() < 1e-6 && (m.y1 - 800.0).abs() < 1e-6);
-        assert!(images("q 10 0 0 10 700 100 cm /A Do Q").is_empty());
+        // wholly off the page: kept and flagged, with its drawn box
+        let off = images("q 10 0 0 10 700 100 cm /A Do Q");
+        assert!(off.len() == 1 && off[0].offpage && off[0].clipped && (off[0].x0 - 700.0).abs() < 1e-6);
+        assert!(!m.offpage);
+    }
+
+    #[test]
+    fn drawing_order_is_counted_across_glyphs_and_images() {
+        let v = images("q 10 0 0 10 100 100 cm /A Do Q q 10 0 0 10 300 100 cm /A Do Q");
+        assert!(v.len() == 2 && v[0].order == 0 && v[1].order == 1);
     }
 
     #[test]
