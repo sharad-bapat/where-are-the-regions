@@ -57,6 +57,8 @@ Missed ink is now 0.002% of all ink on 003, on 112 pages as text and 159 as othe
 
 Phantom paths: 16 white paths on the constructed set and 190 on 003 have no ink, as expected on a white page. Another 38 and 39 non-white paths have none either. Some are likely painted in a colour space the parser doesn't read (a Separation tint of 0 is white), and some covered by later paint.
 
+After clips (chunk 4b), every glyph, image and path is cut to the clip it was drawn with, and one clipped away entirely is flagged hidden. Coverage didn't move (755 and 288 pages fully covered), so the cuts remove no ink the renderer draws; 3 pages on 003 now miss a few image pixels at a clip's edge, under 0.001% of ink. The worst text misses left (003441) are Symbol-font glyphs the parser can't measure, not clipping.
+
 Speed on all 278 files of 003, one run each on a quiet machine: median 7.9 ms a file before paths, 8.7 ms after.
 
 ## Reproduce

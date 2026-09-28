@@ -122,7 +122,7 @@ pub fn regions(images: &[Image], words: &[Word], width: f64, height: f64) -> Vec
         let (w, h) = (m.x1 - m.x0, m.y1 - m.y0);
         let b = (m.x0, m.y0, m.x1, m.y1);
         let dpi = m.dpi_x.min(m.dpi_y);
-        let shown = || words.iter().filter(|w| !w.offpage);
+        let shown = || words.iter().filter(|w| !w.offpage && !w.hidden);
         let text_cover = cover(b, shown().filter(|w| !w.invisible));
         let layer_cover = cover(b, shown().filter(|w| w.invisible));
         let text_words = centred(b, shown().filter(|w| !w.invisible));
@@ -131,7 +131,7 @@ pub fn regions(images: &[Image], words: &[Word], width: f64, height: f64) -> Vec
         let (short_pt, long_pt) = (w.min(h), w.max(h));
 
         let mut reasons: Vec<(&'static str, f64)> = Vec::new();
-        if m.offpage || w <= 0.0 || h <= 0.0 {
+        if m.offpage || m.hidden || w <= 0.0 || h <= 0.0 {
             // nothing visible: the size rules have nothing to measure
             reasons.push(("offpage", OFFPAGE));
         } else {
@@ -166,12 +166,12 @@ mod tests {
     fn img(x0: f64, y0: f64, x1: f64, y1: f64, dpi: f64) -> Image {
         let px = |pt: f64| (pt / 72.0 * dpi).round() as u32;
         Image { x0, y0, x1, y1, px_w: px(x1 - x0), px_h: px(y1 - y0), dpi_x: dpi, dpi_y: dpi,
-            mask: false, inline: false, annot: false, obj: 7, parts: 1, clipped: false, upright: true, offpage: false, order: 0 }
+            mask: false, inline: false, annot: false, obj: 7, parts: 1, clipped: false, upright: true, offpage: false, hidden: false, order: 0 }
     }
 
     fn word(x0: f64, y0: f64, x1: f64, y1: f64, invisible: bool) -> Word {
         Word { text: "w".into(), x0, y0, x1, y1, line: 0, font: 0, size: 10.0, unmapped: 0,
-            invisible, annot: false, offpage: false, first: 0, count: 1, order: 0 }
+            invisible, annot: false, offpage: false, hidden: false, first: 0, count: 1, order: 0 }
     }
 
     fn one(m: Image, words: &[Word]) -> Region { regions(&[m], words, 600.0, 800.0).remove(0) }

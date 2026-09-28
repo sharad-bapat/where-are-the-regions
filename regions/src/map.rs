@@ -15,7 +15,7 @@ pub struct Line {
     pub order: u32,
     pub glyphs: usize,
     pub unmapped: usize,
-    pub invisible: bool, pub annot: bool, pub offpage: bool,
+    pub invisible: bool, pub annot: bool, pub offpage: bool, pub hidden: bool,
 }
 
 /// Words to lines: consecutive words the word grouping put on the same line, split where the way
@@ -37,10 +37,11 @@ pub fn lines(words: &[Word]) -> Vec<Line> {
             l.glyphs += w.count;
             l.unmapped += w.unmapped;
             l.offpage &= w.offpage;
+            l.hidden &= w.hidden;
         } else {
             out.push(Line {
                 text: w.text.clone(), x0: w.x0, y0: w.y0, x1: w.x1, y1: w.y1, first: i, count: 1, order: w.order,
-                glyphs: w.count, unmapped: w.unmapped, invisible: w.invisible, annot: w.annot, offpage: w.offpage,
+                glyphs: w.count, unmapped: w.unmapped, invisible: w.invisible, annot: w.annot, offpage: w.offpage, hidden: w.hidden,
             });
         }
     }
@@ -67,7 +68,7 @@ pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector]) -> Vec<Entry> {
         let mut flags = Vec::new();
         if l.invisible { flags.push("invisible"); }
         if l.annot { flags.push("annot"); }
-        if l.offpage { flags.push("offpage"); }
+        if l.offpage { flags.push("offpage"); } else if l.hidden { flags.push("hidden"); }
         // at least half its glyphs have no usable Unicode: drawn text the file can't give as characters
         if l.unmapped * 2 >= l.glyphs && l.unmapped > 0 { flags.push("undecodable"); }
         out.push(Entry { x0: l.x0, y0: l.y0, x1: l.x1, y1: l.y1, what: "text", index: i, order: l.order, flags });
@@ -77,7 +78,7 @@ pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector]) -> Vec<Entry> {
         if m.mask { flags.push("mask"); }
         if m.inline { flags.push("inline"); }
         if m.annot { flags.push("annot"); }
-        if m.offpage { flags.push("offpage"); } else if m.clipped { flags.push("clipped"); }
+        if m.offpage { flags.push("offpage"); } else if m.hidden { flags.push("hidden"); } else if m.clipped { flags.push("clipped"); }
         if !m.upright { flags.push("rotated"); }
         if m.parts > 1 { flags.push("strips"); }
         out.push(Entry { x0: m.x0, y0: m.y0, x1: m.x1, y1: m.y1, what: "image", index: i, order: m.order, flags });
@@ -89,7 +90,7 @@ pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector]) -> Vec<Entry> {
         if v.shading { flags.push("shading"); }
         if v.white { flags.push("white"); }
         if v.annot { flags.push("annot"); }
-        if v.offpage { flags.push("offpage"); }
+        if v.offpage { flags.push("offpage"); } else if v.hidden { flags.push("hidden"); }
         out.push(Entry { x0: v.x0, y0: v.y0, x1: v.x1, y1: v.y1, what: "vector", index: i, order: v.order, flags });
     }
     out.sort_by_key(|e| e.order);
@@ -102,7 +103,7 @@ mod tests {
 
     fn word(text: &str, x0: f64, line: usize, order: u32, invisible: bool) -> Word {
         Word { text: text.into(), x0, y0: 100.0, x1: x0 + 30.0, y1: 110.0, line, font: 0, size: 10.0, unmapped: 0,
-            invisible, annot: false, offpage: false, first: 0, count: 3, order }
+            invisible, annot: false, offpage: false, hidden: false, first: 0, count: 3, order }
     }
 
     #[test]
@@ -125,7 +126,7 @@ mod tests {
     fn the_map_is_in_drawing_order() {
         let ls = lines(&[word("over", 10.0, 0, 5, false)]);
         let im = Image { x0: 0.0, y0: 0.0, x1: 600.0, y1: 800.0, px_w: 2500, px_h: 3300, dpi_x: 300.0, dpi_y: 300.0,
-            mask: false, inline: false, annot: false, obj: 4, parts: 1, clipped: false, upright: true, offpage: false, order: 2 };
+            mask: false, inline: false, annot: false, obj: 4, parts: 1, clipped: false, upright: true, offpage: false, hidden: false, order: 2 };
         let m = map(&ls, &[im], &[]);
         assert!(m.len() == 2 && m[0].what == "image" && m[1].what == "text");
     }

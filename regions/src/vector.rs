@@ -17,8 +17,10 @@ pub struct Path {
     pub annot: bool,
     /// Its clip cut part of it.
     pub clipped: bool,
-    /// Nothing of it is on the visible page (or inside its clip); the box is the painted box.
+    /// Nothing of it is on the visible page; the box is the painted box.
     pub offpage: bool,
+    /// Its clip hides all of it; the box is its part on the page.
+    pub hidden: bool,
 }
 
 /// Touching paths, as one region.
@@ -33,6 +35,7 @@ pub struct Vector {
     pub white: bool,
     pub annot: bool,
     pub offpage: bool,
+    pub hidden: bool,
 }
 
 /// Paths closer than this, in points, are one cluster.
@@ -79,7 +82,7 @@ fn find(parent: &mut [usize], mut i: usize) -> usize {
 /// when their boxes come within TOUCH_PT of each other.
 pub fn cluster(paths: &[Path], width: f64, height: f64) -> Vec<Vector> {
     let page = (width * height).max(1e-9);
-    let alone = |p: &Path| p.offpage || (p.x1 - p.x0) * (p.y1 - p.y0) > LARGE_SHARE * page;
+    let alone = |p: &Path| p.offpage || p.hidden || (p.x1 - p.x0) * (p.y1 - p.y0) > LARGE_SHARE * page;
     let mut parent: Vec<usize> = (0..paths.len()).collect();
     let mut grid: std::collections::HashMap<(i64, i64), Vec<usize>> = std::collections::HashMap::new();
     for (i, p) in paths.iter().enumerate() {
@@ -117,7 +120,7 @@ pub fn cluster(paths: &[Path], width: f64, height: f64) -> Vec<Vector> {
             None => {
                 slot.insert(root, out.len());
                 out.push(Vector { x0: p.x0, y0: p.y0, x1: p.x1, y1: p.y1, paths: vec![i], order: p.order,
-                    fill: p.fill, stroke: p.stroke, shading: p.shading, white: p.white, annot: p.annot, offpage: p.offpage });
+                    fill: p.fill, stroke: p.stroke, shading: p.shading, white: p.white, annot: p.annot, offpage: p.offpage, hidden: p.hidden });
             }
         }
     }
@@ -129,7 +132,7 @@ mod tests {
     use super::*;
 
     fn path(x0: f64, y0: f64, x1: f64, y1: f64, order: u32) -> Path {
-        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false }
+        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false, hidden: false }
     }
 
     #[test]

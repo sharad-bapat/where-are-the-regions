@@ -101,9 +101,9 @@ def check(page, pmap):
     covered = np.zeros(ink.shape, bool)
     phantoms = Counter()
     regions = [("image", r, "offpage" in [w for w, _ in r["reasons"]]) for r in pmap["regions"]]
-    regions += [("word", w, w.get("invisible") or w.get("offpage")) for w in pmap["words"]]
+    regions += [("word", w, w.get("invisible") or w.get("offpage") or w.get("hidden")) for w in pmap["words"]]
     # white paths paint nothing on a white page: in the map, but never phantoms
-    regions += [("white_path" if p.get("white") else "path", p, p.get("offpage")) for p in pmap.get("paths", [])]
+    regions += [("white_path" if p.get("white") else "path", p, p.get("offpage") or p.get("hidden")) for p in pmap.get("paths", [])]
     for what, r, flagged in regions:
         if flagged:
             continue

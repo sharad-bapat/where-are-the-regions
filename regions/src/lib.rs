@@ -646,6 +646,10 @@ pub struct Glyph {
     pub annot: bool,
     /// The box's centre is outside the visible page.
     pub offpage: bool,
+    /// The clip in force when it was drawn cut part of it (the box is then the visible part), or
+    /// hid all of it (the box is then the drawn box).
+    pub clipped: bool,
+    pub hidden: bool,
     pub x0: f64, pub y0: f64, pub x1: f64, pub y1: f64,
     /// Baseline start, in page coordinates.
     pub ox: f64, pub oy: f64,
@@ -655,6 +659,7 @@ pub struct Glyph {
     pub order: u32,
     // in default user space, for grouping: baseline start and end, unit direction, and the glyph's quad
     ux: f64, uy: f64, ex: f64, ey: f64, dx: f64, dy: f64, quad: [(f64, f64); 4],
+    clip: Option<[f64; 4]>,
 }
 
 pub struct Word {
@@ -665,6 +670,8 @@ pub struct Word {
     pub size: f64,
     pub unmapped: usize,
     pub invisible: bool, pub annot: bool, pub offpage: bool,
+    /// Every glyph of it is hidden by its clip.
+    pub hidden: bool,
     /// Index of the word's first glyph in `Page::glyphs`, and how many glyphs it has.
     pub first: usize, pub count: usize,
     /// Drawing order of its first-drawn glyph.
@@ -698,13 +705,15 @@ pub struct Image {
     pub upright: bool,
     /// Nothing of it is on the visible page; the box is then the drawn box, unclipped.
     pub offpage: bool,
+    /// The clip it was drawn with hides all of it; the box is then its part on the page.
+    pub hidden: bool,
     /// Drawing order (the first part's, for merged strips).
     pub order: u32,
 }
 
 /// An image as drawn, before placement: its matrix (unit square to user space) and its pixels.
 #[derive(Clone)]
-struct Drawn { ctm: M, px_w: u32, px_h: u32, mask: bool, inline: bool, annot: bool, obj: u32, order: u32 }
+struct Drawn { ctm: M, px_w: u32, px_h: u32, mask: bool, inline: bool, annot: bool, obj: u32, order: u32, clip: Option<[f64; 4]> }
 
 /// Strips are joined when their edges across the join agree within STRIP_EDGE points and they
 /// touch along it within STRIP_GAP points.
@@ -725,7 +734,7 @@ fn undecodable(g: &Glyph) -> bool {
 
 /// The page verdict, by fixed rules in this order: none, invisible, garbled, text.
 fn verdict(glyphs: &[Glyph]) -> &'static str {
-    let shown: Vec<&Glyph> = glyphs.iter().filter(|g| !g.offpage).collect();
+    let shown: Vec<&Glyph> = glyphs.iter().filter(|g| !g.offpage && !g.hidden).collect();
     if shown.is_empty() { return "none"; }
     if shown.iter().filter(|g| g.invisible).count() as f64 >= VERDICT_SHARE * shown.len() as f64 { return "invisible"; }
     let ink: Vec<&&Glyph> = shown.iter().filter(|g| !is_space(g)).collect();
@@ -868,7 +877,7 @@ impl<'p, 'a> Run<'p, 'a> {
             // text shown before any font was set: it can't be decoded or measured
             for &b in bytes {
                 let (x, y) = apply(&mul(tm, &g.ctm), 0.0, 0.0);
-                self.out.push(blank(b as u32, invisible, self.annot, x, y, self.seq));
+                self.out.push(blank(b as u32, invisible, self.annot, x, y, self.seq, g.clip));
                 self.seq += 1;
             }
             return;
@@ -886,8 +895,8 @@ impl<'p, 'a> Run<'p, 'a> {
             let size = (trm[2] * trm[2] + trm[3] * trm[3]).sqrt();
             let t = f.unicode(code);
             self.out.push(Glyph {
-                mapped: t.is_some(), text: t.unwrap_or_default(), code, font: fid, invisible, annot: self.annot, offpage: false,
-                x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size, order: self.seq, ux, uy, ex, ey, dx, dy, quad,
+                mapped: t.is_some(), text: t.unwrap_or_default(), code, font: fid, invisible, annot: self.annot, offpage: false, clipped: false, hidden: false,
+                x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size, order: self.seq, ux, uy, ex, ey, dx, dy, quad, clip: g.clip,
             });
             self.seq += 1;
             let mut tx = w0 * g.size + g.tc;
@@ -1076,7 +1085,7 @@ impl<'p, 'a> Run<'p, 'a> {
         if matches!(get(&d, b"/Subtype"), Some(Val::Name(s)) if s == b"Image") {
             let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
             let mask = flag(&d, b"/ImageMask");
-            self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/Width"), px_h: int(b"/Height"), mask, inline: false, annot: self.annot, obj: n, order: self.seq });
+            self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/Width"), px_h: int(b"/Height"), mask, inline: false, annot: self.annot, obj: n, order: self.seq, clip: g.clip });
             self.seq += 1;
             return;
         }
@@ -1099,7 +1108,7 @@ impl<'p, 'a> Run<'p, 'a> {
         d.extend_from_slice(b">>");
         let int = |a: &[u8], b: &[u8]| match get(&d, a).or_else(|| get(&d, b)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
         let mask = flag(&d, b"/IM") || flag(&d, b"/ImageMask");
-        self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/W", b"/Width"), px_h: int(b"/H", b"/Height"), mask, inline: true, annot: self.annot, obj: 0, order: self.seq });
+        self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/W", b"/Width"), px_h: int(b"/H", b"/Height"), mask, inline: true, annot: self.annot, obj: 0, order: self.seq, clip: g.clip });
         self.seq += 1;
     }
 
@@ -1150,10 +1159,10 @@ impl<'p, 'a> Run<'p, 'a> {
     }
 }
 
-fn blank(code: u32, invisible: bool, annot: bool, x: f64, y: f64, order: u32) -> Glyph {
-    Glyph { text: String::new(), mapped: false, code, font: u32::MAX, invisible, annot, offpage: false,
+fn blank(code: u32, invisible: bool, annot: bool, x: f64, y: f64, order: u32, clip: Option<[f64; 4]>) -> Glyph {
+    Glyph { text: String::new(), mapped: false, code, font: u32::MAX, invisible, annot, offpage: false, clipped: false, hidden: false,
             x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size: 0.0, order,
-            ux: x, uy: y, ex: x, ey: y, dx: 1.0, dy: 0.0, quad: [(x, y); 4] }
+            ux: x, uy: y, ex: x, ey: y, dx: 1.0, dy: 0.0, quad: [(x, y); 4], clip }
 }
 
 /// The visible page: CropBox (clipped to MediaBox) and /Rotate, as a map from default user space to
@@ -1189,21 +1198,40 @@ impl PageBox {
 /// clip paints the whole page.
 fn place_paths(raw: &[RawPath], pb: &PageBox) -> Vec<Path> {
     let (w, h) = pb.size();
-    let to_page = |b: [f64; 4]| {
-        let pts = [pb.map(b[0], b[1]), pb.map(b[2], b[1]), pb.map(b[2], b[3]), pb.map(b[0], b[3])];
-        [pts.iter().map(|p| p.0).fold(f64::MAX, f64::min), pts.iter().map(|p| p.1).fold(f64::MAX, f64::min),
-         pts.iter().map(|p| p.0).fold(f64::MIN, f64::max), pts.iter().map(|p| p.1).fold(f64::MIN, f64::max)]
-    };
+    let page = [0.0, 0.0, w, h];
     raw.iter().map(|r| {
-        let clip = r.clip.map(to_page).unwrap_or([0.0, 0.0, w, h]);
-        let drawn = r.b.map(to_page).unwrap_or(clip);
-        let v = [drawn[0].max(clip[0]).max(0.0), drawn[1].max(clip[1]).max(0.0), drawn[2].min(clip[2]).min(w), drawn[3].min(clip[3]).min(h)];
-        let offpage = v[2] <= v[0] || v[3] <= v[1];
-        let b = if offpage { drawn } else { v };
-        let clipped = !offpage && (v[0] > drawn[0] + 1e-6 || v[1] > drawn[1] + 1e-6 || v[2] < drawn[2] - 1e-6 || v[3] < drawn[3] - 1e-6);
+        let clip = r.clip.map(|c| page_rect(pb, c));
+        let drawn = r.b.map(|b| page_rect(pb, b)).unwrap_or(clip.unwrap_or(page));
+        // off the page first, then hidden by its clip
+        let (b, clipped, offpage, hidden) = match cut(drawn, page) {
+            None => (drawn, true, true, false),
+            Some((v, c1)) => match clip.map(|c| cut(v, c)) {
+                None => (v, c1, false, false),
+                Some(None) => (v, true, false, true),
+                Some(Some((v2, c2))) => (v2, c1 || c2, false, false),
+            },
+        };
         Path { x0: b[0], y0: b[1], x1: b[2], y1: b[3], order: r.order, fill: r.fill, stroke: r.stroke, shading: r.shading,
-            white: r.white, annot: r.annot, clipped, offpage }
+            white: r.white, annot: r.annot, clipped, offpage, hidden }
     }).collect()
+}
+
+/// A box in default user space to one on the displayed page.
+fn page_rect(pb: &PageBox, b: [f64; 4]) -> [f64; 4] {
+    let pts = [pb.map(b[0], b[1]), pb.map(b[2], b[1]), pb.map(b[2], b[3]), pb.map(b[0], b[3])];
+    [pts.iter().map(|p| p.0).fold(f64::MAX, f64::min), pts.iter().map(|p| p.1).fold(f64::MAX, f64::min),
+     pts.iter().map(|p| p.0).fold(f64::MIN, f64::max), pts.iter().map(|p| p.1).fold(f64::MIN, f64::max)]
+}
+
+/// Cut a box on the page by a clip (already on the page): the visible part and whether anything
+/// was cut, or None when nothing of it is inside. A box with no area (a glyph with no advance)
+/// is inside when it lies within the clip's edges.
+fn cut(b: [f64; 4], clip: [f64; 4]) -> Option<([f64; 4], bool)> {
+    let v = [b[0].max(clip[0]), b[1].max(clip[1]), b[2].min(clip[2]), b[3].min(clip[3])];
+    if v[2] < v[0] || v[3] < v[1] { return None; }
+    if (v[2] - v[0]) * (v[3] - v[1]) <= 0.0 && (b[2] - b[0]) * (b[3] - b[1]) > 0.0 { return None; }
+    let cutoff = v[0] > b[0] + 1e-6 || v[1] > b[1] + 1e-6 || v[2] < b[2] - 1e-6 || v[3] < b[3] - 1e-6;
+    Some((v, cutoff))
 }
 
 fn place(glyphs: &mut [Glyph], pb: &PageBox) {
@@ -1219,6 +1247,12 @@ fn place(glyphs: &mut [Glyph], pb: &PageBox) {
         g.oy = oy;
         let (cx, cy) = ((g.x0 + g.x1) / 2.0, (g.y0 + g.y1) / 2.0);
         g.offpage = cx < 0.0 || cy < 0.0 || cx > w || cy > h;
+        if let Some(c) = g.clip {
+            match cut([g.x0, g.y0, g.x1, g.y1], page_rect(pb, c)) {
+                Some((v, cutoff)) => { [g.x0, g.y0, g.x1, g.y1] = v; g.clipped = cutoff; }
+                None => { g.hidden = true; g.clipped = true; }
+            }
+        }
     }
 }
 
@@ -1257,6 +1291,13 @@ fn place_images(drawn: &[Drawn], pb: &PageBox) -> Vec<Image> {
         // kept in the map, flagged: an image placed off the visible page is still in the file
         let offpage = x1 <= x0 || y1 <= y0;
         if offpage { (x0, y0, x1, y1) = (bx0, by0, bx1, by1); }
+        let (mut hidden, mut cut_by_clip) = (false, false);
+        if let (false, Some(c)) = (offpage, d.clip) {
+            match cut([x0, y0, x1, y1], page_rect(pb, c)) {
+                Some((v, c2)) => { [x0, y0, x1, y1] = v; cut_by_clip = c2; }
+                None => hidden = true,
+            }
+        }
         let (side_w, side_h) = (dist(pts[0], pts[1]), dist(pts[0], pts[3]));
         let dpi = |px: u32, len: f64| if len > 1e-9 { px as f64 / (len / 72.0) } else { 0.0 };
         let m = &d.ctm;
@@ -1264,8 +1305,8 @@ fn place_images(drawn: &[Drawn], pb: &PageBox) -> Vec<Image> {
         out.push(Image {
             x0, y0, x1, y1, px_w: d.px_w, px_h: d.px_h, dpi_x: dpi(d.px_w, side_w), dpi_y: dpi(d.px_h, side_h),
             mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1,
-            clipped: offpage || x0 > bx0 + 1e-6 || y0 > by0 + 1e-6 || x1 < bx1 - 1e-6 || y1 < by1 - 1e-6, upright,
-            offpage, order: d.order,
+            clipped: offpage || hidden || cut_by_clip || x0 > bx0 + 1e-6 || y0 > by0 + 1e-6 || x1 < bx1 - 1e-6 || y1 < by1 - 1e-6, upright,
+            offpage, hidden, order: d.order,
         });
     }
     out
@@ -1281,7 +1322,7 @@ fn merge_strips(mut imgs: Vec<Image>) -> Vec<Image> {
             for b in 0..imgs.len() {
                 if a == b { continue; }
                 let (p, q) = (&imgs[a], &imgs[b]);
-                if !p.upright || !q.upright || p.offpage || q.offpage || p.mask != q.mask || p.annot != q.annot { continue; }
+                if !p.upright || !q.upright || p.offpage || q.offpage || p.hidden || q.hidden || p.mask != q.mask || p.annot != q.annot { continue; }
                 let vertical = (p.x0 - q.x0).abs() <= STRIP_EDGE && (p.x1 - q.x1).abs() <= STRIP_EDGE
                     && q.y0 >= p.y0 && (q.y0 - p.y1).abs() <= STRIP_GAP;
                 let horizontal = (p.y0 - q.y0).abs() <= STRIP_EDGE && (p.y1 - q.y1).abs() <= STRIP_EDGE
@@ -1316,7 +1357,7 @@ fn words(glyphs: &[Glyph]) -> Vec<Word> {
             x1: gs.iter().map(|g| g.x1).fold(f64::MIN, f64::max), y1: gs.iter().map(|g| g.y1).fold(f64::MIN, f64::max),
             line: 0, font: gs[0].font, size: gs[0].size,
             unmapped: gs.iter().filter(|g| !g.mapped).count(),
-            invisible: gs[0].invisible, annot: gs[0].annot, offpage: gs.iter().all(|g| g.offpage),
+            invisible: gs[0].invisible, annot: gs[0].annot, offpage: gs.iter().all(|g| g.offpage), hidden: gs.iter().all(|g| g.hidden),
             first, count: last - first + 1, order: gs.iter().map(|g| g.order).min().unwrap_or(0),
         });
     };
@@ -1434,11 +1475,12 @@ pub fn json_str(s: &str) -> String {
 
 fn r1(v: f64) -> f64 { (v * 10.0).round() / 10.0 }
 
-fn flags(invisible: bool, annot: bool, offpage: bool) -> String {
+fn flags(invisible: bool, annot: bool, offpage: bool, hidden: bool) -> String {
     let mut s = String::new();
     if invisible { s.push_str(",\"invisible\":true"); }
     if annot { s.push_str(",\"annot\":true"); }
     if offpage { s.push_str(",\"offpage\":true"); }
+    if hidden { s.push_str(",\"hidden\":true"); }
     s
 }
 
@@ -1460,13 +1502,13 @@ impl Doc {
                 json_str(&w.text), r1(w.x0), r1(w.y0), r1(w.x1), r1(w.y1), r1(p.glyphs[w.first].oy), w.line,
                 if w.font == u32::MAX { -1 } else { w.font as i64 }, r1(w.size),
                 if w.unmapped > 0 { format!(",\"unmapped\":{}", w.unmapped) } else { String::new() },
-                flags(w.invisible, w.annot, w.offpage)
+                flags(w.invisible, w.annot, w.offpage, w.hidden)
             )).collect();
             let gl = if glyphs {
                 let g: Vec<String> = p.glyphs.iter().map(|g| format!(
                     "{{\"c\":{},\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"ox\":{},\"oy\":{},\"size\":{}{}{}}}",
                     json_str(if g.mapped { &g.text } else { "\u{fffd}" }), r1(g.x0), r1(g.y0), r1(g.x1), r1(g.y1), r1(g.ox), r1(g.oy), r1(g.size),
-                    if g.mapped { "" } else { ",\"unmapped\":true" }, flags(g.invisible, g.annot, g.offpage)
+                    if g.mapped { "" } else { ",\"unmapped\":true" }, flags(g.invisible, g.annot, g.offpage, g.hidden)
                 )).collect();
                 format!(",\"glyphs\":[{}]", g.join(","))
             } else { String::new() };
@@ -1474,7 +1516,7 @@ impl Doc {
             let images: Vec<String> = p.images.iter().map(|m| format!(
                 "{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"px\":[{},{}],\"dpi\":[{},{}],\"obj\":{},\"parts\":{},\"order\":{}{}{}{}{}{}{}}}",
                 r1(m.x0), r1(m.y0), r1(m.x1), r1(m.y1), m.px_w, m.px_h, r1(m.dpi_x), r1(m.dpi_y), m.obj, m.parts, m.order,
-                if m.offpage { ",\"offpage\":true" } else { "" },
+                if m.offpage { ",\"offpage\":true" } else if m.hidden { ",\"hidden\":true" } else { "" },
                 if m.mask { ",\"mask\":true" } else { "" }, if m.inline { ",\"inline\":true" } else { "" },
                 if m.annot { ",\"annot\":true" } else { "" }, if m.clipped { ",\"clipped\":true" } else { "" },
                 if m.upright { "" } else { ",\"rotated\":true" }
@@ -1492,7 +1534,7 @@ impl Doc {
             let paths: Vec<String> = p.paths.iter().map(|q| {
                 let mut f = String::new();
                 for (on, k) in [(q.fill, "fill"), (q.stroke, "stroke"), (q.shading, "shading"), (q.white, "white"),
-                                (q.clipped, "clipped"), (q.offpage, "offpage"), (q.annot, "annot")] {
+                                (q.clipped, "clipped"), (q.offpage, "offpage"), (q.hidden, "hidden"), (q.annot, "annot")] {
                     if on { f.push_str(&format!(",\"{}\":true", k)); }
                 }
                 format!("{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{}{}}}", r1(q.x0), r1(q.y0), r1(q.x1), r1(q.y1), q.order, f)
@@ -1612,6 +1654,26 @@ mod tests {
     fn a_path_off_the_page_is_kept_and_flagged() {
         let v = paths("700 100 50 50 re f");
         assert!(v.len() == 1 && v[0].offpage);
+    }
+
+    #[test]
+    fn a_clip_cuts_an_image_to_what_shows() {
+        // a 100 pt image at the page's bottom-left, clipped to its lower-left 50 pt
+        let v = images("q 0 0 50 50 re W n q 100 0 0 100 0 0 cm /A Do Q Q");
+        assert!(v.len() == 1 && v[0].clipped && !v[0].hidden);
+        assert!((v[0].x0).abs() < 1e-6 && (v[0].x1 - 50.0).abs() < 1e-6 && (v[0].y0 - 750.0).abs() < 1e-6 && (v[0].y1 - 800.0).abs() < 1e-6);
+        // a clip elsewhere hides it, and it stays in the map, flagged
+        let v = images("q 500 500 10 10 re W n q 100 0 0 100 0 0 cm /A Do Q Q");
+        assert!(v.len() == 1 && v[0].hidden && !v[0].offpage);
+        let e = extract(&pdf("q 500 500 10 10 re W n q 100 0 0 100 0 0 cm /A Do Q Q", "")).pages.remove(0);
+        assert_eq!(e.map[0].flags, ["hidden"]);
+    }
+
+    #[test]
+    fn a_clip_hides_text_outside_it() {
+        // no font, so the glyph is a point at its origin; the clip is far from it
+        let e = extract(&pdf("q 0 0 10 10 re W n BT 100 100 Td (a) Tj ET Q BT 5 5 Td (b) Tj ET", "")).pages.remove(0);
+        assert!(e.glyphs[0].hidden && !e.glyphs[1].hidden && e.words[0].hidden && !e.words[1].hidden);
     }
 
     #[test]
