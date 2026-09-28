@@ -4,8 +4,8 @@ Renders each page with PyMuPDF, independently of our parser, and compares the in
 regions-cli gives for it:
 
   ink        a pixel darker than INK_LEVEL on any channel (the page background is white)
-  map        every visible region's box, grown by MARGIN_PT for anti-aliasing: today that's the
-             images and the visible words (invisible and offpage words are flagged, not ink)
+  map        every visible region's box, grown by MARGIN_PT for anti-aliasing: the images, the
+             visible words and the painted paths (invisible and offpage marks are flagged, not ink)
   coverage   share of ink pixels inside the map, per page
   missed     ink outside the map, attributed to what PyMuPDF says is there, first match wins:
              text (its characters), image (its image boxes), vector (its drawings), annot
@@ -102,6 +102,8 @@ def check(page, pmap):
     phantoms = Counter()
     regions = [("image", r, "offpage" in [w for w, _ in r["reasons"]]) for r in pmap["regions"]]
     regions += [("word", w, w.get("invisible") or w.get("offpage")) for w in pmap["words"]]
+    # white paths paint nothing on a white page: in the map, but never phantoms
+    regions += [("white_path" if p.get("white") else "path", p, p.get("offpage")) for p in pmap.get("paths", [])]
     for what, r, flagged in regions:
         if flagged:
             continue
@@ -176,7 +178,8 @@ def main():
     ph = Counter()
     for r in ok:
         ph.update(r["phantoms"])
-    print(f"phantoms (box with no ink): images {ph['image']}, words {ph['word']}")
+    print(f"phantoms (box with no ink): images {ph['image']}, words {ph['word']}, paths {ph['path']}"
+          f" (white paths with no ink, expected: {ph['white_path']})")
     print(f"worst {worst}:")
     for r in sorted(ok, key=lambda r: r["coverage"])[:worst]:
         print(f"  {r['file']} p{r['page']} {r['group']} {100 * r['coverage']:.2f}% missed {r['missed']} phantoms {r['phantoms']}")

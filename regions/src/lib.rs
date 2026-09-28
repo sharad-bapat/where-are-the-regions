@@ -22,6 +22,8 @@ pub use ocr::Region;
 mod font;
 pub mod map;
 pub use map::{Entry, Line};
+pub mod vector;
+pub use vector::{Path, Vector};
 mod tables;
 mod truetype;
 
@@ -669,7 +671,7 @@ pub struct Word {
     pub order: u32,
 }
 
-pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region>, pub lines: Vec<Line>, pub map: Vec<Entry> }
+pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region>, pub lines: Vec<Line>, pub paths: Vec<Path>, pub vectors: Vec<Vector>, pub map: Vec<Entry> }
 
 // regions: images
 
@@ -742,10 +744,37 @@ pub struct Doc {
 }
 
 #[derive(Clone)]
-struct GState { ctm: M, font: Option<u32>, size: f64, tc: f64, tw: f64, tz: f64, tl: f64, ts: f64, tr: i64 }
+struct GState {
+    ctm: M, font: Option<u32>, size: f64, tc: f64, tw: f64, tz: f64, tl: f64, ts: f64, tr: i64,
+    // paths: line width, the clip's box in default user space (None: the whole page), and whether
+    // the fill and stroke colours are white (only DeviceGray, DeviceRGB and DeviceCMYK are read)
+    lw: f64, clip: Option<[f64; 4]>, fill_white: bool, stroke_white: bool,
+}
 
 impl Default for GState {
-    fn default() -> Self { GState { ctm: IDENT, font: None, size: 0.0, tc: 0.0, tw: 0.0, tz: 100.0, tl: 0.0, ts: 0.0, tr: 0 } }
+    fn default() -> Self {
+        GState { ctm: IDENT, font: None, size: 0.0, tc: 0.0, tw: 0.0, tz: 100.0, tl: 0.0, ts: 0.0, tr: 0,
+            lw: 1.0, clip: None, fill_white: false, stroke_white: false }
+    }
+}
+
+/// A painted path or shading as drawn: its box in default user space (None: the whole clip, or
+/// the page when there's no clip), before placement on the page.
+#[derive(Clone)]
+struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool }
+
+fn grow(b: &mut Option<[f64; 4]>, x: f64, y: f64) {
+    match b {
+        Some(v) => { v[0] = v[0].min(x); v[1] = v[1].min(y); v[2] = v[2].max(x); v[3] = v[3].max(y); }
+        None => *b = Some([x, y, x, y]),
+    }
+}
+
+fn intersect(a: Option<[f64; 4]>, b: [f64; 4]) -> [f64; 4] {
+    match a {
+        Some(a) => [a[0].max(b[0]), a[1].max(b[1]), a[2].min(b[2]).max(a[0].max(b[0])), a[3].min(b[3]).max(a[1].max(b[1]))],
+        None => b,
+    }
 }
 
 /// Fonts are loaded once per object and shared by every page that uses them.
@@ -827,7 +856,7 @@ fn matrix_of(pdf: &Pdf, d: &[u8]) -> M {
     }
 }
 
-struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn>, seq: u32 }
+struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn>, paths: Vec<RawPath>, seq: u32 }
 
 impl<'p, 'a> Run<'p, 'a> {
     /// Show a string: one glyph per character code, each placed by the text rendering matrix
@@ -874,6 +903,10 @@ impl<'p, 'a> Run<'p, 'a> {
         let mut stack: Vec<GState> = Vec::new();
         let mut ops: Vec<Tok> = Vec::new();
         let (mut tm, mut tlm) = (IDENT, IDENT);
+        // the path being built: its box in default user space, the current and start points in user space
+        let mut pbox: Option<[f64; 4]> = None;
+        let (mut cur, mut start) = ((0.0, 0.0), (0.0, 0.0));
+        let mut clip_next = false;
         let s = content;
         let mut i = 0;
         while i < s.len() {
@@ -895,6 +928,71 @@ impl<'p, 'a> Run<'p, 'a> {
                     g.ctm = mul(&m, &g.ctm);
                 }
                 b"BT" => { tm = IDENT; tlm = IDENT; }
+                // paths (vector.rs): build the box as the path is built, record it when it's painted
+                b"m" if n >= 2 => {
+                    cur = (num(&ops[n - 2]), num(&ops[n - 1])); start = cur;
+                    let (x, y) = apply(&g.ctm, cur.0, cur.1); grow(&mut pbox, x, y);
+                }
+                b"l" if n >= 2 => {
+                    cur = (num(&ops[n - 2]), num(&ops[n - 1]));
+                    let (x, y) = apply(&g.ctm, cur.0, cur.1); grow(&mut pbox, x, y);
+                }
+                b"c" | b"v" | b"y" if n >= 4 => {
+                    let v: Vec<f64> = ops[n.saturating_sub(6)..].iter().map(num).collect();
+                    let (p1, p2, p3) = match op {
+                        b"c" if n >= 6 => ((v[0], v[1]), (v[2], v[3]), (v[4], v[5])),
+                        b"v" => (cur, (v[v.len() - 4], v[v.len() - 3]), (v[v.len() - 2], v[v.len() - 1])),
+                        b"y" => ((v[v.len() - 4], v[v.len() - 3]), (v[v.len() - 2], v[v.len() - 1]), (v[v.len() - 2], v[v.len() - 1])),
+                        _ => { ops.clear(); continue; }
+                    };
+                    let q: Vec<(f64, f64)> = [cur, p1, p2, p3].iter().map(|p| apply(&g.ctm, p.0, p.1)).collect();
+                    let (x0, x1) = vector::cubic_range(q[0].0, q[1].0, q[2].0, q[3].0);
+                    let (y0, y1) = vector::cubic_range(q[0].1, q[1].1, q[2].1, q[3].1);
+                    grow(&mut pbox, x0, y0); grow(&mut pbox, x1, y1);
+                    cur = p3;
+                }
+                b"h" => cur = start,
+                b"re" if n >= 4 => {
+                    let (x, y, w, h) = (num(&ops[n - 4]), num(&ops[n - 3]), num(&ops[n - 2]), num(&ops[n - 1]));
+                    for (px, py) in [(x, y), (x + w, y), (x + w, y + h), (x, y + h)] {
+                        let (a, b) = apply(&g.ctm, px, py); grow(&mut pbox, a, b);
+                    }
+                    cur = (x, y); start = cur;
+                }
+                b"W" | b"W*" => clip_next = true,
+                b"S" | b"s" | b"f" | b"F" | b"f*" | b"B" | b"B*" | b"b" | b"b*" | b"n" => {
+                    let stroke = matches!(op, b"S" | b"s" | b"B" | b"B*" | b"b" | b"b*");
+                    let fill = matches!(op, b"f" | b"F" | b"f*" | b"B" | b"B*" | b"b" | b"b*");
+                    if let Some(b) = pbox {
+                        if stroke || fill {
+                            let mut v = b;
+                            if stroke {
+                                // half the line width on the page; a zero width still paints a hairline
+                                let hw = (g.lw.max(0.0) * (g.ctm[0] * g.ctm[3] - g.ctm[1] * g.ctm[2]).abs().sqrt()).max(0.5) / 2.0;
+                                v = [v[0] - hw, v[1] - hw, v[2] + hw, v[3] + hw];
+                            }
+                            let white = (!fill || g.fill_white) && (!stroke || g.stroke_white);
+                            self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot });
+                            self.seq += 1;
+                        }
+                        if clip_next { g.clip = Some(intersect(g.clip, b)); }
+                    }
+                    pbox = None;
+                    clip_next = false;
+                }
+                b"sh" => {
+                    self.paths.push(RawPath { b: None, clip: g.clip, order: self.seq, fill: true, stroke: false, shading: true, white: false, annot: self.annot });
+                    self.seq += 1;
+                }
+                b"w" if n >= 1 => g.lw = num(&ops[n - 1]),
+                b"g" if n >= 1 => g.fill_white = num(&ops[n - 1]) >= 1.0,
+                b"G" if n >= 1 => g.stroke_white = num(&ops[n - 1]) >= 1.0,
+                b"rg" if n >= 3 => g.fill_white = ops[n - 3..].iter().all(|t| num(t) >= 1.0),
+                b"RG" if n >= 3 => g.stroke_white = ops[n - 3..].iter().all(|t| num(t) >= 1.0),
+                b"k" if n >= 4 => g.fill_white = ops[n - 4..].iter().all(|t| num(t) <= 0.0),
+                b"K" if n >= 4 => g.stroke_white = ops[n - 4..].iter().all(|t| num(t) <= 0.0),
+                b"cs" | b"sc" | b"scn" => g.fill_white = false,
+                b"CS" | b"SC" | b"SCN" => g.stroke_white = false,
                 b"Tf" if n >= 2 => {
                     if let Tok::Name(nm) = &ops[n - 2] { g.font = self.fonts.lookup(pdf, resources, nm); }
                     g.size = num(&ops[n - 1]);
@@ -1087,6 +1185,27 @@ impl PageBox {
     }
 }
 
+/// Each painted path through the page box, clipped to its clip and the page. A shading with no
+/// clip paints the whole page.
+fn place_paths(raw: &[RawPath], pb: &PageBox) -> Vec<Path> {
+    let (w, h) = pb.size();
+    let to_page = |b: [f64; 4]| {
+        let pts = [pb.map(b[0], b[1]), pb.map(b[2], b[1]), pb.map(b[2], b[3]), pb.map(b[0], b[3])];
+        [pts.iter().map(|p| p.0).fold(f64::MAX, f64::min), pts.iter().map(|p| p.1).fold(f64::MAX, f64::min),
+         pts.iter().map(|p| p.0).fold(f64::MIN, f64::max), pts.iter().map(|p| p.1).fold(f64::MIN, f64::max)]
+    };
+    raw.iter().map(|r| {
+        let clip = r.clip.map(to_page).unwrap_or([0.0, 0.0, w, h]);
+        let drawn = r.b.map(to_page).unwrap_or(clip);
+        let v = [drawn[0].max(clip[0]).max(0.0), drawn[1].max(clip[1]).max(0.0), drawn[2].min(clip[2]).min(w), drawn[3].min(clip[3]).min(h)];
+        let offpage = v[2] <= v[0] || v[3] <= v[1];
+        let b = if offpage { drawn } else { v };
+        let clipped = !offpage && (v[0] > drawn[0] + 1e-6 || v[1] > drawn[1] + 1e-6 || v[2] < drawn[2] - 1e-6 || v[3] < drawn[3] - 1e-6);
+        Path { x0: b[0], y0: b[1], x1: b[2], y1: b[3], order: r.order, fill: r.fill, stroke: r.stroke, shading: r.shading,
+            white: r.white, annot: r.annot, clipped, offpage }
+    }).collect()
+}
+
 fn place(glyphs: &mut [Glyph], pb: &PageBox) {
     let (w, h) = pb.size();
     for g in glyphs.iter_mut() {
@@ -1266,7 +1385,7 @@ pub fn extract(data: &[u8]) -> Doc {
     if find(data, b"/Encrypt", 0).is_some() && pdf.crypt.is_none() {
         return Doc { status: "encrypted", pages: Vec::new(), fonts: Vec::new() };
     }
-    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new(), seq: 0 };
+    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new(), paths: Vec::new(), seq: 0 };
     let mut pages = Vec::new();
     for (k, p) in pdf.pages().iter().enumerate() {
         let (content, resources) = page_content(&pdf, *p);
@@ -1282,8 +1401,10 @@ pub fn extract(data: &[u8]) -> Doc {
         let images = merge_strips(place_images(&std::mem::take(&mut r.drawn), &pb));
         let regions = ocr::regions(&images, &ws, width, height);
         let lines = map::lines(&ws);
-        let map = map::map(&lines, &images);
-        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, map });
+        let paths = place_paths(&std::mem::take(&mut r.paths), &pb);
+        let vectors = vector::cluster(&paths, width, height);
+        let map = map::map(&lines, &images, &vectors);
+        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, paths, vectors, map });
     }
     let fonts = r.fonts.list.iter().map(|f| FontInfo {
         base: f.base.clone(), kind: f.kind, encoding: f.encoding.clone(), to_unicode: f.has_to_unicode(), embedded: f.embedded, widths: f.metrics.source,
@@ -1368,20 +1489,30 @@ impl Doc {
                 r3(g.text_cover), r3(g.layer_cover), g.text_words, g.layer_words,
                 if g.mask { ",\"mask\":true" } else { "" }, if g.annot { ",\"annot\":true" } else { "" }, if g.small { ",\"small\":true" } else { "" });
             let regions: Vec<String> = p.regions.iter().map(region).collect();
+            let paths: Vec<String> = p.paths.iter().map(|q| {
+                let mut f = String::new();
+                for (on, k) in [(q.fill, "fill"), (q.stroke, "stroke"), (q.shading, "shading"), (q.white, "white"),
+                                (q.clipped, "clipped"), (q.offpage, "offpage"), (q.annot, "annot")] {
+                    if on { f.push_str(&format!(",\"{}\":true", k)); }
+                }
+                format!("{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{}{}}}", r1(q.x0), r1(q.y0), r1(q.x1), r1(q.y1), q.order, f)
+            }).collect();
             // map: every region in drawing order; text by line, with its words as a range into "words"
             let map: Vec<String> = p.map.iter().enumerate().map(|(id, e)| {
                 let fl: Vec<String> = e.flags.iter().map(|f| format!("\"{}\"", f)).collect();
                 let src = if e.what == "text" {
                     let l = &p.lines[e.index];
                     format!("\"words\":[{},{}],\"t\":{}", l.first, l.count, json_str(&l.text))
+                } else if e.what == "vector" {
+                    format!("\"vector\":{},\"paths\":{}", e.index, p.vectors[e.index].paths.len())
                 } else {
                     format!("\"image\":{},\"obj\":{}", e.index, p.images[e.index].obj)
                 };
                 format!("{{\"id\":{},\"what\":\"{}\",\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{},{},\"flags\":[{}]}}",
                     id, e.what, r1(e.x0), r1(e.y0), r1(e.x1), r1(e.y1), e.order, src, fl.join(","))
             }).collect();
-            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"map\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
-                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), map.join(","), regions.join(","), words.join(","), gl)
+            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"paths\":[{}],\"map\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
+                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), paths.join(","), map.join(","), regions.join(","), words.join(","), gl)
         }).collect();
         format!("{{\"status\":\"{}\",\"pages\":[{}],\"fonts\":[{}]}}", self.status, pages.join(","), self.fonts_json())
     }
@@ -1425,6 +1556,71 @@ mod tests {
     }
 
     fn images(content: &str) -> Vec<Image> { extract(&pdf(content, "")).pages.remove(0).images }
+
+    fn paths(content: &str) -> Vec<Path> { extract(&pdf(content, "")).pages.remove(0).paths }
+
+    fn near(p: &Path, b: [f64; 4]) -> bool {
+        (p.x0 - b[0]).abs() < 1e-6 && (p.y0 - b[1]).abs() < 1e-6 && (p.x1 - b[2]).abs() < 1e-6 && (p.y1 - b[3]).abs() < 1e-6
+    }
+
+    #[test]
+    fn a_filled_rectangle_is_a_path() {
+        // 100 x 50 at (50, 700) from the bottom: y 50..100 from the top of an 800 pt page
+        let v = paths("0 0 1 rg 50 700 100 50 re f");
+        assert!(v.len() == 1 && near(&v[0], [50.0, 50.0, 150.0, 100.0]) && v[0].fill && !v[0].stroke && !v[0].white);
+        // through the transform
+        let v = paths("q 2 0 0 2 0 0 cm 50 350 50 25 re f Q");
+        assert!(near(&v[0], [100.0, 50.0, 200.0, 100.0]));
+    }
+
+    #[test]
+    fn a_stroke_grows_by_half_its_width() {
+        let v = paths("4 w 100 400 m 300 400 l S");
+        assert!(v.len() == 1 && v[0].stroke && near(&v[0], [98.0, 398.0, 302.0, 402.0]));
+    }
+
+    #[test]
+    fn a_curve_box_is_its_extent_not_its_control_points() {
+        // an arch from (100, 400) to (300, 400) with control points at y 500: the top is at y 475
+        let v = paths("100 400 m 100 500 300 500 300 400 c f");
+        assert!(near(&v[0], [100.0, 325.0, 300.0, 400.0]));
+    }
+
+    #[test]
+    fn an_unpainted_path_draws_nothing_and_a_clip_limits_what_follows() {
+        let v = paths("q 100 100 200 200 re W n 0 0 600 800 re f Q 0 0 10 10 re f");
+        assert_eq!(v.len(), 2);
+        assert!(near(&v[0], [100.0, 500.0, 300.0, 700.0]) && v[0].clipped);
+        // Q restored the clip
+        assert!(near(&v[1], [0.0, 790.0, 10.0, 800.0]) && !v[1].clipped);
+    }
+
+    #[test]
+    fn a_shading_paints_its_clip() {
+        let v = paths("q 100 100 200 200 re W n /Sh0 sh Q /Sh0 sh");
+        assert!(v.len() == 2 && v[0].shading && near(&v[0], [100.0, 500.0, 300.0, 700.0]));
+        assert!(near(&v[1], [0.0, 0.0, 600.0, 800.0]));
+    }
+
+    #[test]
+    fn white_paint_is_flagged() {
+        let v = paths("1 g 50 50 100 100 re f 1 1 1 RG 50 50 100 100 re S 1 g 0 G 50 50 100 100 re B 0 0 0 0 k 50 50 10 10 re f");
+        assert!(v[0].white && v[1].white && !v[2].white && v[3].white);
+    }
+
+    #[test]
+    fn a_path_off_the_page_is_kept_and_flagged() {
+        let v = paths("700 100 50 50 re f");
+        assert!(v.len() == 1 && v[0].offpage);
+    }
+
+    #[test]
+    fn paths_share_the_drawing_order() {
+        let e = extract(&pdf("0 0 600 800 re f q 10 0 0 10 100 100 cm /A Do Q 50 50 10 10 re f", "")).pages.remove(0);
+        assert!(e.paths[0].order == 0 && e.images[0].order == 1 && e.paths[1].order == 2);
+        let kinds: Vec<&str> = e.map.iter().map(|m| m.what).collect();
+        assert_eq!(kinds, ["vector", "image", "vector"]);
+    }
 
     #[test]
     fn xobject_box_and_dpi() {

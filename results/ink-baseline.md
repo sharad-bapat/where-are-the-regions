@@ -44,6 +44,21 @@ The test itself had two faults. PyMuPDF gives text, image and drawing boxes on t
 
 Chunk 3 adds drawing order and visible boxes to every region and moves the OCR scoring into its own module. Chunk 4 adds vector paths and shadings. The ink test is rerun after each.
 
+## After vector paths (chunk 4a)
+
+Painted paths and shadings are now in the map: each path's box through the transform (curves by their real extent, strokes grown by half the line width), clipped to its clip, and touching paths joined into one region. The ink test counts each path's own box, not the joined region's.
+
+| Set | Pages | Fully covered | At least 99.9% | At least 99.5% | Median | Worst |
+|---|---|---|---|---|---|---|
+| Constructed tune | 300 | 288 | 300 | 300 | 100.00% | 99.99% |
+| govdocs1 003 | 967 | 755 | 959 | 967 | 100.00% | 99.77% |
+
+Missed ink is now 0.002% of all ink on 003, on 112 pages as text and 159 as other, a few hundred pixels at most. The worst pages (003441, 003186) have phantom words as well, so the misses there look like text drawn a little outside its box; that's next to look at, with the clip work.
+
+Phantom paths: 16 white paths on the constructed set and 190 on 003 have no ink, as expected on a white page. Another 38 and 39 non-white paths have none either. Some are likely painted in a colour space the parser doesn't read (a Separation tint of 0 is white), and some covered by later paint.
+
+Speed on all 278 files of 003, one run each on a quiet machine: median 7.9 ms a file before paths, 8.7 ms after.
+
 ## Reproduce
 
 ```

@@ -1,9 +1,9 @@
 //! The page map (D70, plans/page-map.md): every region the page draws, in drawing order, each with
 //! its box, what drew it and flags. This is the exact layer: nothing here is a guess about what a
-//! region looks like. Text is mapped by line (words are in `Page::words`); vector paths and
-//! annotations aren't mapped yet.
+//! region looks like. Text is mapped by line (words are in `Page::words`), vector paths by cluster
+//! (paths are in `Page::paths`); annotations as their own regions aren't mapped yet.
 
-use crate::{Image, Word};
+use crate::{Image, Vector, Word};
 
 /// Words on one line, drawn the same way (all visible or all invisible, all page or all annotation).
 #[derive(Clone, Debug)]
@@ -51,17 +51,18 @@ pub fn lines(words: &[Word]) -> Vec<Line> {
 #[derive(Clone, Debug)]
 pub struct Entry {
     pub x0: f64, pub y0: f64, pub x1: f64, pub y1: f64,
-    /// "text" (a line) or "image".
+    /// "text" (a line), "image" or "vector" (touching paths).
     pub what: &'static str,
-    /// Index into `Page::lines` or `Page::images`.
+    /// Index into `Page::lines`, `Page::images` or `Page::vectors`.
     pub index: usize,
     pub order: u32,
     pub flags: Vec<&'static str>,
 }
 
-/// Lines and images as one list, in drawing order (a later region is drawn over an earlier one).
-pub fn map(lines: &[Line], images: &[Image]) -> Vec<Entry> {
-    let mut out: Vec<Entry> = Vec::with_capacity(lines.len() + images.len());
+/// Lines, images and vector clusters as one list, in drawing order (a later region is drawn over
+/// an earlier one; a cluster's order is its first path's).
+pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector]) -> Vec<Entry> {
+    let mut out: Vec<Entry> = Vec::with_capacity(lines.len() + images.len() + vectors.len());
     for (i, l) in lines.iter().enumerate() {
         let mut flags = Vec::new();
         if l.invisible { flags.push("invisible"); }
@@ -80,6 +81,16 @@ pub fn map(lines: &[Line], images: &[Image]) -> Vec<Entry> {
         if !m.upright { flags.push("rotated"); }
         if m.parts > 1 { flags.push("strips"); }
         out.push(Entry { x0: m.x0, y0: m.y0, x1: m.x1, y1: m.y1, what: "image", index: i, order: m.order, flags });
+    }
+    for (i, v) in vectors.iter().enumerate() {
+        let mut flags = Vec::new();
+        if v.fill { flags.push("fill"); }
+        if v.stroke { flags.push("stroke"); }
+        if v.shading { flags.push("shading"); }
+        if v.white { flags.push("white"); }
+        if v.annot { flags.push("annot"); }
+        if v.offpage { flags.push("offpage"); }
+        out.push(Entry { x0: v.x0, y0: v.y0, x1: v.x1, y1: v.y1, what: "vector", index: i, order: v.order, flags });
     }
     out.sort_by_key(|e| e.order);
     out
@@ -115,7 +126,7 @@ mod tests {
         let ls = lines(&[word("over", 10.0, 0, 5, false)]);
         let im = Image { x0: 0.0, y0: 0.0, x1: 600.0, y1: 800.0, px_w: 2500, px_h: 3300, dpi_x: 300.0, dpi_y: 300.0,
             mask: false, inline: false, annot: false, obj: 4, parts: 1, clipped: false, upright: true, offpage: false, order: 2 };
-        let m = map(&ls, &[im]);
+        let m = map(&ls, &[im], &[]);
         assert!(m.len() == 2 && m[0].what == "image" && m[1].what == "text");
     }
 
@@ -123,7 +134,7 @@ mod tests {
     fn mostly_undecodable_lines_are_flagged() {
         let mut w = word("\u{fffd}\u{fffd}a", 10.0, 0, 0, false);
         w.unmapped = 2;
-        let m = map(&lines(&[w]), &[]);
+        let m = map(&lines(&[w]), &[], &[]);
         assert_eq!(m[0].flags, ["undecodable"]);
     }
 }
