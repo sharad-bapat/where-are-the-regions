@@ -1,4 +1,6 @@
-//! regions: from a page's images and words to OCR regions (option A: structure only, no pixels).
+//! ocr: which images need OCR, scored from the page's images and words (option A: structure only,
+//! no pixels). Not part of the map (map.rs); it's the first thing that reads it, and it moves to
+//! the next repo, the one that decides what to OCR, when that exists (D70).
 //!
 //! Every image the page draws becomes a region; none is dropped (D69). Each carries a confidence,
 //! 0 to 1, that it holds text the file doesn't already give as characters, and the reasons that

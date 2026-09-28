@@ -1,7 +1,7 @@
 """Score regions-cli on the constructed set, per kind.
 
 Every image is a region with a confidence (D69); a region is "flagged" when its confidence is at or
-above the cutoff (0.4 by default, regions::filter::CUT). Runs the binary on every case of one split
+above the cutoff (0.4 by default, regions::ocr::CUT). Runs the binary on every case of one split
 (tune by default) and checks each against the manifest:
 
   ocr boxes     found when one flagged region covers at least COVER of the box

@@ -17,8 +17,8 @@ use std::collections::HashMap;
 mod cmap;
 mod crypt;
 // regions: images to OCR regions
-pub mod filter;
-pub use filter::Region;
+pub mod ocr;
+pub use ocr::Region;
 mod font;
 pub mod map;
 pub use map::{Entry, Line};
@@ -1280,7 +1280,7 @@ pub fn extract(data: &[u8]) -> Doc {
         let (width, height) = pb.size();
         let v = verdict(&glyphs);
         let images = merge_strips(place_images(&std::mem::take(&mut r.drawn), &pb));
-        let regions = filter::regions(&images, &ws, width, height);
+        let regions = ocr::regions(&images, &ws, width, height);
         let lines = map::lines(&ws);
         let map = map::map(&lines, &images);
         pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, map });
