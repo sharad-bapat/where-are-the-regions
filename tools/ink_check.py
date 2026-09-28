@@ -66,21 +66,32 @@ def ink_of(page):
 
 
 def pymupdf_masks(page, shape, scale):
-    """What PyMuPDF says is on the page, one mask per kind, for attributing missed ink."""
+    """What PyMuPDF says is on the page, one mask per kind, for attributing missed ink.
+
+    PyMuPDF gives these boxes on the unrotated page but renders the page turned by /Rotate, as the
+    map's boxes are, so each is mapped through the page's rotation matrix first."""
     m = {k: np.zeros(shape, bool) for k in KINDS[:-1]}
+    rot = page.rotation_matrix
+
+    def put(kind, box, grow):
+        r = fitz.Rect(box) * rot
+        fill(m[kind], (r.x0, r.y0, r.x1, r.y1), scale, grow)
+
     for b in page.get_text("rawdict")["blocks"]:
         for line in b.get("lines", []):
             for span in line["spans"]:
                 for c in span["chars"]:
-                    fill(m["text"], c["bbox"], scale, MARGIN_PT)
+                    # a space has a box too, and background ink showing through it isn't text
+                    if not c["c"].isspace():
+                        put("text", c["bbox"], MARGIN_PT)
     for info in page.get_image_info():
-        fill(m["image"], info["bbox"], scale, MARGIN_PT)
+        put("image", info["bbox"], MARGIN_PT)
     for d in page.get_drawings():
-        fill(m["vector"], d["rect"], scale, MARGIN_PT + (d.get("width") or 0) / 2)
+        put("vector", d["rect"], MARGIN_PT + (d.get("width") or 0) / 2)
     for a in page.annots() or []:
-        fill(m["annot"], a.rect, scale, MARGIN_PT)
+        put("annot", a.rect, MARGIN_PT)
     for wd in page.widgets() or []:
-        fill(m["annot"], wd.rect, scale, MARGIN_PT)
+        put("annot", wd.rect, MARGIN_PT)
     return m
 
 
