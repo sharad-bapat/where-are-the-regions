@@ -1337,16 +1337,18 @@ impl Doc {
                 if m.annot { ",\"annot\":true" } else { "" }, if m.clipped { ",\"clipped\":true" } else { "" },
                 if m.upright { "" } else { ",\"rotated\":true" }
             )).collect();
-            // regions: kept regions, and dropped images with their reason (for debugging)
+            // regions: every image, with its confidence and the reasons that lowered it
+            let r3 = |v: f64| (v * 1e3).round() / 1e3;
             let region = |g: &Region| format!(
-                "{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"kind\":\"{}\",\"image\":{},\"obj\":{},\"dpi\":{},\"share\":{},\"text_cover\":{},\"layer_cover\":{},\"text_words\":{},\"layer_words\":{}{}{}{}}}",
-                r1(g.x0), r1(g.y0), r1(g.x1), r1(g.y1), g.kind, g.image, g.obj, r1(g.dpi), (g.share * 1e4).round() / 1e4,
-                (g.text_cover * 1e3).round() / 1e3, (g.layer_cover * 1e3).round() / 1e3, g.text_words, g.layer_words,
+                "{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"confidence\":{},\"reasons\":[{}],\"image\":{},\"obj\":{},\"dpi\":{},\"share\":{},\"text_cover\":{},\"layer_cover\":{},\"text_words\":{},\"layer_words\":{}{}{}{}}}",
+                r1(g.x0), r1(g.y0), r1(g.x1), r1(g.y1), r3(g.confidence),
+                g.reasons.iter().map(|(w, f)| format!("[\"{}\",{}]", w, r3(*f))).collect::<Vec<_>>().join(","),
+                g.image, g.obj, r1(g.dpi), (g.share * 1e4).round() / 1e4,
+                r3(g.text_cover), r3(g.layer_cover), g.text_words, g.layer_words,
                 if g.mask { ",\"mask\":true" } else { "" }, if g.annot { ",\"annot\":true" } else { "" }, if g.small { ",\"small\":true" } else { "" });
-            let kept: Vec<String> = p.regions.iter().filter(|g| g.kept()).map(region).collect();
-            let dropped: Vec<String> = p.regions.iter().filter(|g| !g.kept()).map(region).collect();
-            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"regions\":[{}],\"dropped\":[{}],\"words\":[{}]{}}}",
-                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), kept.join(","), dropped.join(","), words.join(","), gl)
+            let regions: Vec<String> = p.regions.iter().map(region).collect();
+            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
+                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), regions.join(","), words.join(","), gl)
         }).collect();
         format!("{{\"status\":\"{}\",\"pages\":[{}],\"fonts\":[{}]}}", self.status, pages.join(","), self.fonts_json())
     }

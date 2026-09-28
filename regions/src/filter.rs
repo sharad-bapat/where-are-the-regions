@@ -1,60 +1,67 @@
 //! regions: from a page's images and words to OCR regions (option A: structure only, no pixels).
 //!
-//! Every image the page draws is either dropped (it can't hold readable text, or the file's own
-//! text already explains it) or kept as a region. Option A can't tell a photo from a scanned
-//! paragraph, so every image that survives is an "ocr" candidate; any text in an image counts (D67).
-//! Rules run in a fixed order and the first that applies names the outcome:
+//! Every image the page draws becomes a region; none is dropped (D69). Each carries a confidence,
+//! 0 to 1, that it holds text the file doesn't already give as characters, and the reasons that
+//! lowered it. The caller picks the cutoff: a strict pipeline OCRs nearly everything, a cheap one
+//! only the top. Option A can't tell a photo from a scanned paragraph, so a plain image starts at
+//! BASE, not 1; option B's pixel test is meant to move it. Any text in an image counts (D67).
 //!
-//!   offpage     nothing of it is on the visible page
-//!   thin        a rule or a bar: its short side is under MIN_SIDE_PX pixels or MIN_SIDE_PT points,
-//!               or it's longer than MAX_ASPECT times its short side
-//!   tiny        under MIN_AREA_PT square points: at most a glyph or two
-//!   low_dpi     under MIN_DPI pixels per inch along its coarser side: too coarse to read
-//!   text_layer  an OCR layer lies on it: at least LAYER_WORDS invisible words centred on it, or
-//!               invisible words covering LAYER_COVER of it; already read, reported so it isn't OCR'd again
-//!   under_text  visible words lie on it: they cover TEXT_COVER of it, or at least TEXT_WORDS of them
-//!               are centred on it and they're at least TEXT_SHARE of the page's visible words
-//!               (a background or watermark under the page's text)
-//!   ocr         everything else
+//! Each piece of evidence multiplies the confidence by a factor between its floor and 1:
 //!
-//! Stencil masks (/ImageMask) are kept and flagged: they paint one colour through a 1-bit shape,
-//! which is how some generators draw scanned text and signatures, so dropping them would lose text.
+//!   offpage     nothing of it is on the visible page (on the pasteboard, cropped or clipped away)
+//!   narrow_px   its short side has few pixels: OCR needs about 10 pixels of x-height
+//!   narrow      its short side is only a few points: too small to read on the page too
+//!   long        it's many times longer than its short side, as a rule or a bar is
+//!   tiny        its area is a bullet or an icon's
+//!   low_dpi     its coarser side has few pixels per inch
+//!   text_layer  invisible words lie on it: an OCR layer, so it's already been read
+//!   under_text  visible words lie on it: a background or watermark under the page's text, or a
+//!               scan with a visible text layer (drawing order isn't tracked, so it's never ruled out)
+//!
+//! Each factor ramps between two limits, and the old hard limit (D68) sits in the middle of the
+//! ramp, where a region with nothing else against it lands just above CUT.
+//!
+//! Stencil masks (/ImageMask) are flagged, not scored down: they paint one colour through a 1-bit
+//! shape, which is how some generators draw scanned text and signatures.
 
 use crate::{Image, Word};
 
-/// A short side under 8 pixels can't hold a line of text: OCR needs about 10 pixels of x-height.
-pub const MIN_SIDE_PX: u32 = 8;
-/// Under 6 points (about a 4.5 pt font's full height) a line of text isn't readable on the page either.
-pub const MIN_SIDE_PT: f64 = 6.0;
-/// Longer than 60 times its short side is a rule; a single wide text line stays well under this
-/// (a 10 pt line across a 540 pt text column is 54 to 1).
-pub const MAX_ASPECT: f64 = 60.0;
-/// 150 square points is a 12 x 12.5 pt box: a bullet or an icon, not text worth a region.
-pub const MIN_AREA_PT: f64 = 150.0;
-/// Under 50 dpi body text is 5 or 6 pixels high and nothing reads it. The plan said about 70, but
-/// on govdocs1 003 Tesseract read axis labels on charts drawn at 59 to 68 dpi (5 of 6 text images
-/// under 70 were at 50 or more), so the floor is lower; it costs 6 photo-like images flagged there.
-pub const MIN_DPI: f64 = 50.0;
-/// Share of the image under invisible words that makes it an already-OCR'd image. Word boxes cover
-/// a fifth to a half of a text block, so a tenth is a real layer, not a stray word.
-pub const LAYER_COVER: f64 = 0.10;
-/// Invisible words centred on the image that make an OCR layer even when they cover little of it
-/// (a sparse scan, OCR'd at a coarse word size). Nothing but OCR draws invisible words over an image;
-/// five keeps a stray hidden word or two from counting.
-pub const LAYER_WORDS: usize = 5;
-/// Share of the image under visible words that makes it a background. A dense text page's words
-/// cover 15 to 40% of it; a caption or two over a picture covers far less.
-pub const TEXT_COVER: f64 = 0.10;
-/// Area alone misses backgrounds under sparse pages (the tune set has one at 5%), so a background is
-/// also an image with at least TEXT_WORDS visible words centred on it, when those are at least
-/// TEXT_SHARE of the page's visible words. A figure with digital labels on a page of body text, or a
-/// scan with a Bates number stamped on it, doesn't pass both.
-pub const TEXT_WORDS: usize = 20;
-pub const TEXT_SHARE: f64 = 0.5;
+/// Where a plain image starts: structure alone can't say it holds text, only that it could.
+pub const BASE: f64 = 0.8;
+/// A suggested cutoff: at or above it, OCR the region. Tools score against it; callers choose.
+pub const CUT: f64 = 0.4;
+
+/// An image outside the visible page: nobody sees its text, but it's still reported.
+pub const OFFPAGE: f64 = 0.02;
+/// Short side in pixels: 4 or fewer can't hold a line, 12 or more can (old limit 8).
+pub const SIDE_PX: (f64, f64, f64) = (4.0, 12.0, 0.05);
+/// Short side in points: 3 or less is a hairline, 9 or more fits a line of small text (old limit 6).
+pub const SIDE_PT: (f64, f64, f64) = (3.0, 9.0, 0.05);
+/// Length over short side: 80 or more is a rule, 40 or less isn't (old limit 60). A single wide text
+/// line stays under the middle: a 10 pt line across a 540 pt column is 54 to 1.
+pub const ASPECT: (f64, f64, f64) = (80.0, 40.0, 0.05);
+/// Square points: 50 or less is a glyph or two, 250 or more can hold a word (old limit 150).
+pub const AREA_PT: (f64, f64, f64) = (50.0, 250.0, 0.05);
+/// Dots per inch along the coarser side: under 30 nothing reads it, from 70 body text is fine
+/// (old limit 50; on govdocs1 003 Tesseract read chart axis labels drawn at 59 to 68 dpi).
+pub const DPI: (f64, f64, f64) = (30.0, 70.0, 0.05);
+/// OCR layer: invisible words cover 2% to 10% of the image, or 1 to 5 are centred on it; whichever
+/// is stronger. Nothing but OCR draws invisible words over an image. Already read, so the floor is low.
+pub const LAYER_COVER: (f64, f64) = (0.02, 0.10);
+pub const LAYER_WORDS: (f64, f64) = (1.0, 5.0);
+pub const LAYER_FLOOR: f64 = 0.05;
+/// Visible words: they cover 3% to 10% of the image (a dense page's words cover 15 to 40%, a caption
+/// far less), or 5 to 20 of them are centred on it while they're a quarter to a half of the page's
+/// visible words (a background under a sparse page). The floor stays high: 38 text images in 003 are
+/// scans with a visible text layer, and this evidence can't tell them from backgrounds.
+pub const TEXT_COVER: (f64, f64) = (0.03, 0.10);
+pub const TEXT_WORDS: (f64, f64) = (5.0, 20.0);
+pub const TEXT_SHARE: (f64, f64) = (0.25, 0.5);
+pub const TEXT_FLOOR: f64 = 0.25;
 /// A region whose short side is under 36 points (half an inch) is flagged "small".
 pub const SMALL_SIDE_PT: f64 = 36.0;
 
-/// One image's outcome: a region to OCR ("ocr"), one already read ("text_layer"), or a drop reason.
+/// One image as a region: its box, the evidence, its confidence and what lowered it.
 #[derive(Clone, Debug)]
 pub struct Region {
     pub x0: f64, pub y0: f64, pub x1: f64, pub y1: f64,
@@ -70,16 +77,20 @@ pub struct Region {
     pub layer_cover: f64,
     pub text_words: usize,
     pub layer_words: usize,
-    pub kind: &'static str,
+    /// That it holds text not yet read, 0 to 1.
+    pub confidence: f64,
+    /// Each piece of evidence against it and the factor it applied, in the order above.
+    pub reasons: Vec<(&'static str, f64)>,
     pub mask: bool,
     pub annot: bool,
     pub small: bool,
 }
 
-impl Region {
-    /// A region to OCR or already read; the rest are dropped.
-    pub fn kept(&self) -> bool { self.kind == "ocr" || self.kind == "text_layer" }
-}
+/// Where x falls between lo and hi, 0 to 1 (hi may be below lo for a falling ramp).
+fn ramp(x: f64, lo: f64, hi: f64) -> f64 { ((x - lo) / (hi - lo)).clamp(0.0, 1.0) }
+
+/// A factor from its floor (s = 0) to 1 (s = 1).
+fn factor(s: f64, floor: f64) -> f64 { floor + (1.0 - floor) * s }
 
 /// Share of the box (x0, y0, x1, y1) covered by the words, each word clipped to it. Words rarely
 /// overlap each other, so the sum stands in for the union; it's capped at 1.
@@ -102,7 +113,7 @@ fn centred<'a>(b: (f64, f64, f64, f64), words: impl Iterator<Item = &'a Word>) -
     }).count()
 }
 
-/// Every image on the page with its outcome, in the page's image order.
+/// Every image on the page as a region, in the page's image order.
 pub fn regions(images: &[Image], words: &[Word], width: f64, height: f64) -> Vec<Region> {
     let page = (width * height).max(1e-9);
     images.iter().enumerate().map(|(i, m)| {
@@ -116,25 +127,32 @@ pub fn regions(images: &[Image], words: &[Word], width: f64, height: f64) -> Vec
         let layer_words = centred(b, shown().filter(|w| w.invisible));
         let visible = shown().filter(|w| !w.invisible).count();
         let (short_pt, long_pt) = (w.min(h), w.max(h));
-        let kind = if w <= 0.0 || h <= 0.0 {
-            "offpage"
-        } else if m.px_w.min(m.px_h) < MIN_SIDE_PX || short_pt < MIN_SIDE_PT || long_pt > MAX_ASPECT * short_pt {
-            "thin"
-        } else if w * h < MIN_AREA_PT {
-            "tiny"
-        } else if dpi < MIN_DPI {
-            "low_dpi"
-        } else if layer_cover >= LAYER_COVER || layer_words >= LAYER_WORDS {
-            "text_layer"
-        } else if text_cover >= TEXT_COVER || (text_words >= TEXT_WORDS && text_words as f64 >= TEXT_SHARE * visible as f64) {
-            "under_text"
+
+        let mut reasons: Vec<(&'static str, f64)> = Vec::new();
+        if w <= 0.0 || h <= 0.0 {
+            // an empty box: the size rules have nothing to measure
+            reasons.push(("offpage", OFFPAGE));
         } else {
-            "ocr"
-        };
+            let mut add = |why, f: f64| if f < 1.0 { reasons.push((why, f)) };
+            let short_px = m.px_w.min(m.px_h) as f64;
+            add("narrow_px", factor(ramp(short_px, SIDE_PX.0, SIDE_PX.1), SIDE_PX.2));
+            add("narrow", factor(ramp(short_pt, SIDE_PT.0, SIDE_PT.1), SIDE_PT.2));
+            add("long", factor(ramp(long_pt / short_pt, ASPECT.0, ASPECT.1), ASPECT.2));
+            add("tiny", factor(ramp(w * h, AREA_PT.0, AREA_PT.1), AREA_PT.2));
+            add("low_dpi", factor(ramp(dpi, DPI.0, DPI.1), DPI.2));
+            let layer = ramp(layer_cover, LAYER_COVER.0, LAYER_COVER.1)
+                .max(ramp(layer_words as f64, LAYER_WORDS.0, LAYER_WORDS.1));
+            add("text_layer", factor(1.0 - layer, LAYER_FLOOR));
+            let share = if visible > 0 { text_words as f64 / visible as f64 } else { 0.0 };
+            let text = ramp(text_cover, TEXT_COVER.0, TEXT_COVER.1)
+                .max(ramp(text_words as f64, TEXT_WORDS.0, TEXT_WORDS.1) * ramp(share, TEXT_SHARE.0, TEXT_SHARE.1));
+            add("under_text", factor(1.0 - text, TEXT_FLOOR));
+        }
+        let confidence = reasons.iter().fold(BASE, |c, r| c * r.1);
         Region {
             x0: m.x0, y0: m.y0, x1: m.x1, y1: m.y1, image: i, obj: m.obj, dpi,
-            share: (w.max(0.0) * h.max(0.0)) / page, text_cover, layer_cover, text_words, layer_words, kind,
-            mask: m.mask, annot: m.annot, small: short_pt < SMALL_SIDE_PT,
+            share: (w.max(0.0) * h.max(0.0)) / page, text_cover, layer_cover, text_words, layer_words,
+            confidence, reasons, mask: m.mask, annot: m.annot, small: short_pt < SMALL_SIDE_PT,
         }
     }).collect()
 }
@@ -154,7 +172,9 @@ mod tests {
             invisible, annot: false, offpage: false, first: 0, count: 1 }
     }
 
-    fn kind(m: Image, words: &[Word]) -> &'static str { regions(&[m], words, 600.0, 800.0)[0].kind }
+    fn one(m: Image, words: &[Word]) -> Region { regions(&[m], words, 600.0, 800.0).remove(0) }
+
+    fn why(r: &Region) -> Vec<&'static str> { r.reasons.iter().map(|r| r.0).collect() }
 
     /// A grid of word boxes over (x0, y0)..(x1, y1): 40 x 10 pt words on 14 pt lines, 5 pt apart,
     /// covering about half of the area, as a text block does.
@@ -170,126 +190,158 @@ mod tests {
     }
 
     #[test]
-    fn plain_image_is_ocr() {
-        let r = &regions(&[img(100.0, 100.0, 400.0, 300.0, 200.0)], &[], 600.0, 800.0)[0];
-        assert_eq!(r.kind, "ocr");
+    fn plain_image_starts_at_base() {
+        let r = one(img(100.0, 100.0, 400.0, 300.0, 200.0), &[]);
+        assert!((r.confidence - BASE).abs() < 1e-9 && r.reasons.is_empty());
         assert!((r.share - 300.0 * 200.0 / (600.0 * 800.0)).abs() < 1e-9);
         assert!((r.dpi - 200.0).abs() < 1e-9 && r.obj == 7 && r.image == 0 && !r.small);
     }
 
     #[test]
-    fn thin_rules_are_dropped() {
-        // 3 pt high: under MIN_SIDE_PT
-        assert_eq!(kind(img(50.0, 50.0, 500.0, 53.0, 300.0), &[]), "thin");
+    fn every_image_is_a_region() {
+        let ms = [img(50.0, 50.0, 500.0, 51.0, 300.0), img(50.0, 50.0, 50.0, 300.0, 300.0), img(10.0, 10.0, 12.0, 12.0, 20.0)];
+        let rs = regions(&ms, &[], 600.0, 800.0);
+        assert_eq!(rs.len(), 3);
+        assert!(rs.iter().all(|r| r.confidence > 0.0 && r.confidence < CUT));
+    }
+
+    #[test]
+    fn thin_rules_score_low() {
+        // 3 pt high: at the floor of "narrow"
+        let r = one(img(50.0, 50.0, 500.0, 53.0, 300.0), &[]);
+        assert!(r.confidence < 0.1 && why(&r).contains(&"narrow"));
         // 10 pt high but only 5 pixels
-        assert_eq!(kind(img(50.0, 50.0, 500.0, 60.0, 36.0), &[]), "thin");
-        // 7 pt by 500 pt: over MAX_ASPECT
-        assert_eq!(kind(img(50.0, 50.0, 550.0, 57.0, 300.0), &[]), "thin");
-        // a single text line, 12 pt by 500 pt, stays
-        assert_eq!(kind(img(50.0, 50.0, 550.0, 62.0, 300.0), &[]), "ocr");
+        let r = one(img(50.0, 50.0, 500.0, 60.0, 36.0), &[]);
+        assert!(r.confidence < CUT && why(&r).contains(&"narrow_px"));
+        // 7 pt by 500 pt: long
+        let r = one(img(50.0, 50.0, 550.0, 57.0, 300.0), &[]);
+        assert!(r.confidence < CUT && why(&r).contains(&"long"));
+        // a single text line, 12 pt by 500 pt, stays over the cut
+        assert!(one(img(50.0, 50.0, 550.0, 62.0, 300.0), &[]).confidence >= CUT);
     }
 
     #[test]
-    fn tiny_images_are_dropped() {
-        assert_eq!(kind(img(50.0, 50.0, 60.0, 60.0, 300.0), &[]), "tiny");
-        assert_eq!(kind(img(50.0, 50.0, 70.0, 60.0, 300.0), &[]), "ocr");
+    fn tiny_images_score_low() {
+        let r = one(img(50.0, 50.0, 60.0, 60.0, 300.0), &[]);
+        assert!(r.confidence < CUT && why(&r).contains(&"tiny"));
+        assert!(one(img(50.0, 50.0, 70.0, 60.0, 300.0), &[]).confidence >= CUT);
     }
 
     #[test]
-    fn coarse_images_are_dropped() {
-        assert_eq!(kind(img(50.0, 50.0, 300.0, 300.0, 40.0), &[]), "low_dpi");
-        assert_eq!(kind(img(50.0, 50.0, 300.0, 300.0, 60.0), &[]), "ocr");
+    fn coarse_images_score_lower_gradually() {
+        let at = |dpi| one(img(50.0, 50.0, 300.0, 300.0, dpi), &[]).confidence;
+        assert!(at(25.0) < 0.1 && at(40.0) < CUT);
+        assert!(at(40.0) < at(50.0) && at(50.0) < at(60.0) && at(60.0) < at(70.0));
+        // the old hard limit sits just above the cut; chart labels at 59 to 68 dpi are well over it
+        assert!(at(50.0) >= CUT && at(59.0) > 0.5);
+        assert!((at(70.0) - BASE).abs() < 1e-9);
         // the coarser side decides
         let mut m = img(50.0, 50.0, 300.0, 300.0, 300.0);
-        m.dpi_y = 45.0;
-        assert_eq!(kind(m, &[]), "low_dpi");
+        m.dpi_y = 35.0;
+        assert!(one(m, &[]).confidence < CUT);
     }
 
     #[test]
     fn nothing_on_the_page_is_offpage() {
-        assert_eq!(kind(img(50.0, 50.0, 50.0, 300.0, 300.0), &[]), "offpage");
+        let r = one(img(50.0, 50.0, 50.0, 300.0, 300.0), &[]);
+        assert_eq!(why(&r), ["offpage"]);
+        assert!((r.confidence - BASE * OFFPAGE).abs() < 1e-9);
     }
 
     #[test]
-    fn background_under_text_is_dropped() {
+    fn background_under_text_scores_low_but_not_zero() {
         let words = block(0.0, 0.0, 600.0, 800.0, false);
-        assert_eq!(kind(img(0.0, 0.0, 600.0, 800.0, 150.0), &words), "under_text");
+        let r = one(img(0.0, 0.0, 600.0, 800.0, 150.0), &words);
+        assert_eq!(why(&r), ["under_text"]);
+        assert!((r.confidence - BASE * TEXT_FLOOR).abs() < 1e-9);
     }
 
     #[test]
-    fn background_under_a_sparse_page_is_dropped() {
+    fn background_under_a_sparse_page_scores_low() {
         // 30 words, all on the image, covering under 1% of it
         let words: Vec<Word> = (0..30).map(|i| word(50.0, 20.0 * i as f64, 60.0, 20.0 * i as f64 + 5.0, false)).collect();
-        let r = &regions(&[img(0.0, 0.0, 600.0, 800.0, 150.0)], &words, 600.0, 800.0)[0];
-        assert!(r.text_cover < TEXT_COVER && r.text_words == 30);
-        assert_eq!(r.kind, "under_text");
+        let r = one(img(0.0, 0.0, 600.0, 800.0, 150.0), &words);
+        assert!(r.text_cover < TEXT_COVER.0 && r.text_words == 30);
+        assert!(r.confidence < CUT && why(&r) == ["under_text"]);
     }
 
     #[test]
-    fn a_labelled_figure_on_a_text_page_stays() {
+    fn a_labelled_figure_on_a_text_page_stays_high() {
         // 25 labels on a figure, 100 words of body text elsewhere: the labels are a fifth of the page's words
         let mut words: Vec<Word> = (0..25).map(|i| word(110.0, 100.0 + 8.0 * i as f64, 118.0, 104.0 + 8.0 * i as f64, false)).collect();
         words.extend((0..100).map(|i| word(50.0, 400.0 + 4.0 * i as f64, 58.0, 403.0 + 4.0 * i as f64, false)));
-        assert_eq!(kind(img(100.0, 100.0, 400.0, 300.0, 200.0), &words), "ocr");
+        assert!(one(img(100.0, 100.0, 400.0, 300.0, 200.0), &words).confidence >= CUT);
     }
 
     #[test]
-    fn a_stamp_on_a_scan_keeps_it() {
+    fn a_stamp_on_a_scan_keeps_it_high() {
         let words: Vec<Word> = (0..3).map(|i| word(500.0 + 20.0 * i as f64, 780.0, 515.0 + 20.0 * i as f64, 790.0, false)).collect();
-        assert_eq!(kind(img(0.0, 0.0, 600.0, 800.0, 300.0), &words), "ocr");
+        assert!(one(img(0.0, 0.0, 600.0, 800.0, 300.0), &words).confidence >= CUT);
     }
 
     #[test]
     fn a_sparse_layer_is_text_layer() {
         let words: Vec<Word> = (0..6).map(|i| word(110.0, 110.0 + 20.0 * i as f64, 120.0, 115.0 + 20.0 * i as f64, true)).collect();
-        let r = &regions(&[img(100.0, 100.0, 400.0, 300.0, 300.0)], &words, 600.0, 800.0)[0];
-        assert!(r.layer_cover < LAYER_COVER && r.kind == "text_layer");
-        // four hidden words aren't a layer
-        assert_eq!(kind(img(100.0, 100.0, 400.0, 300.0, 300.0), &words[..4]), "ocr");
+        let r = one(img(100.0, 100.0, 400.0, 300.0, 300.0), &words);
+        assert!(r.layer_cover < LAYER_COVER.1 && why(&r) == ["text_layer"]);
+        assert!((r.confidence - BASE * LAYER_FLOOR).abs() < 1e-9);
+        // one hidden word isn't a layer
+        assert!(one(img(100.0, 100.0, 400.0, 300.0, 300.0), &words[..1]).confidence >= CUT);
     }
 
     #[test]
-    fn a_caption_over_a_picture_keeps_it() {
+    fn a_caption_over_a_picture_keeps_it_high() {
         // one line of words across the bottom of a 300 x 200 picture: 5% of it
         let words = block(100.0, 290.0, 400.0, 300.0, false);
-        let r = &regions(&[img(100.0, 100.0, 400.0, 300.0, 200.0)], &words, 600.0, 800.0)[0];
-        assert!(r.text_cover > 0.0 && r.text_cover < TEXT_COVER);
-        assert_eq!(r.kind, "ocr");
+        let r = one(img(100.0, 100.0, 400.0, 300.0, 200.0), &words);
+        assert!(r.text_cover > 0.0 && r.text_cover < TEXT_COVER.1);
+        assert!(r.confidence >= CUT);
     }
 
     #[test]
     fn invisible_layer_is_text_layer() {
         let words = block(100.0, 100.0, 400.0, 300.0, true);
-        assert_eq!(kind(img(100.0, 100.0, 400.0, 300.0, 300.0), &words), "text_layer");
+        assert!(why(&one(img(100.0, 100.0, 400.0, 300.0, 300.0), &words)) == ["text_layer"]);
         // an OCR'd full scan: invisible words everywhere and no visible ones
         let words = block(0.0, 0.0, 600.0, 800.0, true);
-        assert_eq!(kind(img(0.0, 0.0, 600.0, 800.0, 300.0), &words), "text_layer");
+        let r = one(img(0.0, 0.0, 600.0, 800.0, 300.0), &words);
+        assert!(why(&r) == ["text_layer"] && r.confidence < CUT);
     }
 
     #[test]
     fn text_elsewhere_on_the_page_doesnt_count() {
         let words = block(0.0, 400.0, 600.0, 800.0, false);
-        assert_eq!(kind(img(100.0, 100.0, 400.0, 300.0, 200.0), &words), "ocr");
+        let r = one(img(100.0, 100.0, 400.0, 300.0, 200.0), &words);
+        assert!(r.reasons.is_empty() && (r.confidence - BASE).abs() < 1e-9);
     }
 
     #[test]
     fn offpage_words_dont_count() {
         let mut words = block(100.0, 100.0, 400.0, 300.0, false);
         for w in &mut words { w.offpage = true; }
-        assert_eq!(kind(img(100.0, 100.0, 400.0, 300.0, 200.0), &words), "ocr");
+        assert!(one(img(100.0, 100.0, 400.0, 300.0, 200.0), &words).reasons.is_empty());
     }
 
     #[test]
-    fn masks_are_kept_and_flagged() {
+    fn reasons_multiply() {
+        // coarse and small at once scores below either alone
+        let both = one(img(50.0, 50.0, 64.0, 62.0, 45.0), &[]);
+        assert!(both.reasons.len() >= 2);
+        let product: f64 = both.reasons.iter().map(|r| r.1).product();
+        assert!((both.confidence - BASE * product).abs() < 1e-9);
+    }
+
+    #[test]
+    fn masks_are_flagged_not_scored_down() {
         let mut m = img(100.0, 100.0, 400.0, 300.0, 300.0);
         m.mask = true;
-        let r = &regions(&[m], &[], 600.0, 800.0)[0];
-        assert!(r.kind == "ocr" && r.mask);
+        let r = one(m, &[]);
+        assert!(r.mask && (r.confidence - BASE).abs() < 1e-9);
     }
 
     #[test]
     fn small_flag() {
-        let r = &regions(&[img(100.0, 100.0, 400.0, 130.0, 300.0)], &[], 600.0, 800.0)[0];
-        assert!(r.kind == "ocr" && r.small);
+        let r = one(img(100.0, 100.0, 400.0, 130.0, 300.0), &[]);
+        assert!(r.confidence >= CUT && r.small);
     }
 }
