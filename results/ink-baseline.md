@@ -59,6 +59,8 @@ Phantom paths: 16 white paths on the constructed set and 190 on 003 have no ink,
 
 After clips (chunk 4b), every glyph, image and path is cut to the clip it was drawn with, and one clipped away entirely is flagged hidden. Coverage didn't move (755 and 288 pages fully covered), so the cuts remove no ink the renderer draws; 3 pages on 003 now miss a few image pixels at a clip's edge, under 0.001% of ink. The worst text misses left (003441) are Symbol-font glyphs the parser can't measure, not clipping.
 
+After the Symbol and ZapfDingbats tables (chunk 4c), the standard Symbol and ZapfDingbats fonts decode by their own built-in encodings, with widths by glyph. On 003, 787 of 967 pages are fully covered (from 755), 966 at least 99.9%, the worst is 99.85%, and phantom words fall from 767 to 554 and then 516. A first version took widths by raw code and broke a Symbol font whose /Differences moved the bullet (003207, down to 99.65%); widths now follow the glyph. The constructed set is unchanged at 288 of 300.
+
 Speed on all 278 files of 003, one run each on a quiet machine: median 7.9 ms a file before paths, 8.7 ms after.
 
 ## Reproduce
