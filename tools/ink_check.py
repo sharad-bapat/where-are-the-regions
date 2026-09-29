@@ -114,8 +114,9 @@ def check(page, pmap):
             continue
         box = (r["x0"], r["y0"], r["x1"], r["y1"])
         fill(covered, box, scale, MARGIN_PT)
+        # its own box grown by half a pixel: a mark thinner than a pixel can put its ink in the next row
         own = np.zeros(ink.shape, bool)
-        fill(own, box, scale)
+        fill(own, box, scale, 0.5 / scale)
         if own.any() and not (ink & own).any():
             phantoms[what] += 1
     total = int(ink.sum())
