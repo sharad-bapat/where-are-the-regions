@@ -36,6 +36,63 @@ pub struct Vector {
     pub annot: bool,
     pub offpage: bool,
     pub hidden: bool,
+    /// Any path in it was cut by its clip.
+    pub clipped: bool,
+}
+
+/// One segment of a path, in default user space after the transform.
+#[derive(Clone, Copy, Debug)]
+pub enum Seg {
+    Line((f64, f64), (f64, f64)),
+    /// A curve's extent (x0, y0, x1, y1) and its two ends.
+    Curve([f64; 4], (f64, f64), (f64, f64)),
+}
+
+impl Seg {
+    fn ends(&self) -> ((f64, f64), (f64, f64)) {
+        match *self { Seg::Line(p, q) => (p, q), Seg::Curve(_, p, q) => (p, q) }
+    }
+}
+
+/// The box a stroke paints, from its subpaths (segments, and whether each is closed), half the line
+/// width and the line cap (0 butt, 1 round, 2 square). A line segment grows by half the width across
+/// itself only; a join adds half the width around its corner (a miter's point past that is left
+/// out); an open end grows along the line only with round or square caps. A curve grows by half the
+/// width all round.
+pub fn stroke_box(subs: &[(Vec<Seg>, bool)], hw: f64, cap: i64) -> Option<[f64; 4]> {
+    let mut b: Option<[f64; 4]> = None;
+    let mut add = |x: f64, y: f64| match &mut b {
+        Some(v) => { v[0] = v[0].min(x); v[1] = v[1].min(y); v[2] = v[2].max(x); v[3] = v[3].max(y); }
+        None => b = Some([x, y, x, y]),
+    };
+    for (segs, closed) in subs {
+        for s in segs {
+            match *s {
+                Seg::Line(p, q) => {
+                    let (dx, dy) = (q.0 - p.0, q.1 - p.1);
+                    let len = (dx * dx + dy * dy).sqrt();
+                    if len < 1e-9 {
+                        add(p.0 - hw, p.1 - hw); add(p.0 + hw, p.1 + hw);
+                        continue;
+                    }
+                    let (nx, ny) = (-dy / len * hw, dx / len * hw);
+                    for (x, y) in [p, q] { add(x + nx, y + ny); add(x - nx, y - ny); }
+                }
+                Seg::Curve(c, _, _) => { add(c[0] - hw, c[1] - hw); add(c[2] + hw, c[3] + hw); }
+            }
+        }
+        // joins between segments, and the closing join
+        let n = segs.len();
+        let joins = if *closed { n } else { n.saturating_sub(1) };
+        for k in 0..joins {
+            let (_, v) = segs[k].ends();
+            add(v.0 - hw, v.1 - hw); add(v.0 + hw, v.1 + hw);
+        }
+        if !*closed && cap != 0 && n > 0 {
+            for v in [segs[0].ends().0, segs[n - 1].ends().1] { add(v.0 - hw, v.1 - hw); add(v.0 + hw, v.1 + hw); }
+        }
+    }
+    b
 }
 
 /// Paths closer than this, in points, are one cluster.
@@ -115,12 +172,12 @@ pub fn cluster(paths: &[Path], width: f64, height: f64) -> Vec<Vector> {
                 v.paths.push(i);
                 v.order = v.order.min(p.order);
                 v.fill |= p.fill; v.stroke |= p.stroke; v.shading |= p.shading;
-                v.white &= p.white; v.annot &= p.annot;
+                v.white &= p.white; v.annot &= p.annot; v.clipped |= p.clipped;
             }
             None => {
                 slot.insert(root, out.len());
                 out.push(Vector { x0: p.x0, y0: p.y0, x1: p.x1, y1: p.y1, paths: vec![i], order: p.order,
-                    fill: p.fill, stroke: p.stroke, shading: p.shading, white: p.white, annot: p.annot, offpage: p.offpage, hidden: p.hidden });
+                    fill: p.fill, stroke: p.stroke, shading: p.shading, white: p.white, annot: p.annot, offpage: p.offpage, hidden: p.hidden, clipped: p.clipped });
             }
         }
     }
@@ -159,6 +216,18 @@ mod tests {
         let ps = [path(0.0, 0.0, 600.0, 800.0, 0), path(50.0, 100.0, 500.0, 101.0, 1), path(50.0, 101.5, 500.0, 102.5, 2)];
         let vs = cluster(&ps, 600.0, 800.0);
         assert!(vs.len() == 2 && vs[0].paths == [0] && vs[1].paths == [1, 2]);
+    }
+
+    #[test]
+    fn a_butt_line_grows_across_itself_only() {
+        let line = vec![(vec![Seg::Line((100.0, 400.0), (300.0, 400.0))], false)];
+        assert_eq!(stroke_box(&line, 1.0, 0), Some([100.0, 399.0, 300.0, 401.0]));
+        // round or square caps reach past the ends
+        assert_eq!(stroke_box(&line, 1.0, 2), Some([99.0, 399.0, 301.0, 401.0]));
+        // a closed rectangle's corners are joins
+        let (a, b, c, d) = ((10.0, 10.0), (50.0, 10.0), (50.0, 30.0), (10.0, 30.0));
+        let rect = vec![(vec![Seg::Line(a, b), Seg::Line(b, c), Seg::Line(c, d), Seg::Line(d, a)], true)];
+        assert_eq!(stroke_box(&rect, 0.5, 0), Some([9.5, 9.5, 50.5, 30.5]));
     }
 
     #[test]

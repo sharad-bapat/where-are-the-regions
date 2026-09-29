@@ -128,6 +128,17 @@ fn std_widths(base: &str) -> Option<&'static [(char, u16)]> {
     find(&s).or_else(|| find(&s.replacen('-', ",", 1)))
 }
 
+/// Ascender and descender of the standard fonts, from Adobe's core-14 AFM files (each family's
+/// styles share them): Courier 629/-157, Helvetica 718/-207, Times 683/-217. Common Windows names
+/// map to the same families. Symbol and ZapfDingbats have none (their AFMs give no Ascender).
+fn std_vertical(base: &str) -> Option<(f64, f64)> {
+    let bare = base.rsplit('+').next().unwrap_or(base);
+    if bare.starts_with("Courier") { Some((629.0, -157.0)) }
+    else if bare.starts_with("Helvetica") || bare.starts_with("Arial") { Some((718.0, -207.0)) }
+    else if bare.starts_with("Times") { Some((683.0, -217.0)) }
+    else { None }
+}
+
 fn load_vertical(pdf: &Pdf, fd: Option<&[u8]>, m: &mut Metrics) {
     let Some(fd) = fd else { return };
     let a = number(pdf, get(fd, b"/Ascent")).unwrap_or(0.0);
@@ -182,6 +193,14 @@ mod tests {
     fn descent_is_below_the_baseline_whatever_its_sign() {
         assert_eq!(vertical_from(1068.0, 270.0, &[-1011.0, -329.0, 2260.0, 1079.0]), Some((1068.0, -270.0)));
         assert_eq!(vertical_from(905.0, -212.0, &[]), Some((905.0, -212.0)));
+    }
+
+    #[test]
+    fn standard_fonts_have_their_afm_ascent_and_descent() {
+        assert_eq!(super::std_vertical("Helvetica-Bold"), Some((718.0, -207.0)));
+        assert_eq!(super::std_vertical("ABCDEF+Courier"), Some((629.0, -157.0)));
+        assert_eq!(super::std_vertical("TimesNewRomanPSMT"), Some((683.0, -217.0)));
+        assert_eq!(super::std_vertical("Symbol"), None);
     }
 
     #[test]
@@ -308,6 +327,10 @@ impl Font {
                 if m.std.is_some() || m.by_code.is_some() { m.source = "standard font"; }
             }
             load_vertical(pdf, fd.as_deref(), m);
+            // no descriptor: a standard font's own metrics, not the default
+            if fd.is_none() {
+                if let Some((a, d)) = std_vertical(&self.base) { m.ascent = a; m.descent = d; }
+            }
         }
     }
 

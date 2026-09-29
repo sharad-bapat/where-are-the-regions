@@ -18,14 +18,19 @@ pub struct Line {
     pub invisible: bool, pub annot: bool, pub offpage: bool, pub hidden: bool,
 }
 
+/// A gap between words wider than this many times the font size splits a line: two columns on one
+/// baseline are two regions. Justified text rarely spaces words by more than about one em.
+pub const COLUMN_GAP: f64 = 1.5;
+
 /// Words to lines: consecutive words the word grouping put on the same line, split where the way
-/// they're drawn changes.
+/// they're drawn changes or where a gap wider than COLUMN_GAP ems separates them.
 pub fn lines(words: &[Word]) -> Vec<Line> {
     let mut out: Vec<Line> = Vec::new();
     for (i, w) in words.iter().enumerate() {
         let joins = out.last().is_some_and(|l| {
             let p = &words[l.first + l.count - 1];
-            p.line == w.line && p.invisible == w.invisible && p.annot == w.annot
+            let gap = (w.x0 - p.x1).max(p.x0 - w.x1).max(w.y0 - p.y1).max(p.y0 - w.y1);
+            p.line == w.line && p.invisible == w.invisible && p.annot == w.annot && gap <= COLUMN_GAP * p.size.max(w.size)
         });
         if joins {
             let l = out.last_mut().unwrap();
@@ -90,7 +95,7 @@ pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector], annots: &[Annot
         if v.shading { flags.push("shading"); }
         if v.white { flags.push("white"); }
         if v.annot { flags.push("annot"); }
-        if v.offpage { flags.push("offpage"); } else if v.hidden { flags.push("hidden"); }
+        if v.offpage { flags.push("offpage"); } else if v.hidden { flags.push("hidden"); } else if v.clipped { flags.push("clipped"); }
         out.push(Entry { x0: v.x0, y0: v.y0, x1: v.x1, y1: v.y1, what: "vector", index: i, order: v.order, flags });
     }
     for (i, a) in annots.iter().enumerate() {
@@ -121,6 +126,16 @@ mod tests {
         assert_eq!(ls.len(), 2);
         assert!(ls[0].text == "one two" && ls[0].count == 2 && (ls[0].x1 - 80.0).abs() < 1e-9 && ls[0].glyphs == 6);
         assert_eq!(ls[1].first, 2);
+    }
+
+    #[test]
+    fn two_columns_on_one_baseline_are_two_lines() {
+        // 10 pt words: a 20 pt gap is two ems, a column gutter
+        let ws = [word("left", 10.0, 0, 0, false), word("right", 60.0, 0, 3, false)];
+        assert_eq!(lines(&ws).len(), 2);
+        // a 10 pt gap (one em, wide justified spacing) stays one line
+        let ws = [word("left", 10.0, 0, 0, false), word("right", 50.0, 0, 3, false)];
+        assert_eq!(lines(&ws).len(), 1);
     }
 
     #[test]
