@@ -104,6 +104,8 @@ def check(page, pmap):
     regions += [("word", w, w.get("invisible") or w.get("offpage") or w.get("hidden")) for w in pmap["words"]]
     # white paths paint nothing on a white page: in the map, but never phantoms
     regions += [("white_path" if p.get("white") else "path", p, p.get("offpage") or p.get("hidden")) for p in pmap.get("paths", [])]
+    # annotations that draw; a link or a field with no appearance paints nothing, so it's flagged
+    regions += [("annot", a, not a.get("appearance") or a.get("hidden") or a.get("offpage")) for a in pmap.get("annots", [])]
     for what, r, flagged in regions:
         if flagged:
             continue

@@ -678,7 +678,7 @@ pub struct Word {
     pub order: u32,
 }
 
-pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region>, pub lines: Vec<Line>, pub paths: Vec<Path>, pub vectors: Vec<Vector>, pub map: Vec<Entry> }
+pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region>, pub lines: Vec<Line>, pub paths: Vec<Path>, pub vectors: Vec<Vector>, pub annots: Vec<Annot>, pub map: Vec<Entry> }
 
 // regions: images
 
@@ -710,6 +710,26 @@ pub struct Image {
     /// Drawing order (the first part's, for merged strips).
     pub order: u32,
 }
+
+/// One annotation on the page: its /Rect on the page, what it is, and whether it draws anything.
+/// Every annotation is kept, hidden ones and ones with no appearance included, flagged.
+#[derive(Clone, Debug)]
+pub struct Annot {
+    pub x0: f64, pub y0: f64, pub x1: f64, pub y1: f64,
+    /// /Subtype, such as "Widget", "Link", "Text", "Stamp", "Popup" (empty when missing).
+    pub subtype: String,
+    /// For a form field (a widget), its /FT, from the widget or its parent field: "Tx", "Btn", "Ch", "Sig".
+    pub field: String,
+    /// /F has Hidden (2) or NoView (32) set: a viewer doesn't show it.
+    pub hidden: bool,
+    /// It has a normal appearance stream that was drawn (its marks are in the map, flagged annot).
+    pub appearance: bool,
+    pub offpage: bool,
+    pub order: u32,
+}
+
+#[derive(Clone)]
+struct RawAnnot { rect: [f64; 4], subtype: String, field: String, hidden: bool, appearance: bool, order: u32 }
 
 /// An image as drawn, before placement: its matrix (unit square to user space) and its pixels.
 #[derive(Clone)]
@@ -865,7 +885,7 @@ fn matrix_of(pdf: &Pdf, d: &[u8]) -> M {
     }
 }
 
-struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn>, paths: Vec<RawPath>, seq: u32 }
+struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn>, paths: Vec<RawPath>, annots: Vec<RawAnnot>, seq: u32 }
 
 impl<'p, 'a> Run<'p, 'a> {
     /// Show a string: one glyph per character code, each placed by the text rendering matrix
@@ -1121,6 +1141,28 @@ impl<'p, 'a> Run<'p, 'a> {
         for r in list {
             let Some(a) = pdf.dict(r) else { continue };
             let flags = match get(&a, b"/F").map(|v| pdf.direct(v)) { Some(Val::Num(f)) => f as u32, _ => 0 };
+            // map: every annotation is a region, whether or not it draws
+            let rect = nums_in(&match get(&a, b"/Rect").map(|v| pdf.direct(v)) { Some(Val::Array(b)) => b, _ => Vec::new() });
+            if rect.len() == 4 {
+                let name = |v: Option<Val>| match v { Some(Val::Name(s)) => String::from_utf8_lossy(&s).into_owned(), _ => String::new() };
+                let subtype = name(get(&a, b"/Subtype"));
+                // /FT is inherited from the parent field (ISO 32000-1 12.7.3.1); a few levels are enough
+                let mut field = name(get(&a, b"/FT"));
+                let mut at = a.clone();
+                for _ in 0..8 {
+                    if !field.is_empty() { break; }
+                    let Some(Val::Ref(pr)) = get(&at, b"/Parent") else { break };
+                    let Some(pd) = pdf.dict(pr) else { break };
+                    field = name(get(&pd, b"/FT"));
+                    at = pd;
+                }
+                self.annots.push(RawAnnot {
+                    rect: [rect[0].min(rect[2]), rect[1].min(rect[3]), rect[0].max(rect[2]), rect[1].max(rect[3])],
+                    subtype, field, hidden: flags & (2 | 32) != 0, appearance: false, order: self.seq,
+                });
+                self.seq += 1;
+            }
+            let k = self.annots.len();
             if flags & (2 | 32) != 0 { continue; }
             if matches!(get(&a, b"/Subtype"), Some(Val::Name(s)) if s == b"Popup") { continue; }
             let Some(ap) = get(&a, b"/AP").and_then(|v| pdf.resolve(&v)) else { continue };
@@ -1154,6 +1196,7 @@ impl<'p, 'a> Run<'p, 'a> {
                 self.annot = true;
                 self.run(&body, res.as_deref(), g, 1);
                 self.annot = false;
+                if rect.len() == 4 && k > 0 { self.annots[k - 1].appearance = true; }
             }
         }
     }
@@ -1232,6 +1275,16 @@ fn cut(b: [f64; 4], clip: [f64; 4]) -> Option<([f64; 4], bool)> {
     if (v[2] - v[0]) * (v[3] - v[1]) <= 0.0 && (b[2] - b[0]) * (b[3] - b[1]) > 0.0 { return None; }
     let cutoff = v[0] > b[0] + 1e-6 || v[1] > b[1] + 1e-6 || v[2] < b[2] - 1e-6 || v[3] < b[3] - 1e-6;
     Some((v, cutoff))
+}
+
+fn place_annots(raw: &[RawAnnot], pb: &PageBox) -> Vec<Annot> {
+    let (w, h) = pb.size();
+    raw.iter().map(|r| {
+        let b = page_rect(pb, r.rect);
+        let (b, offpage) = match cut(b, [0.0, 0.0, w, h]) { Some((v, _)) => (v, false), None => (b, true) };
+        Annot { x0: b[0], y0: b[1], x1: b[2], y1: b[3], subtype: r.subtype.clone(), field: r.field.clone(),
+            hidden: r.hidden, appearance: r.appearance, offpage, order: r.order }
+    }).collect()
 }
 
 fn place(glyphs: &mut [Glyph], pb: &PageBox) {
@@ -1426,7 +1479,7 @@ pub fn extract(data: &[u8]) -> Doc {
     if find(data, b"/Encrypt", 0).is_some() && pdf.crypt.is_none() {
         return Doc { status: "encrypted", pages: Vec::new(), fonts: Vec::new() };
     }
-    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new(), paths: Vec::new(), seq: 0 };
+    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new(), paths: Vec::new(), annots: Vec::new(), seq: 0 };
     let mut pages = Vec::new();
     for (k, p) in pdf.pages().iter().enumerate() {
         let (content, resources) = page_content(&pdf, *p);
@@ -1444,8 +1497,9 @@ pub fn extract(data: &[u8]) -> Doc {
         let lines = map::lines(&ws);
         let paths = place_paths(&std::mem::take(&mut r.paths), &pb);
         let vectors = vector::cluster(&paths, width, height);
-        let map = map::map(&lines, &images, &vectors);
-        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, paths, vectors, map });
+        let annots = place_annots(&std::mem::take(&mut r.annots), &pb);
+        let map = map::map(&lines, &images, &vectors, &annots);
+        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, paths, vectors, annots, map });
     }
     let fonts = r.fonts.list.iter().map(|f| FontInfo {
         base: f.base.clone(), kind: f.kind, encoding: f.encoding.clone(), to_unicode: f.has_to_unicode(), embedded: f.embedded, widths: f.metrics.source,
@@ -1531,6 +1585,11 @@ impl Doc {
                 r3(g.text_cover), r3(g.layer_cover), g.text_words, g.layer_words,
                 if g.mask { ",\"mask\":true" } else { "" }, if g.annot { ",\"annot\":true" } else { "" }, if g.small { ",\"small\":true" } else { "" });
             let regions: Vec<String> = p.regions.iter().map(region).collect();
+            let annots: Vec<String> = p.annots.iter().map(|a| format!(
+                "{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{},\"subtype\":{},\"field\":{}{}{}{}}}",
+                r1(a.x0), r1(a.y0), r1(a.x1), r1(a.y1), a.order, json_str(&a.subtype), json_str(&a.field),
+                if a.appearance { ",\"appearance\":true" } else { "" }, if a.hidden { ",\"hidden\":true" } else { "" },
+                if a.offpage { ",\"offpage\":true" } else { "" })).collect();
             let paths: Vec<String> = p.paths.iter().map(|q| {
                 let mut f = String::new();
                 for (on, k) in [(q.fill, "fill"), (q.stroke, "stroke"), (q.shading, "shading"), (q.white, "white"),
@@ -1545,6 +1604,9 @@ impl Doc {
                 let src = if e.what == "text" {
                     let l = &p.lines[e.index];
                     format!("\"words\":[{},{}],\"t\":{}", l.first, l.count, json_str(&l.text))
+                } else if e.what == "annot" {
+                    let a = &p.annots[e.index];
+                    format!("\"annot\":{},\"subtype\":{},\"field\":{}", e.index, json_str(&a.subtype), json_str(&a.field))
                 } else if e.what == "vector" {
                     format!("\"vector\":{},\"paths\":{}", e.index, p.vectors[e.index].paths.len())
                 } else {
@@ -1553,8 +1615,8 @@ impl Doc {
                 format!("{{\"id\":{},\"what\":\"{}\",\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{},{},\"flags\":[{}]}}",
                     id, e.what, r1(e.x0), r1(e.y0), r1(e.x1), r1(e.y1), e.order, src, fl.join(","))
             }).collect();
-            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"paths\":[{}],\"map\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
-                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), paths.join(","), map.join(","), regions.join(","), words.join(","), gl)
+            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"paths\":[{}],\"annots\":[{}],\"map\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
+                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), paths.join(","), annots.join(","), map.join(","), regions.join(","), words.join(","), gl)
         }).collect();
         format!("{{\"status\":\"{}\",\"pages\":[{}],\"fonts\":[{}]}}", self.status, pages.join(","), self.fonts_json())
     }
@@ -1674,6 +1736,34 @@ mod tests {
         // no font, so the glyph is a point at its origin; the clip is far from it
         let e = extract(&pdf("q 0 0 10 10 re W n BT 100 100 Td (a) Tj ET Q BT 5 5 Td (b) Tj ET", "")).pages.remove(0);
         assert!(e.glyphs[0].hidden && !e.glyphs[1].hidden && e.words[0].hidden && !e.words[1].hidden);
+    }
+
+    fn annot_pdf() -> Vec<u8> {
+        // a link with no appearance, and a hidden text field whose /FT is on its parent
+        let s = "%PDF-1.7\n1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n\
+            2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n\
+            3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 600 800] /Annots [4 0 R 5 0 R] /Contents 7 0 R >> endobj\n\
+            4 0 obj << /Type /Annot /Subtype /Link /Rect [100 700 200 720] >> endobj\n\
+            5 0 obj << /Type /Annot /Subtype /Widget /F 2 /Parent 6 0 R /Rect [150 70 50 50] >> endobj\n\
+            6 0 obj << /FT /Tx /T (name) /Kids [5 0 R] >> endobj\n\
+            7 0 obj << /Length 0 >> stream\n\nendstream endobj\ntrailer << /Root 1 0 R >>\n%%EOF\n";
+        s.as_bytes().to_vec()
+    }
+
+    #[test]
+    fn every_annotation_is_a_region() {
+        let p = extract(&annot_pdf()).pages.remove(0);
+        assert_eq!(p.annots.len(), 2);
+        let (l, w) = (&p.annots[0], &p.annots[1]);
+        assert!(l.subtype == "Link" && !l.appearance && !l.hidden && near_box(l.x0, l.y0, l.x1, l.y1, [100.0, 80.0, 200.0, 100.0]));
+        assert!(w.subtype == "Widget" && w.field == "Tx" && w.hidden && near_box(w.x0, w.y0, w.x1, w.y1, [50.0, 730.0, 150.0, 750.0]));
+        let kinds: Vec<&str> = p.map.iter().map(|m| m.what).collect();
+        assert_eq!(kinds, ["annot", "annot"]);
+        assert!(p.map[1].flags.contains(&"hidden") && p.map[0].flags.contains(&"no_appearance"));
+    }
+
+    fn near_box(x0: f64, y0: f64, x1: f64, y1: f64, b: [f64; 4]) -> bool {
+        (x0 - b[0]).abs() < 1e-6 && (y0 - b[1]).abs() < 1e-6 && (x1 - b[2]).abs() < 1e-6 && (y1 - b[3]).abs() < 1e-6
     }
 
     #[test]

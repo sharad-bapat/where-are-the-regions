@@ -1,9 +1,9 @@
 //! The page map (D70, plans/page-map.md): every region the page draws, in drawing order, each with
 //! its box, what drew it and flags. This is the exact layer: nothing here is a guess about what a
 //! region looks like. Text is mapped by line (words are in `Page::words`), vector paths by cluster
-//! (paths are in `Page::paths`); annotations as their own regions aren't mapped yet.
+//! (paths are in `Page::paths`), and every annotation by its /Rect.
 
-use crate::{Image, Vector, Word};
+use crate::{Annot, Image, Vector, Word};
 
 /// Words on one line, drawn the same way (all visible or all invisible, all page or all annotation).
 #[derive(Clone, Debug)]
@@ -52,9 +52,9 @@ pub fn lines(words: &[Word]) -> Vec<Line> {
 #[derive(Clone, Debug)]
 pub struct Entry {
     pub x0: f64, pub y0: f64, pub x1: f64, pub y1: f64,
-    /// "text" (a line), "image" or "vector" (touching paths).
+    /// "text" (a line), "image", "vector" (touching paths) or "annot".
     pub what: &'static str,
-    /// Index into `Page::lines`, `Page::images` or `Page::vectors`.
+    /// Index into `Page::lines`, `Page::images`, `Page::vectors` or `Page::annots`.
     pub index: usize,
     pub order: u32,
     pub flags: Vec<&'static str>,
@@ -62,8 +62,8 @@ pub struct Entry {
 
 /// Lines, images and vector clusters as one list, in drawing order (a later region is drawn over
 /// an earlier one; a cluster's order is its first path's).
-pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector]) -> Vec<Entry> {
-    let mut out: Vec<Entry> = Vec::with_capacity(lines.len() + images.len() + vectors.len());
+pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector], annots: &[Annot]) -> Vec<Entry> {
+    let mut out: Vec<Entry> = Vec::with_capacity(lines.len() + images.len() + vectors.len() + annots.len());
     for (i, l) in lines.iter().enumerate() {
         let mut flags = Vec::new();
         if l.invisible { flags.push("invisible"); }
@@ -92,6 +92,14 @@ pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector]) -> Vec<Entry> {
         if v.annot { flags.push("annot"); }
         if v.offpage { flags.push("offpage"); } else if v.hidden { flags.push("hidden"); }
         out.push(Entry { x0: v.x0, y0: v.y0, x1: v.x1, y1: v.y1, what: "vector", index: i, order: v.order, flags });
+    }
+    for (i, a) in annots.iter().enumerate() {
+        let mut flags = Vec::new();
+        if a.hidden { flags.push("hidden"); }
+        // a link, a popup or a field with no appearance draws nothing: its rect is still a region
+        if !a.appearance { flags.push("no_appearance"); }
+        if a.offpage { flags.push("offpage"); }
+        out.push(Entry { x0: a.x0, y0: a.y0, x1: a.x1, y1: a.y1, what: "annot", index: i, order: a.order, flags });
     }
     out.sort_by_key(|e| e.order);
     out
@@ -127,7 +135,7 @@ mod tests {
         let ls = lines(&[word("over", 10.0, 0, 5, false)]);
         let im = Image { x0: 0.0, y0: 0.0, x1: 600.0, y1: 800.0, px_w: 2500, px_h: 3300, dpi_x: 300.0, dpi_y: 300.0,
             mask: false, inline: false, annot: false, obj: 4, parts: 1, clipped: false, upright: true, offpage: false, hidden: false, order: 2 };
-        let m = map(&ls, &[im], &[]);
+        let m = map(&ls, &[im], &[], &[]);
         assert!(m.len() == 2 && m[0].what == "image" && m[1].what == "text");
     }
 
@@ -135,7 +143,7 @@ mod tests {
     fn mostly_undecodable_lines_are_flagged() {
         let mut w = word("\u{fffd}\u{fffd}a", 10.0, 0, 0, false);
         w.unmapped = 2;
-        let m = map(&lines(&[w]), &[], &[]);
+        let m = map(&lines(&[w]), &[], &[], &[]);
         assert_eq!(m[0].flags, ["undecodable"]);
     }
 }
