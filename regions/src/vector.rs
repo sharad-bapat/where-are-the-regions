@@ -21,6 +21,11 @@ pub struct Path {
     pub offpage: bool,
     /// Its clip hides all of it; the box is its part on the page.
     pub hidden: bool,
+    /// All its points are one point and its stroke is a round-capped dot (ISO 32000-1, 8.5.3.2).
+    pub dot: bool,
+    /// All its points are one point, it isn't filled (a fill paints the pixel under it) and it isn't a
+    /// dot, so it paints nothing.
+    pub empty: bool,
 }
 
 /// Touching paths, as one region.
@@ -38,6 +43,8 @@ pub struct Vector {
     pub hidden: bool,
     /// Any path in it was cut by its clip.
     pub clipped: bool,
+    /// Every path in it paints nothing.
+    pub empty: bool,
 }
 
 /// One segment of a path, in default user space after the transform.
@@ -54,18 +61,29 @@ impl Seg {
     }
 }
 
-/// The box a stroke paints, from its subpaths (segments, and whether each is closed), half the line
-/// width and the line cap (0 butt, 1 round, 2 square). A line segment grows by half the width across
+/// The box a stroke paints, from its subpaths (segments, whether each is closed, and its start),
+/// half the line width and the line cap (0 butt, 1 round, 2 square). A subpath whose points are all
+/// one point paints a dot only with round caps, and only when it's closed or has a segment; a lone
+/// moveto paints nothing (ISO 32000-1, 8.5.3.2). A line segment grows by half the width across
 /// itself only; a join adds half the width around its corner (a miter's point past that is left
 /// out); an open end grows along the line only with round or square caps. A curve grows by half the
 /// width all round.
-pub fn stroke_box(subs: &[(Vec<Seg>, bool)], hw: f64, cap: i64) -> Option<[f64; 4]> {
+pub fn stroke_box(subs: &[(Vec<Seg>, bool, (f64, f64))], hw: f64, cap: i64) -> Option<[f64; 4]> {
     let mut b: Option<[f64; 4]> = None;
     let mut add = |x: f64, y: f64| match &mut b {
         Some(v) => { v[0] = v[0].min(x); v[1] = v[1].min(y); v[2] = v[2].max(x); v[3] = v[3].max(y); }
         None => b = Some([x, y, x, y]),
     };
-    for (segs, closed) in subs {
+    let at = |v: (f64, f64), p: (f64, f64)| (v.0 - p.0).abs() < 1e-9 && (v.1 - p.1).abs() < 1e-9;
+    for (segs, closed, p0) in subs {
+        let point = segs.iter().all(|s| match *s {
+            Seg::Line(p, q) => at(p, *p0) && at(q, *p0),
+            Seg::Curve(c, _, _) => at((c[0], c[1]), *p0) && at((c[2], c[3]), *p0),
+        });
+        if point {
+            if cap == 1 && (*closed || !segs.is_empty()) { add(p0.0 - hw, p0.1 - hw); add(p0.0 + hw, p0.1 + hw); }
+            continue;
+        }
         for s in segs {
             match *s {
                 Seg::Line(p, q) => {
@@ -172,12 +190,12 @@ pub fn cluster(paths: &[Path], width: f64, height: f64) -> Vec<Vector> {
                 v.paths.push(i);
                 v.order = v.order.min(p.order);
                 v.fill |= p.fill; v.stroke |= p.stroke; v.shading |= p.shading;
-                v.white &= p.white; v.annot &= p.annot; v.clipped |= p.clipped;
+                v.white &= p.white; v.empty &= p.empty; v.annot &= p.annot; v.clipped |= p.clipped;
             }
             None => {
                 slot.insert(root, out.len());
                 out.push(Vector { x0: p.x0, y0: p.y0, x1: p.x1, y1: p.y1, paths: vec![i], order: p.order,
-                    fill: p.fill, stroke: p.stroke, shading: p.shading, white: p.white, annot: p.annot, offpage: p.offpage, hidden: p.hidden, clipped: p.clipped });
+                    fill: p.fill, stroke: p.stroke, shading: p.shading, white: p.white, annot: p.annot, offpage: p.offpage, hidden: p.hidden, clipped: p.clipped, empty: p.empty });
             }
         }
     }
@@ -189,7 +207,7 @@ mod tests {
     use super::*;
 
     fn path(x0: f64, y0: f64, x1: f64, y1: f64, order: u32) -> Path {
-        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false, hidden: false }
+        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false, hidden: false, dot: false, empty: false }
     }
 
     #[test]
@@ -220,14 +238,26 @@ mod tests {
 
     #[test]
     fn a_butt_line_grows_across_itself_only() {
-        let line = vec![(vec![Seg::Line((100.0, 400.0), (300.0, 400.0))], false)];
+        let line = vec![(vec![Seg::Line((100.0, 400.0), (300.0, 400.0))], false, (100.0, 400.0))];
         assert_eq!(stroke_box(&line, 1.0, 0), Some([100.0, 399.0, 300.0, 401.0]));
         // round or square caps reach past the ends
         assert_eq!(stroke_box(&line, 1.0, 2), Some([99.0, 399.0, 301.0, 401.0]));
         // a closed rectangle's corners are joins
         let (a, b, c, d) = ((10.0, 10.0), (50.0, 10.0), (50.0, 30.0), (10.0, 30.0));
-        let rect = vec![(vec![Seg::Line(a, b), Seg::Line(b, c), Seg::Line(c, d), Seg::Line(d, a)], true)];
+        let rect = vec![(vec![Seg::Line(a, b), Seg::Line(b, c), Seg::Line(c, d), Seg::Line(d, a)], true, a)];
         assert_eq!(stroke_box(&rect, 0.5, 0), Some([9.5, 9.5, 50.5, 30.5]));
+    }
+
+    #[test]
+    fn a_point_is_a_dot_only_with_round_caps() {
+        let p = (20.0, 30.0);
+        let closed = vec![(vec![], true, p)];
+        assert_eq!(stroke_box(&closed, 0.5, 1), Some([19.5, 29.5, 20.5, 30.5]));
+        assert_eq!(stroke_box(&closed, 0.5, 0), None);
+        assert_eq!(stroke_box(&closed, 0.5, 2), None);
+        // a line to the same point is one too; a lone moveto isn't
+        assert_eq!(stroke_box(&vec![(vec![Seg::Line(p, p)], false, p)], 0.5, 1), Some([19.5, 29.5, 20.5, 30.5]));
+        assert_eq!(stroke_box(&vec![(vec![], false, p)], 0.5, 1), None);
     }
 
     #[test]

@@ -102,8 +102,11 @@ def check(page, pmap):
     phantoms = Counter()
     regions = [("image", r, "offpage" in [w for w, _ in r["reasons"]]) for r in pmap["regions"]]
     regions += [("word", w, w.get("invisible") or w.get("offpage") or w.get("hidden")) for w in pmap["words"]]
-    # white paths paint nothing on a white page: in the map, but never phantoms
-    regions += [("white_path" if p.get("white") else "path", p, p.get("offpage") or p.get("hidden")) for p in pmap.get("paths", [])]
+    # white paths paint nothing on a white page: in the map, but never phantoms. A dot (a point
+    # stroked with round caps) is counted apart: MuPDF 1.24 doesn't paint "m h" dots (findings.md).
+    # An empty path (a point with no dot) paints nothing, so it's flagged.
+    kind = lambda p: "white_path" if p.get("white") else "dot_path" if p.get("dot") else "path"
+    regions += [(kind(p), p, p.get("offpage") or p.get("hidden") or p.get("empty")) for p in pmap.get("paths", [])]
     # annotations that draw; a link or a field with no appearance paints nothing, so it's flagged
     regions += [("annot", a, not a.get("appearance") or a.get("hidden") or a.get("offpage")) for a in pmap.get("annots", [])]
     for what, r, flagged in regions:
@@ -181,7 +184,7 @@ def main():
     for r in ok:
         ph.update(r["phantoms"])
     print(f"phantoms (box with no ink): images {ph['image']}, words {ph['word']}, paths {ph['path']}"
-          f" (white paths with no ink, expected: {ph['white_path']})")
+          f" (white paths with no ink, expected: {ph['white_path']}; dots MuPDF doesn't paint: {ph['dot_path']})")
     print(f"worst {worst}:")
     for r in sorted(ok, key=lambda r: r["coverage"])[:worst]:
         print(f"  {r['file']} p{r['page']} {r['group']} {100 * r['coverage']:.2f}% missed {r['missed']} phantoms {r['phantoms']}")

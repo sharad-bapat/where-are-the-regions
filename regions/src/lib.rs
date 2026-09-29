@@ -790,7 +790,7 @@ impl Default for GState {
 /// A painted path or shading as drawn: its box in default user space (None: the whole clip, or
 /// the page when there's no clip), before placement on the page.
 #[derive(Clone)]
-struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool }
+struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool, dot: bool, empty: bool }
 
 fn grow(b: &mut Option<[f64; 4]>, x: f64, y: f64) {
     match b {
@@ -936,7 +936,7 @@ impl<'p, 'a> Run<'p, 'a> {
         let mut pbox: Option<[f64; 4]> = None;
         let (mut cur, mut start) = ((0.0, 0.0), (0.0, 0.0));
         // the same path as segments on the page's user space, by subpath, for the stroke's box
-        let mut subs: Vec<(Vec<vector::Seg>, bool)> = Vec::new();
+        let mut subs: Vec<(Vec<vector::Seg>, bool, (f64, f64))> = Vec::new();
         let mut clip_next = false;
         let s = content;
         let mut i = 0;
@@ -963,13 +963,13 @@ impl<'p, 'a> Run<'p, 'a> {
                 b"m" if n >= 2 => {
                     cur = (num(&ops[n - 2]), num(&ops[n - 1])); start = cur;
                     let (x, y) = apply(&g.ctm, cur.0, cur.1); grow(&mut pbox, x, y);
-                    subs.push((Vec::new(), false));
+                    subs.push((Vec::new(), false, (x, y)));
                 }
                 b"l" if n >= 2 => {
                     let p = apply(&g.ctm, cur.0, cur.1);
                     cur = (num(&ops[n - 2]), num(&ops[n - 1]));
                     let (x, y) = apply(&g.ctm, cur.0, cur.1); grow(&mut pbox, x, y);
-                    if subs.is_empty() { subs.push((Vec::new(), false)); }
+                    if subs.is_empty() { subs.push((Vec::new(), false, p)); }
                     subs.last_mut().unwrap().0.push(vector::Seg::Line(p, (x, y)));
                 }
                 b"c" | b"v" | b"y" if n >= 4 => {
@@ -984,7 +984,7 @@ impl<'p, 'a> Run<'p, 'a> {
                     let (x0, x1) = vector::cubic_range(q[0].0, q[1].0, q[2].0, q[3].0);
                     let (y0, y1) = vector::cubic_range(q[0].1, q[1].1, q[2].1, q[3].1);
                     grow(&mut pbox, x0, y0); grow(&mut pbox, x1, y1);
-                    if subs.is_empty() { subs.push((Vec::new(), false)); }
+                    if subs.is_empty() { subs.push((Vec::new(), false, q[0])); }
                     subs.last_mut().unwrap().0.push(vector::Seg::Curve([x0, y0, x1, y1], q[0], q[3]));
                     cur = p3;
                 }
@@ -1001,7 +1001,7 @@ impl<'p, 'a> Run<'p, 'a> {
                     let (x, y, w, h) = (num(&ops[n - 4]), num(&ops[n - 3]), num(&ops[n - 2]), num(&ops[n - 1]));
                     let q: Vec<(f64, f64)> = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)].iter().map(|p| apply(&g.ctm, p.0, p.1)).collect();
                     for &(a, b) in &q { grow(&mut pbox, a, b); }
-                    subs.push(((0..4).map(|k| vector::Seg::Line(q[k], q[(k + 1) % 4])).collect(), true));
+                    subs.push(((0..4).map(|k| vector::Seg::Line(q[k], q[(k + 1) % 4])).collect(), true, q[0]));
                     cur = (x, y); start = cur;
                 }
                 b"W" | b"W*" => clip_next = true,
@@ -1011,16 +1011,20 @@ impl<'p, 'a> Run<'p, 'a> {
                     if let Some(b) = pbox {
                         if stroke || fill {
                             let mut v = if fill { Some(b) } else { None };
+                            // all its points one point: a round-capped stroke paints a dot, a fill one device pixel, else nothing
+                            let point = b[2] - b[0] < 1e-9 && b[3] - b[1] < 1e-9;
+                            let mut dot = false;
                             if stroke {
                                 // half the line width on the page; a zero width still paints a hairline
                                 let hw = (g.lw.max(0.0) * (g.ctm[0] * g.ctm[3] - g.ctm[1] * g.ctm[2]).abs().sqrt()).max(0.5) / 2.0;
                                 if let Some(sb) = vector::stroke_box(&subs, hw, g.cap) {
+                                    dot = point;
                                     v = Some(match v { Some(f) => [f[0].min(sb[0]), f[1].min(sb[1]), f[2].max(sb[2]), f[3].max(sb[3])], None => sb });
                                 }
                             }
                             let v = v.unwrap_or(b);
                             let white = (!fill || g.fill_white) && (!stroke || g.stroke_white);
-                            self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot });
+                            self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot, dot, empty: point && !dot && !fill });
                             self.seq += 1;
                         }
                         if clip_next { g.clip = Some(intersect(g.clip, b)); }
@@ -1030,7 +1034,7 @@ impl<'p, 'a> Run<'p, 'a> {
                     clip_next = false;
                 }
                 b"sh" => {
-                    self.paths.push(RawPath { b: None, clip: g.clip, order: self.seq, fill: true, stroke: false, shading: true, white: false, annot: self.annot });
+                    self.paths.push(RawPath { b: None, clip: g.clip, order: self.seq, fill: true, stroke: false, shading: true, white: false, annot: self.annot, dot: false, empty: false });
                     self.seq += 1;
                 }
                 b"w" if n >= 1 => g.lw = num(&ops[n - 1]),
@@ -1276,7 +1280,7 @@ fn place_paths(raw: &[RawPath], pb: &PageBox) -> Vec<Path> {
             },
         };
         Path { x0: b[0], y0: b[1], x1: b[2], y1: b[3], order: r.order, fill: r.fill, stroke: r.stroke, shading: r.shading,
-            white: r.white, annot: r.annot, clipped, offpage, hidden }
+            white: r.white, annot: r.annot, clipped, offpage, hidden, dot: r.dot, empty: r.empty }
     }).collect()
 }
 
@@ -1614,7 +1618,8 @@ impl Doc {
             let paths: Vec<String> = p.paths.iter().map(|q| {
                 let mut f = String::new();
                 for (on, k) in [(q.fill, "fill"), (q.stroke, "stroke"), (q.shading, "shading"), (q.white, "white"),
-                                (q.clipped, "clipped"), (q.offpage, "offpage"), (q.hidden, "hidden"), (q.annot, "annot")] {
+                                (q.clipped, "clipped"), (q.offpage, "offpage"), (q.hidden, "hidden"), (q.annot, "annot"),
+                                (q.dot, "dot"), (q.empty, "empty")] {
                     if on { f.push_str(&format!(",\"{}\":true", k)); }
                 }
                 format!("{{\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{}{}}}", r1(q.x0), r1(q.y0), r1(q.x1), r1(q.y1), q.order, f)
@@ -1734,6 +1739,17 @@ mod tests {
     fn white_paint_is_flagged() {
         let v = paths("1 g 50 50 100 100 re f 1 1 1 RG 50 50 100 100 re S 1 g 0 G 50 50 100 100 re B 0 0 0 0 k 50 50 10 10 re f");
         assert!(v[0].white && v[1].white && !v[2].white && v[3].white);
+    }
+
+    #[test]
+    fn a_point_is_a_round_dot_or_nothing() {
+        // 003828: thousands of "x y m h B*" with round caps; a butt-capped stroke paints nothing, a fill
+        // the pixel under the point (ISO 32000-1, 8.5.3.2 and 8.5.3.3)
+        let v = paths("4 w 1 J 100 100 m h B* 0 J 100 100 m h S 1 J 100 100 m 100 100 l S 0 J 100 100 m h B*");
+        assert!(v[0].dot && !v[0].empty && (v[0].x0 - 98.0).abs() < 1e-6 && (v[0].x1 - 102.0).abs() < 1e-6 && (v[0].y1 - v[0].y0 - 4.0).abs() < 1e-6);
+        assert!(!v[1].dot && v[1].empty);
+        assert!(v[2].dot && !v[2].empty);
+        assert!(!v[3].dot && !v[3].empty);
     }
 
     #[test]

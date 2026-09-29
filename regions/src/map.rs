@@ -94,6 +94,7 @@ pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector], annots: &[Annot
         if v.stroke { flags.push("stroke"); }
         if v.shading { flags.push("shading"); }
         if v.white { flags.push("white"); }
+        if v.empty { flags.push("empty"); }
         if v.annot { flags.push("annot"); }
         if v.offpage { flags.push("offpage"); } else if v.hidden { flags.push("hidden"); } else if v.clipped { flags.push("clipped"); }
         out.push(Entry { x0: v.x0, y0: v.y0, x1: v.x1, y1: v.y1, what: "vector", index: i, order: v.order, flags });
