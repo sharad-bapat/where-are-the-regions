@@ -613,6 +613,50 @@ impl<'a> Pdf<'a> {
     }
 }
 
+/// What a colour space's components mean for telling white: 1 gray (DeviceGray, CalGray, ICCBased
+/// with /N 1), 3 RGB (DeviceRGB, CalRGB, ICCBased /N 3), 4 CMYK (DeviceCMYK, ICCBased /N 4), 0 any
+/// other (Lab, Separation, DeviceN, Indexed, Pattern), which is never taken as white.
+fn cs_kind(pdf: &Pdf, resources: Option<&[u8]>, name: &[u8]) -> u8 {
+    match name {
+        b"DeviceGray" | b"G" => return 1,
+        b"DeviceRGB" | b"RGB" => return 3,
+        b"DeviceCMYK" | b"CMYK" => return 4,
+        _ => {}
+    }
+    let spaces = match resources.and_then(|r| get(r, b"/ColorSpace")).and_then(|v| pdf.resolve(&v)) { Some(d) => d, None => return 0 };
+    let mut key = vec![b'/'];
+    key.extend_from_slice(name);
+    let arr = match get(&spaces, &key).map(|v| pdf.direct(v)) {
+        Some(Val::Name(n)) if matches!(n.as_slice(), b"DeviceGray" | b"DeviceRGB" | b"DeviceCMYK") => return cs_kind(pdf, None, &n),
+        Some(Val::Array(a)) => a,
+        _ => return 0,
+    };
+    // [/Family ...] (the bytes inside the brackets): the first element names the family, the second is its parameters
+    let first = skip_ws(&arr, 0);
+    match parse_val(&arr, first) {
+        Val::Name(f) if f == b"CalGray" => 1,
+        Val::Name(f) if f == b"CalRGB" => 3,
+        Val::Name(f) if f == b"ICCBased" => {
+            let icc = match pdf.resolve(&parse_val(&arr, skip_val(&arr, first))) { Some(d) => d, None => return 0 };
+            match get(&icc, b"/N").map(|v| pdf.direct(v)) {
+                Some(Val::Num(n)) if n == 1.0 => 1,
+                Some(Val::Num(n)) if n == 3.0 => 3,
+                Some(Val::Num(n)) if n == 4.0 => 4,
+                _ => 0,
+            }
+        }
+        _ => 0,
+    }
+}
+
+/// Whether sc or scn operands are white in a colour space of this kind (see cs_kind).
+fn is_white(kind: u8, ops: &[Tok]) -> bool {
+    let k = kind as usize;
+    if k == 0 || ops.len() < k || !ops[ops.len() - k..].iter().all(|t| matches!(t, Tok::Num(_))) { return false; }
+    let v = &ops[ops.len() - k..];
+    if kind == 4 { v.iter().all(|t| num(t) <= 0.0) } else { v.iter().all(|t| num(t) >= 1.0) }
+}
+
 // ---------- the content-stream interpreter ----------
 
 type M = [f64; 6];
@@ -775,15 +819,15 @@ pub struct Doc {
 #[derive(Clone)]
 struct GState {
     ctm: M, font: Option<u32>, size: f64, tc: f64, tw: f64, tz: f64, tl: f64, ts: f64, tr: i64,
-    // paths: line width, the clip's box in default user space (None: the whole page), and whether
-    // the fill and stroke colours are white (only DeviceGray, DeviceRGB and DeviceCMYK are read)
-    lw: f64, cap: i64, clip: Option<[f64; 4]>, fill_white: bool, stroke_white: bool,
+    // paths: line width, the clip's box in default user space (None: the whole page), whether the
+    // fill and stroke colours are white, and the colour spaces' kinds for sc and scn (see cs_kind)
+    lw: f64, cap: i64, clip: Option<[f64; 4]>, fill_white: bool, stroke_white: bool, fill_cs: u8, stroke_cs: u8,
 }
 
 impl Default for GState {
     fn default() -> Self {
         GState { ctm: IDENT, font: None, size: 0.0, tc: 0.0, tw: 0.0, tz: 100.0, tl: 0.0, ts: 0.0, tr: 0,
-            lw: 1.0, cap: 0, clip: None, fill_white: false, stroke_white: false }
+            lw: 1.0, cap: 0, clip: None, fill_white: false, stroke_white: false, fill_cs: 1, stroke_cs: 1 }
     }
 }
 
@@ -1039,14 +1083,20 @@ impl<'p, 'a> Run<'p, 'a> {
                 }
                 b"w" if n >= 1 => g.lw = num(&ops[n - 1]),
                 b"J" if n >= 1 => g.cap = num(&ops[n - 1]) as i64,
-                b"g" if n >= 1 => g.fill_white = num(&ops[n - 1]) >= 1.0,
-                b"G" if n >= 1 => g.stroke_white = num(&ops[n - 1]) >= 1.0,
-                b"rg" if n >= 3 => g.fill_white = ops[n - 3..].iter().all(|t| num(t) >= 1.0),
-                b"RG" if n >= 3 => g.stroke_white = ops[n - 3..].iter().all(|t| num(t) >= 1.0),
-                b"k" if n >= 4 => g.fill_white = ops[n - 4..].iter().all(|t| num(t) <= 0.0),
-                b"K" if n >= 4 => g.stroke_white = ops[n - 4..].iter().all(|t| num(t) <= 0.0),
-                b"cs" | b"sc" | b"scn" => g.fill_white = false,
-                b"CS" | b"SC" | b"SCN" => g.stroke_white = false,
+                b"g" if n >= 1 => { g.fill_cs = 1; g.fill_white = is_white(1, &ops); }
+                b"G" if n >= 1 => { g.stroke_cs = 1; g.stroke_white = is_white(1, &ops); }
+                b"rg" if n >= 3 => { g.fill_cs = 3; g.fill_white = is_white(3, &ops); }
+                b"RG" if n >= 3 => { g.stroke_cs = 3; g.stroke_white = is_white(3, &ops); }
+                b"k" if n >= 4 => { g.fill_cs = 4; g.fill_white = is_white(4, &ops); }
+                b"K" if n >= 4 => { g.stroke_cs = 4; g.stroke_white = is_white(4, &ops); }
+                // a new colour space starts at its initial colour, which is never white here (black for
+                // gray, RGB and CMYK); sc and scn are read by the space's kind (ICCBased, CalRGB and so on)
+                b"cs" | b"CS" => {
+                    let kind = match ops.last() { Some(Tok::Name(nm)) => cs_kind(pdf, resources, nm), _ => 0 };
+                    if op == b"cs" { g.fill_cs = kind; g.fill_white = false; } else { g.stroke_cs = kind; g.stroke_white = false; }
+                }
+                b"sc" | b"scn" => g.fill_white = is_white(g.fill_cs, &ops),
+                b"SC" | b"SCN" => g.stroke_white = is_white(g.stroke_cs, &ops),
                 b"Tf" if n >= 2 => {
                     if let Tok::Name(nm) = &ops[n - 2] { g.font = self.fonts.lookup(pdf, resources, nm); }
                     g.size = num(&ops[n - 1]);
@@ -1681,6 +1731,8 @@ mod tests {
         s += &format!("2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj\n3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 600 800] {extra_page} /Resources << /XObject << /A 4 0 R /M 5 0 R >> >> /Contents 6 0 R >> endobj\n");
         s += img; s += &"\0".repeat(32); s += "\nendstream endobj\n";
         s += mask; s += &"\0".repeat(32); s += "\nendstream endobj\n";
+        // an ICC profile's dictionary, for colour-space tests
+        s += "7 0 obj << /N 3 >> endobj\n";
         s += &format!("6 0 obj << /Length {} >> stream\n{}\nendstream endobj\ntrailer << /Root 1 0 R >>\n%%EOF\n", content.len(), content);
         s.into_bytes()
     }
@@ -1688,6 +1740,11 @@ mod tests {
     fn images(content: &str) -> Vec<Image> { extract(&pdf(content, "")).pages.remove(0).images }
 
     fn paths(content: &str) -> Vec<Path> { extract(&pdf(content, "")).pages.remove(0).paths }
+
+    /// The page's own /Resources come first in its dictionary, so they're the ones read.
+    fn paths_with(content: &str, resources: &str) -> Vec<Path> {
+        extract(&pdf(content, &format!("/Resources << {} >>", resources))).pages.remove(0).paths
+    }
 
     fn near(p: &Path, b: [f64; 4]) -> bool {
         (p.x0 - b[0]).abs() < 1e-6 && (p.y0 - b[1]).abs() < 1e-6 && (p.x1 - b[2]).abs() < 1e-6 && (p.y1 - b[3]).abs() < 1e-6
@@ -1739,6 +1796,14 @@ mod tests {
     fn white_paint_is_flagged() {
         let v = paths("1 g 50 50 100 100 re f 1 1 1 RG 50 50 100 100 re S 1 g 0 G 50 50 100 100 re B 0 0 0 0 k 50 50 10 10 re f");
         assert!(v[0].white && v[1].white && !v[2].white && v[3].white);
+    }
+
+    #[test]
+    fn white_in_named_colour_spaces_is_flagged() {
+        // 003196, 003420: "/Cs6 cs 1 1 1 scn" with Cs6 an ICCBased /N 3 or a CalRGB space
+        let res = "/ColorSpace << /Cs6 [/ICCBased 7 0 R] /Cs1 [/CalRGB << /WhitePoint [0.9505 1 1.089] >>] /Sep [/Separation /Spot /DeviceCMYK 7 0 R] >>";
+        let v = paths_with("/Cs6 cs 1 1 1 scn 0 0 10 10 re f /Cs1 cs 1 1 1 sc 0 0 10 10 re f /Cs6 cs 0.9 1 1 scn 0 0 10 10 re f /Sep cs 0 scn 0 0 10 10 re f", res);
+        assert!(v[0].white && v[1].white && !v[2].white && !v[3].white);
     }
 
     #[test]
