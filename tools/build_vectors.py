@@ -157,7 +157,8 @@ def draw(c, kind, rng, fonts):
                     p.moveTo(x1, y1); p.lineTo(x1 - 6, y1 + 3); p.lineTo(x1 - 6, y1 - 3); p.close()
                     c.drawPath(p, stroke=0, fill=1)
                 prev = (bx, by)
-            return (x - 2, y - 2, dw + bw, dh + bh), "diagram"
+            # arrows between rows run leftward and their heads reach a few points past the boxes
+            return (x - 10, y - 10, dw + bw + 20, dh + bh + 20), "diagram"
         d = Drawing(dw, dh)
         if style == "bar":
             ch_ = VerticalBarChart()

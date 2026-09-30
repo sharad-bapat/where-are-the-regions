@@ -26,6 +26,8 @@ pub mod map;
 pub mod pixels;
 /// The kind of each image (text image, photo, graphic, blank) from its pixels.
 pub mod kind;
+/// The kind of each vector cluster (rule, border, table grid, fill, chart or diagram, outlined text).
+pub mod vkind;
 pub use map::{Entry, Line};
 pub mod vector;
 pub use vector::{Path, Vector};

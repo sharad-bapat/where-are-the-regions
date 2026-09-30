@@ -143,6 +143,18 @@ pub fn features(w: u32, h: u32, grey: &[u8]) -> Features {
 /// right whose bottom is within a pixel or so (a sixth of the height), whose height is half to twice
 /// its own, and which starts within about one height of its right edge. Chains of 3 or more count.
 fn word_runs(glyphs: &[[usize; 4]]) -> (u32, u32) {
+    let len = run_lengths(glyphs);
+    let marks = len.iter().filter(|&&l| l >= 3).count() as u32;
+    // a run of length l gives l marks of length l, so the marks of each length over it count runs
+    let mut by_len: std::collections::BTreeMap<u32, u32> = std::collections::BTreeMap::new();
+    for &l in len.iter().filter(|&&l| l >= 3) { *by_len.entry(l).or_default() += 1; }
+    let runs = by_len.iter().map(|(l, c)| c / l).sum();
+    (runs, marks)
+}
+
+/// For each mark, the length of the word-like run it belongs to (1 when it's in none), by the
+/// linking rule of word_runs.
+fn run_lengths(glyphs: &[[usize; 4]]) -> Vec<u32> {
     let n = glyphs.len();
     let mut by_bottom: std::collections::BTreeMap<usize, Vec<usize>> = std::collections::BTreeMap::new();
     for (i, b) in glyphs.iter().enumerate() { by_bottom.entry(b[3]).or_default().push(i); }
@@ -169,14 +181,15 @@ fn word_runs(glyphs: &[[usize; 4]]) -> (u32, u32) {
             if !has_prev[j] { next[i] = j; has_prev[j] = true; }
         }
     }
-    let (mut runs, mut marks) = (0u32, 0u32);
+    let mut out = vec![1u32; n];
     for start in 0..n {
         if has_prev[start] { continue; }
-        let (mut len, mut i) = (1u32, start);
-        while next[i] != usize::MAX && len <= n as u32 { i = next[i]; len += 1; }
-        if len >= 3 { runs += 1; marks += len; }
+        let mut members = vec![start];
+        let mut i = start;
+        while next[i] != usize::MAX && members.len() <= n { i = next[i]; members.push(i); }
+        for &m in &members { out[m] = members.len() as u32; }
     }
-    (runs, marks)
+    out
 }
 
 /// The kind of an image from its thumbnail.
