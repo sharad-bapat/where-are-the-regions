@@ -102,16 +102,40 @@ Rerun after chunk 7a-4 (results/ink-constructed-tune.jsonl): 288 of 300 pages at
 | photo | 20 | 18 | 99.99% |
 | logo, rule | 40 | 37 | 100.00% |
 
-## 7. Not yet measured for this report
+## 7. Speed
 
-- Speed per page, needed before a speed target is set (D76). The last timing was per file (median 8.7 ms over the 278 files of 003, after chunk 4a), on a quiet machine.
+regions-cli over all 278 files of 003 (7,633 pages, not only the 967 labelled ones), three passes, extract() timed on bytes already in memory, each file's median over the passes; commit 3bb0d0e, release build, nothing else heavy running (30 September 2026). The passes agree within 6% (19.8 to 21.0 s in all).
+
+| Measure | Median | 90th percentile | Worst |
+|---|---|---|---|
+| Per page (a file's time over its pages) | 1.10 ms | 3.34 ms | 1,585 ms (003190, one page) |
+| Per file | 14.2 ms | 111 ms | 4,327 ms (003071, 12 pages) |
+
+All pages together: 20.5 s for 7,633 pages, 2.68 ms a page.
+
+The median file took 8.7 ms after chunk 4a (28 September), which looked like a 60% slowdown. It isn't one. Every code commit from just before 4a to 7a-4 was built and timed on the same files in the same session, two interleaved passes each:
+
+| Commit | Chunk | Median file | All 278 files |
+|---|---|---|---|
+| before 18d9aef | 3c | 10.48 ms | 17.26 s |
+| 18d9aef | 4a paths | 10.92 ms | 16.11 s |
+| 76342c0 | 4b clips | 10.70 ms | 17.01 s |
+| 0483a3a | 4c Symbol tables | 11.21 ms | 17.42 s |
+| 46343b2 | 5 annotations | 11.35 ms | 17.40 s |
+| b392ac7 | 6c heights, strokes | 12.34 ms | 17.75 s |
+| e054887 | 6d dots | 11.74 ms | 17.69 s |
+| 2ee8420 | 7a-1 colour spaces | 11.24 ms | 16.99 s |
+| 5d805e2 | 7a-3 ZapfDingbats names | 12.86 ms | 18.91 s |
+| 88b4ad5 | 7a-4 white text | 11.28 ms | 16.65 s |
+
+The code before 4a now takes 10.5 ms a median file, against 7.9 ms on 28 September, so the machine was simply faster that day. Across the chunks the median moves by about 8% and the total by no more than the noise between runs (a single three-pass run of the same code earlier on 30 September gave 14.2 ms a median file). Timings are only comparable within one session. The slowest pages (003190 p0 at 1.6 s, 003071 at 360 ms a page, 003433 at 180 ms a page) haven't been looked at.
 
 ## 8. Targets for the held-out runs (D76)
 
 - Marks heldout: at least 99.5% of marks within 1 pt, no extra regions, every miss named.
 - Constructed heldout: every page at least 99.9% ink coverage; phantoms reported by kind and each explained.
 - govdocs1 004: every page at least 99.5%, at least 99% of pages at 99.9% or more, pages at 100% reported but not a target, every page under 99.9% explained.
-- Speed: set after the per-page timing above.
+- Speed (proposed, not yet decided): keep the plan's median under 5 ms a page, which tune meets at 1.10 ms, and report the slow tail.
 
 On tune, 003 meets the 004 target (all 967 pages at 99.9% or more), the constructed set meets its coverage target (all 300 at 99.99% or more, no unflagged phantoms) and the marks set meets its target (99.8%).
 
