@@ -43,4 +43,17 @@ Counted apart: 318 labelled images the map doesn't place as their own region (10
 
 ## After the held-out run
 
-Nothing has been changed since. The strip issue is the clear next fix: judge a merged image by all its strips (the thumbnails of each part placed side by side), not by the largest part. It would go in as its own chunk, with a new freeze, reported apart from these numbers (D81).
+One change after the numbers above were recorded (8g, D89): a merged image (strips) is now judged from all its pieces pasted onto one canvas (regions/src/pixels.rs merged_thumbnail; the map keeps every piece, lib.rs Image.pieces, not in the JSON), and its truth on govdocs1 is whole too: it holds text when any of its strips is labelled text or unsure, and it counts once (tools/score_kinds.py). regions-cli's output is unchanged (tools/diff_exact.py). Relocked, then measured the same way (results/kinds-heldout-post.txt):
+
+| | Held-out run | After 8g |
+| --- | --- | --- |
+| Constructed heldout: text images found | 147 of 150 (98.0%) | 149 of 150 (99.3%) |
+| Constructed heldout: has-text on text images | 147 of 150 | 150 of 150 |
+| Constructed heldout: others not called text | 88 of 88 | 88 of 88 |
+| govdocs1 004: images not placed | 318 | 4 |
+| govdocs1 004 has-text: images with text held | 313 of 401 (78.1%) | 323 of 413 (78.2%) |
+| govdocs1 004 has-text: images without not held | 657 of 719 (91.4%) | 652 of 716 (91.1%) |
+| Kind at 0.9 or more, right | 91.4% | 91.7% |
+| Has-text at 0.9 or more, right | 93.2% | 92.7% |
+
+(After 8g the govdocs1 counts are merged images, not strips.) On 003 (tune) the same change places every labelled image: has-text holds 304 of 383 images with text and leaves 771 of 845 without; calibration at 0.9 or more is 93.2% for the kind and 92.2% for has-text, on both tune sets together.
