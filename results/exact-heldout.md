@@ -72,7 +72,7 @@ Phantoms on 004, sorted one file at a time:
 ## 4. Found on held-out, fixed after this report
 
 1. A TrueType font named Symbol or ZapfDingbats with no program and no /Encoding is read with that font's built-in encoding (004661 p26; D82). Done after this report: 004661 p26 goes to 100% and its text reads "∆E".
-2. Type 3 glyphs with a zero /Widths entry that still draw (004050 p2): take the glyph's box from its d0/d1 operands as well as its advance.
+2. A Type 3 glyph's box is the union of its advance box and the box its glyph procedure declares with d1 (004050 p2; D83). Done after this report: all four pages of 004050 go to 100%, with no zero-width words left.
 
 Each fix is its own chunk, with a new freeze, and its effect on 004 is reported separately and marked as coming after the held-out run. The numbers above stay as the held-out result.
 

@@ -957,7 +957,10 @@ impl<'p, 'a> Run<'p, 'a> {
         for (code, len) in f.codes(bytes) {
             let w0 = f.advance(code);
             let trm = mul(&mul(&[g.size * th, 0.0, 0.0, g.size, 0.0, g.ts], tm), &g.ctm);
-            let quad = [apply(&trm, 0.0, desc), apply(&trm, w0, desc), apply(&trm, w0, asc), apply(&trm, 0.0, asc)];
+            // the advance box, grown to a Type3 glyph's own box where it reaches further
+            let (mut bx0, mut by0, mut bx1, mut by1) = (0.0f64, desc, w0, asc);
+            if let Some(b) = f.glyph_box(code) { bx0 = bx0.min(b[0]); by0 = by0.min(b[1]); bx1 = bx1.max(b[2]); by1 = by1.max(b[3]); }
+            let quad = [apply(&trm, bx0, by0), apply(&trm, bx1, by0), apply(&trm, bx1, by1), apply(&trm, bx0, by1)];
             let (ux, uy) = apply(&trm, 0.0, 0.0);
             let (ex, ey) = apply(&trm, w0, 0.0);
             let dl = (trm[0] * trm[0] + trm[1] * trm[1]).sqrt();
