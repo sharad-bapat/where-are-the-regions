@@ -31,12 +31,20 @@ pub struct Features {
     pub height_spread: f64,
     /// Share of glyph-sized components whose bottom lines up with at least 3 others (a baseline).
     pub aligned: f64,
+    /// Word-like runs: 3 or more glyph-sized marks of similar height, each close to the next on one
+    /// baseline (D87); how many runs, and how many marks are in them.
+    pub runs: u32,
+    pub word_marks: u32,
 }
 
 pub struct Kind {
     pub kind: &'static str,
     pub confidence: f64,
     pub reasons: Vec<(&'static str, f64)>,
+    /// That the image holds text, whatever its kind (a labelled chart is a graphic with text), 0 to 1,
+    /// and the evidence (D86).
+    pub has_text: f64,
+    pub has_text_reasons: Vec<(&'static str, f64)>,
     pub features: Features,
 }
 
@@ -124,8 +132,51 @@ pub fn features(w: u32, h: u32, grey: &[u8]) -> Features {
         for b in &glyphs { bottoms[b[3] + 1] += 1; }
         let aligned = glyphs.iter().filter(|b| bottoms[b[3]] + bottoms[b[3] + 1] + bottoms[b[3] + 2] >= 4).count();
         f.aligned = aligned as f64 / glyphs.len() as f64;
+        let (runs, marks) = word_runs(&glyphs);
+        f.runs = runs;
+        f.word_marks = marks;
     }
     f
+}
+
+/// Word-like runs among glyph boxes [x0, y0, x1, y1]: each mark is linked to the nearest mark to its
+/// right whose bottom is within a pixel or so (a sixth of the height), whose height is half to twice
+/// its own, and which starts within about one height of its right edge. Chains of 3 or more count.
+fn word_runs(glyphs: &[[usize; 4]]) -> (u32, u32) {
+    let n = glyphs.len();
+    let mut by_bottom: std::collections::BTreeMap<usize, Vec<usize>> = std::collections::BTreeMap::new();
+    for (i, b) in glyphs.iter().enumerate() { by_bottom.entry(b[3]).or_default().push(i); }
+    for v in by_bottom.values_mut() { v.sort_by_key(|&i| (glyphs[i][0], i)); }
+    let mut next = vec![usize::MAX; n];
+    let mut has_prev = vec![false; n];
+    for (i, b) in glyphs.iter().enumerate() {
+        let h = b[3] - b[1] + 1;
+        let tol = (h / 6).max(1);
+        let reach = b[2] + h + 1;
+        let mut best: Option<(usize, usize)> = None;
+        for (_, v) in by_bottom.range(b[3].saturating_sub(tol)..=b[3] + tol) {
+            // the first mark starting right of this one's left edge
+            let k = v.partition_point(|&j| glyphs[j][0] <= b[0]);
+            for &j in v[k..].iter().take(4) {
+                let c = &glyphs[j];
+                if c[0] > reach { break; }
+                let hj = c[3] - c[1] + 1;
+                if hj * 2 < h || hj > h * 2 || c[0] + 1 < b[2] { continue; }
+                if best.map_or(true, |(x, _)| c[0] < x) { best = Some((c[0], j)); }
+            }
+        }
+        if let Some((_, j)) = best {
+            if !has_prev[j] { next[i] = j; has_prev[j] = true; }
+        }
+    }
+    let (mut runs, mut marks) = (0u32, 0u32);
+    for start in 0..n {
+        if has_prev[start] { continue; }
+        let (mut len, mut i) = (1u32, start);
+        while next[i] != usize::MAX && len <= n as u32 { i = next[i]; len += 1; }
+        if len >= 3 { runs += 1; marks += len; }
+    }
+    (runs, marks)
 }
 
 /// The kind of an image from its thumbnail.
@@ -135,14 +186,17 @@ pub fn classify(w: u32, h: u32, grey: &[u8]) -> Kind {
     // blank: almost no variation, or no ink at all
     if f.spread < 4.0 || f.ink < 0.0005 {
         reasons.push(("flat", f.spread));
-        return Kind { kind: "blank", confidence: 0.9, reasons, features: f };
+        return Kind { kind: "blank", confidence: 0.9, reasons, has_text: 0.0, has_text_reasons: vec![("flat", f.spread)], features: f };
     }
-    // text: two-tone, a moderate amount of ink, many glyph-sized marks of similar height on baselines
-    let two_tone = ramp(f.extremes, 0.6, 0.9);
-    let inkish = ramp(f.ink, 0.005, 0.02) * ramp(f.ink, 0.5, 0.3);
-    let many = ramp(f.glyphs as f64, 5.0, 40.0);
-    let even = ramp(f.height_spread, 1.0, 0.4);
-    let lined = ramp(f.aligned, 0.2, 0.6);
+    // text: two-tone, some ink, glyph-sized marks that sit on shared baselines. On the constructed
+    // tune split the baseline share separates them (text images 0.66 and up, median 0.94; logos 0;
+    // photos at most 0.57, median 0.02), so its ramp sits in that gap. Heights vary a lot in real
+    // text (ascenders, x-height, dots), so only extreme spreads count against it.
+    let two_tone = ramp(f.extremes, 0.5, 0.8);
+    let inkish = ramp(f.ink, 0.002, 0.006) * ramp(f.ink, 0.5, 0.3);
+    let many = ramp(f.glyphs as f64, 8.0, 30.0);
+    let even = ramp(f.height_spread, 4.0, 2.5);
+    let lined = ramp(f.aligned, 0.5, 0.75);
     let text = two_tone * inkish * many * even * lined;
     // photo: many grey levels and little two-tone area
     let photo = ramp(f.levels as f64, 32.0, 96.0) * ramp(f.extremes, 0.8, 0.5);
@@ -154,7 +208,18 @@ pub fn classify(w: u32, h: u32, grey: &[u8]) -> Kind {
     // confidence: the winning score, lowered when the runner-up is close
     let second = [text, photo, graphic].iter().copied().filter(|&s| s < score).fold(0.0, f64::max);
     let confidence = (score * (0.5 + 0.5 * (score - second).max(0.0))).clamp(0.05, 0.95);
-    Kind { kind, confidence: (confidence * 1000.0).round() / 1000.0, reasons, features: f }
+    // has-text: marks in word-like runs. Tuned on 003 against labels from each image's own pixels
+    // (tools/label_images.py): the best single cut is about 20 to 30 marks for graphics, 60 to 90
+    // for photos (their texture makes short runs by chance) and lower for text images, so each ramp
+    // is centred there. The confidence follows the ramp, from 0.05 to 0.95.
+    let words = match kind {
+        "photo" => ramp(f.word_marks as f64, 40.0, 120.0),
+        "text" => ramp(f.word_marks as f64, 4.0, 30.0),
+        _ => ramp(f.word_marks as f64, 8.0, 40.0),
+    };
+    let has_text = 0.05 + 0.9 * words;
+    let has_text_reasons = vec![("word_marks", f.word_marks as f64), ("runs", f.runs as f64), ("photo", if kind == "photo" { 1.0 } else { 0.0 })];
+    Kind { kind, confidence: (confidence * 1000.0).round() / 1000.0, reasons, has_text: (has_text * 1000.0).round() / 1000.0, has_text_reasons, features: f }
 }
 
 #[cfg(test)]
@@ -178,6 +243,15 @@ mod tests {
     }
 
     #[test]
+    fn runs_of_marks_are_words() {
+        // 5 marks on a baseline, close together: one run of 5; a lone mark far off: no run
+        let mut g = vec![[0usize; 4]; 0];
+        for k in 0..5 { g.push([10 + k * 8, 10, 15 + k * 8, 19]); }
+        g.push([200, 50, 205, 59]);
+        assert_eq!(word_runs(&g), (1, 5));
+    }
+
+    #[test]
     fn a_flat_image_is_blank() {
         assert_eq!(classify(50, 50, &vec![240u8; 2500]).kind, "blank");
     }
@@ -187,6 +261,7 @@ mod tests {
         let k = classify(400, 200, &text_like(400, 200));
         assert_eq!(k.kind, "text", "{:?}", k.features);
         assert!(k.features.aligned > 0.9 && k.features.glyphs > 100);
+        assert!(k.has_text > 0.9 && k.features.word_marks > 100);
     }
 
     #[test]

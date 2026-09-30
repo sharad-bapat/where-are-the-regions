@@ -49,8 +49,9 @@ fn main() {
                         let k = regions::kind::classify(t.w, t.h, &t.grey);
                         let f = &k.features;
                         let reasons: Vec<String> = k.reasons.iter().map(|(n, v)| format!("[\"{}\",{:.3}]", n, v)).collect();
-                        line += &format!(",\"kind\":\"{}\",\"confidence\":{},\"reasons\":[{}],\"features\":{{\"spread\":{:.2},\"levels\":{},\"extremes\":{:.4},\"ink\":{:.4},\"inverted\":{},\"components\":{},\"glyphs\":{},\"glyph_height\":{:.1},\"height_spread\":{:.3},\"aligned\":{:.3}}}",
-                            k.kind, k.confidence, reasons.join(","), f.spread, f.levels, f.extremes, f.ink, f.inverted, f.components, f.glyphs, f.glyph_height, f.height_spread, f.aligned);
+                        let tr: Vec<String> = k.has_text_reasons.iter().map(|(n, v)| format!("[\"{}\",{:.3}]", n, v)).collect();
+                        line += &format!(",\"kind\":\"{}\",\"confidence\":{},\"reasons\":[{}],\"has_text\":{},\"has_text_reasons\":[{}],\"features\":{{\"spread\":{:.2},\"levels\":{},\"extremes\":{:.4},\"ink\":{:.4},\"inverted\":{},\"components\":{},\"glyphs\":{},\"glyph_height\":{:.1},\"height_spread\":{:.3},\"aligned\":{:.3},\"runs\":{},\"word_marks\":{}}}",
+                            k.kind, k.confidence, reasons.join(","), k.has_text, tr.join(","), f.spread, f.levels, f.extremes, f.ink, f.inverted, f.components, f.glyphs, f.glyph_height, f.height_spread, f.aligned, f.runs, f.word_marks);
                     }
                     println!("{}}}", line);
                 }
