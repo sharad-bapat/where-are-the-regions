@@ -26,6 +26,12 @@ pub struct Path {
     /// All its points are one point, it isn't filled (a fill paints the pixel under it) and it isn't a
     /// dot, so it paints nothing.
     pub empty: bool,
+    /// Its shape, for the vector kinds (chunk 9; not in the JSON): straight and curved segments, whether
+    /// it was built with the `re` operator, and whether any subpath is closed.
+    pub lines: u32,
+    pub curves: u32,
+    pub rect: bool,
+    pub closed: bool,
 }
 
 /// Touching paths, as one region.
@@ -207,7 +213,7 @@ mod tests {
     use super::*;
 
     fn path(x0: f64, y0: f64, x1: f64, y1: f64, order: u32) -> Path {
-        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false, hidden: false, dot: false, empty: false }
+        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false, hidden: false, dot: false, empty: false, lines: 4, curves: 0, rect: true, closed: true }
     }
 
     #[test]

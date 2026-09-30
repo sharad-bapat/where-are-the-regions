@@ -855,7 +855,7 @@ impl Default for GState {
 /// A painted path or shading as drawn: its box in default user space (None: the whole clip, or
 /// the page when there's no clip), before placement on the page.
 #[derive(Clone)]
-struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool, dot: bool, empty: bool }
+struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool, dot: bool, empty: bool, lines: u32, curves: u32, rect: bool, closed: bool }
 
 fn grow(b: &mut Option<[f64; 4]>, x: f64, y: f64) {
     match b {
@@ -1006,6 +1006,8 @@ impl<'p, 'a> Run<'p, 'a> {
         let (mut cur, mut start) = ((0.0, 0.0), (0.0, 0.0));
         // the same path as segments on the page's user space, by subpath, for the stroke's box
         let mut subs: Vec<(Vec<vector::Seg>, bool, (f64, f64))> = Vec::new();
+        // the path under construction used the re operator (a vector kind measure)
+        let mut had_re = false;
         let mut clip_next = false;
         let s = content;
         let mut i = 0;
@@ -1071,6 +1073,7 @@ impl<'p, 'a> Run<'p, 'a> {
                     let q: Vec<(f64, f64)> = [(x, y), (x + w, y), (x + w, y + h), (x, y + h)].iter().map(|p| apply(&g.ctm, p.0, p.1)).collect();
                     for &(a, b) in &q { grow(&mut pbox, a, b); }
                     subs.push(((0..4).map(|k| vector::Seg::Line(q[k], q[(k + 1) % 4])).collect(), true, q[0]));
+                    had_re = true;
                     cur = (x, y); start = cur;
                 }
                 b"W" | b"W*" => clip_next = true,
@@ -1093,17 +1096,21 @@ impl<'p, 'a> Run<'p, 'a> {
                             }
                             let v = v.unwrap_or(b);
                             let white = (!fill || g.fill_white) && (!stroke || g.stroke_white);
-                            self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot, dot, empty: point && !dot && !fill });
+                            let lines = subs.iter().map(|s| s.0.iter().filter(|x| matches!(x, vector::Seg::Line(..))).count() as u32).sum();
+                            let curves = subs.iter().map(|s| s.0.iter().filter(|x| matches!(x, vector::Seg::Curve(..))).count() as u32).sum();
+                            let closed = subs.iter().any(|s| s.1);
+                            self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot, dot, empty: point && !dot && !fill, lines, curves, rect: had_re, closed });
                             self.seq += 1;
                         }
                         if clip_next { g.clip = Some(intersect(g.clip, b)); }
                     }
                     pbox = None;
                     subs.clear();
+                    had_re = false;
                     clip_next = false;
                 }
                 b"sh" => {
-                    self.paths.push(RawPath { b: None, clip: g.clip, order: self.seq, fill: true, stroke: false, shading: true, white: false, annot: self.annot, dot: false, empty: false });
+                    self.paths.push(RawPath { b: None, clip: g.clip, order: self.seq, fill: true, stroke: false, shading: true, white: false, annot: self.annot, dot: false, empty: false, lines: 0, curves: 0, rect: false, closed: false });
                     self.seq += 1;
                 }
                 b"w" if n >= 1 => g.lw = num(&ops[n - 1]),
@@ -1355,7 +1362,7 @@ fn place_paths(raw: &[RawPath], pb: &PageBox) -> Vec<Path> {
             },
         };
         Path { x0: b[0], y0: b[1], x1: b[2], y1: b[3], order: r.order, fill: r.fill, stroke: r.stroke, shading: r.shading,
-            white: r.white, annot: r.annot, clipped, offpage, hidden, dot: r.dot, empty: r.empty }
+            white: r.white, annot: r.annot, clipped, offpage, hidden, dot: r.dot, empty: r.empty, lines: r.lines, curves: r.curves, rect: r.rect, closed: r.closed }
     }).collect()
 }
 
@@ -1861,6 +1868,15 @@ mod tests {
         assert!(v.len() == 1 && v[0].hidden && !v[0].offpage);
         let e = extract(&pdf("q 500 500 10 10 re W n q 100 0 0 100 0 0 cm /A Do Q Q", "")).pages.remove(0);
         assert_eq!(e.map[0].flags, ["hidden"]);
+    }
+
+    #[test]
+    fn a_path_keeps_its_shape_counts() {
+        // a rectangle by re; a triangle of lines, closed; an open curve
+        let v = paths("0 0 10 10 re f 0 0 m 10 0 l 5 8 l h f 0 0 m 5 5 10 5 15 0 c S");
+        assert!(v[0].rect && v[0].closed && v[0].lines == 4 && v[0].curves == 0);
+        assert!(!v[1].rect && v[1].closed && v[1].lines == 3);
+        assert!(!v[2].closed && v[2].curves == 1 && v[2].lines == 0);
     }
 
     #[test]
