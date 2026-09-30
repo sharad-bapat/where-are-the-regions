@@ -76,6 +76,20 @@ Phantoms on 004, sorted one file at a time:
 
 Each fix is its own chunk, with a new freeze, and its effect on 004 is reported separately and marked as coming after the held-out run. The numbers above stay as the held-out result.
 
+## After the held-out run
+
+The two fixes in section 4 went in after the numbers above were recorded (commits d79b2d7 and 6aad4a5), each relocked. Their effect, measured the same way (30 September): the held-out numbers above stay the result of the frozen rules; these show what the fixes change.
+
+govdocs1 004 (results/ink-004-post.jsonl):
+
+| Pages | At 100% | At least 99.9% | At least 99.5% | Median | Worst |
+|---|---|---|---|---|---|
+| 704 | 639 | 704 | 704 | 100.00% | 99.98% |
+
+Page by page against results/ink-004.jsonl, no page lost coverage. Four rose to 100%: 004050 p2 (from 99.26%), 004661 p26 (99.81%), 004998 p11 (99.98%) and 004335 p7 (99.999%). One phantom word went (the zero-width "b" on 004988 p6). With the fixes, every 004 target is met.
+
+govdocs1 003 (results/ink-003-post.jsonl): identical to results/ink-003-7a4.jsonl on every page, in coverage and in phantoms. Neither kind of font occurs in the tuning files, which is why tuning didn't catch them.
+
 ## 5. Speed
 
 Not measured on the held-out files. On tune (003, 7,633 pages, results/exact-tune.md section 7) the median page takes 1.10 ms, under the 5 ms target. A held-out timing would need a quiet machine and one session; it can be added without changing anything frozen.
