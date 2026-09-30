@@ -5,8 +5,8 @@
 //! array, turns each pixel grey (0 black to 255 white) and averages square blocks down to at most
 //! THUMB pixels on the long side. Integer arithmetic throughout, so native and wasm agree.
 //! DCTDecode (JPEG) goes through the zune-jpeg crate (D84), without SIMD so native and wasm agree.
-//! Filters it can't decode give an error naming them: CCITT comes in chunk 8c; JPX and JBIG2 stay
-//! undecoded (D84).
+//! CCITTFaxDecode goes through ccitt.rs (our own Group 3 and 4 decoder). JPX and JBIG2 stay
+//! undecoded and give an error naming them (D84).
 
 use crate::{get, parse_val, skip_val, skip_ws, Pdf, Val};
 
@@ -43,7 +43,24 @@ pub(crate) fn thumbnail(pdf: &Pdf, obj: u32) -> Result<Thumb, &'static str> {
             let (data, space, w, h) = jpeg(&raw)?;
             (data, space, 8, w, h)
         }
-        Some(b"CCITTFaxDecode") | Some(b"CCF") => return Err("ccitt"),
+        Some(b"CCITTFaxDecode") | Some(b"CCF") => {
+            // the fax output is 1 bit a pixel, read by the image's colour space (or as a mask) as usual
+            let parms = last_parms(pdf, get(&d, b"/DecodeParms"));
+            let p = parms.as_deref().unwrap_or(b"<< >>");
+            let num = |k: &[u8], dflt: f64| match get(p, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) => x, _ => dflt };
+            let flag = |k: &[u8]| crate::find(p, &[k, b" true"].concat(), 0).is_some();
+            let columns = num(b"/Columns", 1728.0) as usize;
+            if columns != width as usize { return Err("ccitt_columns"); }
+            let rows = match num(b"/Rows", 0.0) as usize { 0 => height as usize, r => r.min(height as usize) };
+            let params = crate::ccitt::Params { k: num(b"/K", 0.0) as i32, columns, rows, byte_align: flag(b"/EncodedByteAlign"), black_is_1: flag(b"/BlackIs1") };
+            let (mut data, _complete) = crate::ccitt::decode(&raw, &params);
+            // rows the file doesn't code (fewer /Rows than /Height) are white
+            let white = if params.black_is_1 { 0x00 } else { 0xFF };
+            data.resize((columns + 7) / 8 * height as usize, white);
+            let space = if mask { Space::Mask } else { space_of(pdf, get(&d, b"/ColorSpace")).unwrap_or(Space::Gray) };
+            if space.components() != 1 { return Err("colour_space"); }
+            (data, space, 1, width, height)
+        }
         Some(b"JPXDecode") => return Err("jpx"),
         Some(b"JBIG2Decode") => return Err("jbig2"),
         Some(_) => return Err("undecoded"),
@@ -411,9 +428,17 @@ mod tests {
     }
 
     #[test]
+    fn a_fax_image_decodes() {
+        // Group 4, 8 x 1: horizontal mode, white 2, black 4, then V0 to the edge (see ccitt.rs)
+        let t = image_thumbnail(&pdf_with("/Width 8 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 1 /Filter /CCITTFaxDecode /DecodeParms << /K -1 /Columns 8 >>",
+            &[0b0010_1110, 0b1110_0000]), 1).unwrap();
+        assert_eq!(t.grey, [255, 255, 0, 0, 0, 0, 255, 255]);
+    }
+
+    #[test]
     fn filters_not_decoded_yet_say_so() {
-        let e = image_thumbnail(&pdf_with("/Width 1 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 1 /Filter /CCITTFaxDecode", &[0]), 1).err();
-        assert_eq!(e, Some("ccitt"));
+        let e = image_thumbnail(&pdf_with("/Width 1 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 1 /Filter /JPXDecode", &[0]), 1).err();
+        assert_eq!(e, Some("jpx"));
         // a broken JPEG says so rather than guessing
         let e = image_thumbnail(&pdf_with("/Width 1 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /DCTDecode", &[0]), 1).err();
         assert_eq!(e, Some("jpeg"));

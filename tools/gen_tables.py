@@ -8,6 +8,8 @@
   widths from the Adobe AFM files as carried by reportlab (pdfbase/_fontdata.py), names to Unicode
   from the glyph list above and, for ZapfDingbats' a1 to a191, Adobe's zapfdingbats.txt
   (tools/data/, BSD licence, kept whole).
+- The CCITT fax run-length codes (ITU-T T.4 tables 2 and 3, and the extended makeup codes), white
+  and black, from pdfminer/ccitt.py.
 
 Run: python tools/gen_tables.py > regions/src/tables.rs
 The output is committed, so building never needs Python.
@@ -114,3 +116,19 @@ out.write(f'pub static ZAPF_NAMES: [(&str, u16); {len(zapf)}] = [\n')
 for n in sorted(zapf):
     out.write(f'    ({rust_str(n)}, 0x{zapf[n]:04x}),\n')
 out.write('];\n')
+
+# CCITT fax run lengths (ITU-T T.4): (code, bit length, run), white then black, read from pdfminer's
+# CCITTG4Parser tables so no code is typed by hand
+import re
+import pdfminer.ccitt
+src = Path(pdfminer.ccitt.__file__).read_text(encoding='utf-8')
+for colour in ('WHITE', 'BLACK'):
+    rows = [(int(r), b) for r, b in re.findall(r'BitParser\.add\(%s,\s*(\d+),\s*"([01]+)"\)' % colour, src)]
+    if len(rows) != 104:
+        sys.exit(f'expected 104 {colour} codes, found {len(rows)}')
+    rows.sort(key=lambda r: (len(r[1]), r[1]))
+    out.write(f'\n/// CCITT {colour.lower()} run-length codes (ITU-T T.4): (code, bits, run length).\n')
+    out.write(f'pub static CCITT_{colour}: [(u16, u8, u16); {len(rows)}] = [\n')
+    for run, bits in rows:
+        out.write(f'    (0b{bits}, {len(bits)}, {run}),\n')
+    out.write('];\n')

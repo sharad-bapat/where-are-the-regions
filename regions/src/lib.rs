@@ -14,6 +14,7 @@
 //! so the two tools stay independent.
 use std::collections::HashMap;
 
+mod ccitt;
 mod cmap;
 mod crypt;
 // regions: images to OCR regions
