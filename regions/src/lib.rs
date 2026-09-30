@@ -21,6 +21,8 @@ pub mod ocr;
 pub use ocr::Region;
 mod font;
 pub mod map;
+/// Image pixels as grey thumbnails, for the kind layer (chunk 8).
+pub mod pixels;
 pub use map::{Entry, Line};
 pub mod vector;
 pub use vector::{Path, Vector};

@@ -19,7 +19,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 RECORD = ROOT / "results" / "frozen.sha256"
 CLI = ROOT / "regions" / "target" / "release" / "regions-cli.exe"
-TOOLS = ["tools/check_frozen.py", "tools/ink_check.py", "tools/score_map.py", "tools/build_marks.py", "tools/build_set.py"]
+TOOLS = ["tools/check_frozen.py", "tools/diff_exact.py", "tools/ink_check.py", "tools/score_map.py", "tools/build_marks.py", "tools/build_set.py"]
 MANIFESTS = ["data/constructed/manifest.json", "data/constructed/marks/manifest.json"]
 
 
