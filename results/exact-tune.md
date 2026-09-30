@@ -2,7 +2,7 @@
 
 What the exact layer (every text line, image, vector cluster and annotation, with its box, drawing order and flags) gets right on the tuning data, where it falls short, and which rules and constants produced these numbers. Only tuning data is used: the marks set's tune split, the constructed tune split and govdocs1 thread 003. The held-out sets (marks heldout, constructed heldout, govdocs1 004) haven't been opened.
 
-Source at the time of writing: commit 3548a06 plus chunk 7a-3 (ZapfDingbats glyph names, not yet committed). The rules get frozen by hash in chunk 7b, after this report, and are then measured once on the held-out sets against the targets in section 7.
+Source at the time of writing: commit dec7e2c plus chunk 7a-4 (white text flagged, D78). The rules get frozen by hash in chunk 7b, after this report, and are then measured once on the held-out sets against the targets in section 8.
 
 ## 1. Marks set
 
@@ -33,13 +33,13 @@ tools/score_regions.py on the 300 constructed tune cases scores regions/src/ocr.
 
 ## 3. Ink on govdocs1 003
 
-tools/ink_check.py renders each page with PyMuPDF 1.24.9 at 150 dpi, calls a pixel ink when any channel is below 250, and asks what share of the ink lies inside the map's visible regions, each grown by 1 pt. It is independent of the parser. Run: results/ink-003-7a3.jsonl (per page).
+tools/ink_check.py renders each page with PyMuPDF 1.24.9 at 150 dpi, calls a pixel ink when any channel is below 250, and asks what share of the ink lies inside the map's visible regions, each grown by 1 pt. It is independent of the parser. Run: results/ink-003-7a4.jsonl (per page).
 
 | Pages | At 100% | At least 99.9% | At least 99.5% | Median | Worst |
 |---|---|---|---|---|---|
 | 967 | 787 | 967 | 967 | 100.00% | 99.90% |
 
-Missed ink is under 0.001% of all ink (538,606,321 pixels), on 78 pages put down to text, 3 to images and 159 to nothing PyMuPDF reports ("other"). No page lost coverage in any chunk since the per-page runs began (6d, 7a, 7a-3), checked page by page.
+Missed ink is under 0.001% of all ink (538,606,321 pixels), on 78 pages put down to text, 3 to images and 159 to nothing PyMuPDF reports ("other"). No page lost coverage in any chunk since the per-page runs began (6d, 7a, 7a-3, 7a-4), checked page by page.
 
 The misses that are left, from the worst pages:
 
@@ -56,10 +56,11 @@ A phantom is a map region whose own box, grown by half a pixel, holds no ink. So
 | Paths | 26 | 22 MuPDF lists in its own drawing list but doesn't render, while pdfium 149.0.7825.0 does (003174 p0 x21, 003413 p19; overprint suspected, not verified; results/findings.md). 3 painted over by later marks (003185 p3, 003702 p16, 003005 p1). 1 near-white 0.26 pt stroke on 003174 too faint to count as ink. |
 | White paths | 217 | Painted white, expected on a white page. Includes zero-size white fills that the half-pixel test can now see. |
 | Dots | 0 | Round-capped stroked points (D75). MuPDF skips "m h" dots; none land where nothing else is drawn. |
-| Words | 499 | 378 are text filled white (PyMuPDF agrees), mostly US Government Printing Office "VerDate" slugs on 003077 and 003695. 52 sit inside an image's box, 8 of them drawn before an image that then covers them (003431 p4 is text under its own scan). 69 not yet looked at one by one. |
+| White words | 378 | Text painted only in white (D78; PyMuPDF agrees on every one), mostly US Government Printing Office "VerDate" slugs on 003077 and 003695. Expected on a white page. |
+| Words | 121 | 52 sit inside an image's box, 8 of them drawn before an image that then covers them (003431 p4 is text under its own scan). 69 not yet looked at one by one. |
 | Images | 20 | 5 are entirely white pixels. 13 are hairline or tiny images (spacers and rules under 2 pt, e.g. 003858 p2, 003190 p0) that do hold dark pixels; most likely they render too thin to reach the ink level, not checked image by image. 2 are inline images. The small masks at the page corner on 003667 are among the 20. |
 
-The map flags white paths but not white text, so the 378 white words count as phantoms rather than expected. Flagging text drawn in a white fill colour (render mode 0 or 2) the same way would move them to the expected column; that is a possible small chunk, not done.
+Before chunk 7a-4 the map flagged white paths but not white text, so the white words counted as phantoms (499 in all). Text is now white when the colours its render mode paints are all white, and a change to or from white splits words and lines. Coverage didn't change on any page.
 
 ## 5. Rules and constants
 
@@ -88,19 +89,31 @@ Conventions settled along the way:
 
 The ink test's own settings: 150 dpi, ink below 250 on any channel, 1 pt margin for coverage, half a pixel for phantoms (D77).
 
-## 6. Not yet measured for this report
+## 6. Ink on the constructed tune split
 
-- Ink on the constructed tune split. The last run was after chunk 4a (288 of 300 pages at 100%, all at least 99.99%); every parser change since needs it rerun. It renders 300 small pages.
+Rerun after chunk 7a-4 (results/ink-constructed-tune.jsonl): 288 of 300 pages at 100%, all 300 at least 99.99%, median 100.00%. Missed ink is 1 to 20 pixels a page on the 12 others (8 put down to text, 9 to other). No phantoms of any kind; the 29 white paths with no ink are expected. By group:
+
+| Group | Pages | At 100% | Worst |
+|---|---|---|---|
+| text | 120 | 119 | 100.00% |
+| text_ocr | 40 | 37 | 99.99% |
+| full_scan, background, blank | 60 | 60 | 100.00% |
+| control | 20 | 17 | 99.99% |
+| photo | 20 | 18 | 99.99% |
+| logo, rule | 40 | 37 | 100.00% |
+
+## 7. Not yet measured for this report
+
 - Speed per page, needed before a speed target is set (D76). The last timing was per file (median 8.7 ms over the 278 files of 003, after chunk 4a), on a quiet machine.
 
-## 7. Targets for the held-out runs (D76)
+## 8. Targets for the held-out runs (D76)
 
 - Marks heldout: at least 99.5% of marks within 1 pt, no extra regions, every miss named.
 - Constructed heldout: every page at least 99.9% ink coverage; phantoms reported by kind and each explained.
 - govdocs1 004: every page at least 99.5%, at least 99% of pages at 99.9% or more, pages at 100% reported but not a target, every page under 99.9% explained.
 - Speed: set after the per-page timing above.
 
-On tune, 003 meets the 004 target (all 967 pages at 99.9% or more) and the marks set meets its target (99.8%).
+On tune, 003 meets the 004 target (all 967 pages at 99.9% or more), the constructed set meets its coverage target (all 300 at 99.99% or more, no unflagged phantoms) and the marks set meets its target (99.8%).
 
 ## Reproduce
 
