@@ -501,7 +501,11 @@ impl<'a> Pdf<'a> {
     }
 
     /// Decoded stream data (FlateDecode or unfiltered). None for unsupported filters.
-    fn stream(&self, n: u32) -> Option<Vec<u8>> {
+    fn stream(&self, n: u32) -> Option<Vec<u8>> { self.decode(n, false).map(|(v, _)| v) }
+
+    /// The stream decoded by every filter; with `image`, a last filter that is an image codec (DCT,
+    /// CCITT, JPX, JBIG2) is left for the caller and named (pixels.rs).
+    fn decode(&self, n: u32, image: bool) -> Option<(Vec<u8>, Option<Vec<u8>>)> {
         let (gen, s, e) = match self.objs.get(&n)? { Loc::Top { gen, stream: Some(r), .. } => (*gen, r.0, r.1), _ => return None };
         let dict = self.dict(n)?;
         let is_xref = matches!(get(&dict, b"/Type"), Some(Val::Name(t)) if t == b"XRef");
@@ -523,7 +527,11 @@ impl<'a> Pdf<'a> {
             _ => return None,
         };
         let mut out = raw.to_vec();
-        for f in filters {
+        let last = filters.len();
+        for (k, f) in filters.into_iter().enumerate() {
+            if image && k + 1 == last && matches!(f.as_slice(), b"DCTDecode" | b"DCT" | b"CCITTFaxDecode" | b"CCF" | b"JPXDecode" | b"JBIG2Decode") {
+                return Some((out, Some(f)));
+            }
             if f == b"ASCII85Decode" || f == b"A85" {
                 out = ascii85(&out)?;
             } else if f == b"ASCIIHexDecode" || f == b"AHx" {
@@ -549,7 +557,7 @@ impl<'a> Pdf<'a> {
                 return None;
             }
         }
-        Some(out)
+        Some((out, None))
     }
 
     fn pages(&self) -> Vec<u32> {

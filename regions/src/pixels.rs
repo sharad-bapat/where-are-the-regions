@@ -4,8 +4,9 @@
 //! module undoes a PNG or TIFF predictor, reads the samples by the colour space, bit depth and /Decode
 //! array, turns each pixel grey (0 black to 255 white) and averages square blocks down to at most
 //! THUMB pixels on the long side. Integer arithmetic throughout, so native and wasm agree.
-//! Filters it can't decode give an error naming them: DCT and CCITT come in chunks 8b and 8c;
-//! JPX and JBIG2 stay undecoded (D84).
+//! DCTDecode (JPEG) goes through the zune-jpeg crate (D84), without SIMD so native and wasm agree.
+//! Filters it can't decode give an error naming them: CCITT comes in chunk 8c; JPX and JBIG2 stay
+//! undecoded (D84).
 
 use crate::{get, parse_val, skip_val, skip_ws, Pdf, Val};
 
@@ -31,34 +32,39 @@ pub(crate) fn thumbnail(pdf: &Pdf, obj: u32) -> Result<Thumb, &'static str> {
     let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
     let (width, height) = (int(b"/Width"), int(b"/Height"));
     if width == 0 || height == 0 { return Err("no_size"); }
-    let filters = names(pdf, get(&d, b"/Filter"));
-    for f in &filters {
-        match f.as_slice() {
-            b"DCTDecode" | b"DCT" => return Err("dct"),
-            b"CCITTFaxDecode" | b"CCF" => return Err("ccitt"),
-            b"JPXDecode" => return Err("jpx"),
-            b"JBIG2Decode" => return Err("jbig2"),
-            _ => {}
-        }
-    }
-    let raw = pdf.stream(obj).ok_or("undecoded")?;
+    let (raw, codec) = pdf.decode(obj, true).ok_or("undecoded")?;
+    let dec: Vec<f64> = match get(&d, b"/Decode").map(|v| pdf.direct(v)) {
+        Some(Val::Array(a)) => nums(&a),
+        _ => Vec::new(),
+    };
     let mask = crate::find(&d, b"/ImageMask true", 0).is_some();
-    let bpc = if mask { 1 } else { match int(b"/BitsPerComponent") { 0 => 8, b => b } };
-    if ![1, 2, 4, 8, 16].contains(&bpc) { return Err("bits"); }
-    let space = if mask { Space::Mask } else { space_of(pdf, get(&d, b"/ColorSpace"))? };
+    let (data, space, bpc, width, height) = match codec.as_deref() {
+        Some(b"DCTDecode") | Some(b"DCT") => {
+            let (data, space, w, h) = jpeg(&raw)?;
+            (data, space, 8, w, h)
+        }
+        Some(b"CCITTFaxDecode") | Some(b"CCF") => return Err("ccitt"),
+        Some(b"JPXDecode") => return Err("jpx"),
+        Some(b"JBIG2Decode") => return Err("jbig2"),
+        Some(_) => return Err("undecoded"),
+        None => {
+            let bpc = if mask { 1 } else { match int(b"/BitsPerComponent") { 0 => 8, b => b } };
+            if ![1, 2, 4, 8, 16].contains(&bpc) { return Err("bits"); }
+            let space = if mask { Space::Mask } else { space_of(pdf, get(&d, b"/ColorSpace"))? };
+            let row = ((width as usize) * space.components() * bpc as usize + 7) / 8;
+            let parms = last_parms(pdf, get(&d, b"/DecodeParms"));
+            let data = unpredict(pdf, parms.as_deref(), raw, row, space.components(), bpc as usize)?;
+            if data.len() < row * height as usize { return Err("short"); }
+            (data, space, bpc, width, height)
+        }
+    };
     let n = space.components();
     let row = ((width as usize) * n * bpc as usize + 7) / 8;
-    let parms = last_parms(pdf, get(&d, b"/DecodeParms"));
-    let data = unpredict(pdf, parms.as_deref(), raw, row, n, bpc as usize)?;
     if data.len() < row * height as usize { return Err("short"); }
 
     // /Decode: per component a (min, max) pair; an inverted pair flips the component.
     // 16-bit samples are read by their top byte, so they count as 8-bit here.
     let max = if bpc == 16 { 255 } else { (1u32 << bpc) - 1 };
-    let dec: Vec<f64> = match get(&d, b"/Decode").map(|v| pdf.direct(v)) {
-        Some(Val::Array(a)) => nums(&a),
-        _ => Vec::new(),
-    };
     let flip: Vec<bool> = (0..n).map(|c| dec.len() >= 2 * (c + 1) && dec[2 * c] > dec[2 * c + 1]).collect();
 
     let f = ((width.max(height) + THUMB - 1) / THUMB).max(1);
@@ -84,6 +90,52 @@ pub(crate) fn thumbnail(pdf: &Pdf, obj: u32) -> Result<Thumb, &'static str> {
     }
     let grey = sum.iter().zip(&cnt).map(|(s, c)| ((s + c / 2) / (*c).max(1)) as u8).collect();
     Ok(Thumb { width, height, w, h, grey })
+}
+
+/// A JPEG's samples, chosen by the frame's component count (its colour transform isn't known until
+/// the scan starts): 1 component as grey; 3 as RGB (the decoder converts YCbCr, and passes RGB
+/// through); 4 as CMYK, passed through (the decoder already undoes Adobe's inverted CMYK: on 003
+/// the thumbnails match MuPDF's within a grey level), or for YCCK passed through and converted here
+/// as libjpeg does. No YCCK JPEG has been checked against MuPDF yet; none occurs in the 003 sample.
+fn jpeg(raw: &[u8]) -> Result<(Vec<u8>, Space, u32, u32), &'static str> {
+    use zune_jpeg::zune_core::{bytestream::ZCursor, colorspace::ColorSpace, options::DecoderOptions};
+    let decode = |out: ColorSpace| -> Result<(Vec<u8>, u32, u32, u8), &'static str> {
+        let mut dec = zune_jpeg::JpegDecoder::new_with_options(ZCursor::new(raw), DecoderOptions::default().jpeg_set_out_colorspace(out));
+        let data = dec.decode().map_err(|_| "jpeg")?;
+        let info = dec.info().ok_or("jpeg")?;
+        Ok((data, info.width as u32, info.height as u32, info.components))
+    };
+    let mut head = zune_jpeg::JpegDecoder::new_with_options(ZCursor::new(raw), DecoderOptions::default());
+    head.decode_headers().map_err(|_| "jpeg")?;
+    let comps = head.info().ok_or("jpeg")?.components;
+    let (data, w, h, space) = match comps {
+        1 => { let (d, w, h, _) = decode(ColorSpace::Luma)?; (d, w, h, Space::Gray) }
+        3 => { let (d, w, h, _) = decode(ColorSpace::RGB)?; (d, w, h, Space::Rgb) }
+        4 => match decode(ColorSpace::CMYK) {
+            Ok((d, w, h, _)) => (d, w, h, Space::Cmyk),
+            Err(_) => {
+                let (mut d, w, h, _) = decode(ColorSpace::YCCK)?;
+                for p in d.chunks_mut(4) { ycc_to_cmy(p); }
+                (d, w, h, Space::Cmyk)
+            }
+        },
+        _ => return Err("jpeg"),
+    };
+    if data.len() < (w * h) as usize * space.components() { return Err("jpeg"); }
+    Ok((data, space, w, h))
+}
+
+/// YCCK to CMYK in place, as libjpeg's ycck_cmyk_convert: Y, Cb, Cr to RGB by the JFIF formulas,
+/// then C = 255 - R and so on; K stays.
+fn ycc_to_cmy(p: &mut [u8]) {
+    let (y, cb, cr) = (p[0] as i32, p[1] as i32 - 128, p[2] as i32 - 128);
+    let clamp = |v: i32| v.clamp(0, 255);
+    let r = clamp(y + ((91_881 * cr + 32_768) >> 16));
+    let g = clamp(y - ((22_554 * cb + 46_802 * cr - 32_768) >> 16));
+    let b = clamp(y + ((116_130 * cb + 32_768) >> 16));
+    p[0] = (255 - r) as u8;
+    p[1] = (255 - g) as u8;
+    p[2] = (255 - b) as u8;
 }
 
 enum Space {
@@ -211,18 +263,6 @@ fn string_bytes(s: &[u8]) -> Option<Vec<u8>> {
             Some(out)
         }
         _ => None,
-    }
-}
-
-fn names(pdf: &Pdf, v: Option<Val>) -> Vec<Vec<u8>> {
-    match v.map(|v| pdf.direct(v)) {
-        Some(Val::Name(n)) => vec![n],
-        Some(Val::Array(a)) => {
-            let (mut out, mut i) = (Vec::new(), 0);
-            while i < a.len() { if let Val::Name(n) = parse_val(&a, i) { out.push(n); } i = skip_val(&a, i).max(i + 1); }
-            out
-        }
-        _ => Vec::new(),
     }
 }
 
@@ -372,7 +412,10 @@ mod tests {
 
     #[test]
     fn filters_not_decoded_yet_say_so() {
+        let e = image_thumbnail(&pdf_with("/Width 1 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 1 /Filter /CCITTFaxDecode", &[0]), 1).err();
+        assert_eq!(e, Some("ccitt"));
+        // a broken JPEG says so rather than guessing
         let e = image_thumbnail(&pdf_with("/Width 1 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 8 /Filter /DCTDecode", &[0]), 1).err();
-        assert_eq!(e, Some("dct"));
+        assert_eq!(e, Some("jpeg"));
     }
 }
