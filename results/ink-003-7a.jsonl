@@ -1,0 +1,967 @@
+{"file": "003005.pdf", "page": 1, "group": "real", "ink": 202485, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 2, "path": 1}}
+{"file": "003038.pdf", "page": 0, "group": "real", "ink": 346987, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003039.pdf", "page": 16, "group": "real", "ink": 25544, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003045.pdf", "page": 0, "group": "real", "ink": 175576, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003046.pdf", "page": 0, "group": "real", "ink": 536377, "coverage": 0.9999925425586854, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003046.pdf", "page": 1, "group": "real", "ink": 519776, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003046.pdf", "page": 2, "group": "real", "ink": 397352, "coverage": 0.9999496667941774, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 20}, "phantoms": {}}
+{"file": "003046.pdf", "page": 6, "group": "real", "ink": 106969, "coverage": 0.9999813029943254, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003046.pdf", "page": 7, "group": "real", "ink": 857590, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003046.pdf", "page": 19, "group": "real", "ink": 126748, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003046.pdf", "page": 20, "group": "real", "ink": 151946, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003046.pdf", "page": 24, "group": "real", "ink": 154522, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003046.pdf", "page": 28, "group": "real", "ink": 144104, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003048.pdf", "page": 0, "group": "real", "ink": 233469, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003049.pdf", "page": 0, "group": "real", "ink": 533172, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003050.pdf", "page": 0, "group": "real", "ink": 111416, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003051.pdf", "page": 4, "group": "real", "ink": 162731, "coverage": 0.9999938548893573, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003051.pdf", "page": 5, "group": "real", "ink": 194262, "coverage": 0.9999948523128558, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003051.pdf", "page": 6, "group": "real", "ink": 225953, "coverage": 0.9999955743008502, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003053.pdf", "page": 7, "group": "real", "ink": 734432, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003053.pdf", "page": 8, "group": "real", "ink": 215081, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003053.pdf", "page": 9, "group": "real", "ink": 214909, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003053.pdf", "page": 10, "group": "real", "ink": 1075927, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003053.pdf", "page": 11, "group": "real", "ink": 1155988, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003054.pdf", "page": 19, "group": "real", "ink": 364537, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003054.pdf", "page": 21, "group": "real", "ink": 454847, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003054.pdf", "page": 22, "group": "real", "ink": 303815, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003054.pdf", "page": 23, "group": "real", "ink": 455377, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003054.pdf", "page": 24, "group": "real", "ink": 469281, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003054.pdf", "page": 26, "group": "real", "ink": 310642, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003060.pdf", "page": 0, "group": "real", "ink": 604403, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003060.pdf", "page": 1, "group": "real", "ink": 685388, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003060.pdf", "page": 2, "group": "real", "ink": 531201, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 2, "group": "real", "ink": 174216, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 3, "group": "real", "ink": 137048, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 5, "group": "real", "ink": 208332, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 8, "group": "real", "ink": 94402, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 10, "group": "real", "ink": 232069, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 13, "group": "real", "ink": 218120, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 14, "group": "real", "ink": 177309, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 15, "group": "real", "ink": 178559, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 16, "group": "real", "ink": 263062, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 17, "group": "real", "ink": 130955, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 19, "group": "real", "ink": 183673, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 22, "group": "real", "ink": 484350, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 25, "group": "real", "ink": 262513, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 26, "group": "real", "ink": 244668, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 27, "group": "real", "ink": 561189, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 28, "group": "real", "ink": 422487, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003063.pdf", "page": 29, "group": "real", "ink": 113488, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 1, "group": "real", "ink": 883293, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 2, "group": "real", "ink": 1039316, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003066.pdf", "page": 3, "group": "real", "ink": 841563, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 4, "group": "real", "ink": 936319, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003066.pdf", "page": 5, "group": "real", "ink": 857154, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 6, "group": "real", "ink": 629695, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 2}}
+{"file": "003066.pdf", "page": 7, "group": "real", "ink": 768031, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 8, "group": "real", "ink": 1075827, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003066.pdf", "page": 9, "group": "real", "ink": 640482, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 10, "group": "real", "ink": 722456, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003066.pdf", "page": 11, "group": "real", "ink": 793878, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 12, "group": "real", "ink": 865445, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 2}}
+{"file": "003066.pdf", "page": 13, "group": "real", "ink": 834588, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003066.pdf", "page": 14, "group": "real", "ink": 518040, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003066.pdf", "page": 15, "group": "real", "ink": 993509, "coverage": 0.9999959738663666, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {"white_path": 1}}
+{"file": "003067.pdf", "page": 0, "group": "real", "ink": 183651, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 1, "group": "real", "ink": 14560, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 2, "group": "real", "ink": 155653, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 3, "group": "real", "ink": 151707, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 4, "group": "real", "ink": 593506, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 5, "group": "real", "ink": 709102, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 6, "group": "real", "ink": 207754, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 7, "group": "real", "ink": 204304, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 8, "group": "real", "ink": 370502, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 9, "group": "real", "ink": 272725, "coverage": 1.0, "missed": {}, "phantoms": {"word": 1}}
+{"file": "003067.pdf", "page": 10, "group": "real", "ink": 464934, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 11, "group": "real", "ink": 529327, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 12, "group": "real", "ink": 456346, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 13, "group": "real", "ink": 339105, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 14, "group": "real", "ink": 513508, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 15, "group": "real", "ink": 351050, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 16, "group": "real", "ink": 257929, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 17, "group": "real", "ink": 193073, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 18, "group": "real", "ink": 198806, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 19, "group": "real", "ink": 277655, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003067.pdf", "page": 20, "group": "real", "ink": 259274, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003068.pdf", "page": 0, "group": "real", "ink": 1470579, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003068.pdf", "page": 4, "group": "real", "ink": 580698, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003068.pdf", "page": 5, "group": "real", "ink": 425634, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003068.pdf", "page": 6, "group": "real", "ink": 422600, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003068.pdf", "page": 11, "group": "real", "ink": 1041689, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 0, "group": "real", "ink": 1821090, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 1, "group": "real", "ink": 752970, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 2, "group": "real", "ink": 817160, "coverage": 1.0, "missed": {}, "phantoms": {"image": 2}}
+{"file": "003071.pdf", "page": 5, "group": "real", "ink": 812571, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 6, "group": "real", "ink": 810177, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 7, "group": "real", "ink": 586247, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003071.pdf", "page": 8, "group": "real", "ink": 393671, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 9, "group": "real", "ink": 477904, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 10, "group": "real", "ink": 481798, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003071.pdf", "page": 11, "group": "real", "ink": 896137, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 0, "group": "real", "ink": 236119, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 1, "group": "real", "ink": 472635, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 2, "group": "real", "ink": 488771, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 4, "group": "real", "ink": 242432, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 6, "group": "real", "ink": 218760, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 7, "group": "real", "ink": 201923, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 8, "group": "real", "ink": 220712, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 9, "group": "real", "ink": 171563, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 10, "group": "real", "ink": 170694, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 11, "group": "real", "ink": 278731, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003072.pdf", "page": 12, "group": "real", "ink": 261825, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003074.pdf", "page": 0, "group": "real", "ink": 799359, "coverage": 0.9999937449881717, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003074.pdf", "page": 1, "group": "real", "ink": 929643, "coverage": 0.9999978486365196, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003074.pdf", "page": 2, "group": "real", "ink": 361322, "coverage": 0.9999889295420705, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003074.pdf", "page": 3, "group": "real", "ink": 782190, "coverage": 0.9999923292294711, "missed": {"text": 4, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003074.pdf", "page": 4, "group": "real", "ink": 683052, "coverage": 0.9999941439304767, "missed": {"text": 4, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003074.pdf", "page": 6, "group": "real", "ink": 598476, "coverage": 0.9999899745353197, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003077.pdf", "page": 16, "group": "real", "ink": 95305, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003077.pdf", "page": 17, "group": "real", "ink": 101024, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003077.pdf", "page": 18, "group": "real", "ink": 186394, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003077.pdf", "page": 19, "group": "real", "ink": 72327, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003077.pdf", "page": 20, "group": "real", "ink": 78106, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003077.pdf", "page": 21, "group": "real", "ink": 99986, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003077.pdf", "page": 22, "group": "real", "ink": 91457, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003077.pdf", "page": 23, "group": "real", "ink": 89151, "coverage": 1.0, "missed": {}, "phantoms": {"word": 20}}
+{"file": "003158.pdf", "page": 10, "group": "real", "ink": 71049, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003158.pdf", "page": 11, "group": "real", "ink": 84019, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003158.pdf", "page": 16, "group": "real", "ink": 62873, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 0, "group": "real", "ink": 424513, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 1, "group": "real", "ink": 334150, "coverage": 0.9998114619183002, "missed": {"text": 24, "image": 0, "vector": 0, "annot": 0, "other": 39}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 2, "group": "real", "ink": 416150, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 3, "group": "real", "ink": 301139, "coverage": 0.9999767549204852, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 7}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 5, "group": "real", "ink": 373813, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 6, "group": "real", "ink": 405853, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 7, "group": "real", "ink": 281853, "coverage": 0.9999787123074795, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 8, "group": "real", "ink": 363053, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 9, "group": "real", "ink": 292413, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 10, "group": "real", "ink": 1704196, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 11, "group": "real", "ink": 1721656, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 12, "group": "real", "ink": 1704109, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 13, "group": "real", "ink": 1720124, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 14, "group": "real", "ink": 1706547, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 15, "group": "real", "ink": 1722949, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 16, "group": "real", "ink": 1704485, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 17, "group": "real", "ink": 365545, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 18, "group": "real", "ink": 428062, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 19, "group": "real", "ink": 343667, "coverage": 0.9999912706195241, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 20, "group": "real", "ink": 361542, "coverage": 0.999991702208872, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003161.pdf", "page": 21, "group": "real", "ink": 1465614, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 22, "group": "real", "ink": 1187475, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 23, "group": "real", "ink": 1197601, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 24, "group": "real", "ink": 1561227, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003161.pdf", "page": 25, "group": "real", "ink": 1721382, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 26, "group": "real", "ink": 374604, "coverage": 0.999989322057426, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003161.pdf", "page": 27, "group": "real", "ink": 270545, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003161.pdf", "page": 28, "group": "real", "ink": 341699, "coverage": 0.9999912203430504, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003161.pdf", "page": 29, "group": "real", "ink": 622748, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003168.pdf", "page": 1, "group": "real", "ink": 100562, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 2, "group": "real", "ink": 128779, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 3, "group": "real", "ink": 178469, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 4, "group": "real", "ink": 214833, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 5, "group": "real", "ink": 198964, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 6, "group": "real", "ink": 185289, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 7, "group": "real", "ink": 142541, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 8, "group": "real", "ink": 164076, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 9, "group": "real", "ink": 153617, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 10, "group": "real", "ink": 161483, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 11, "group": "real", "ink": 177149, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 12, "group": "real", "ink": 191828, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 13, "group": "real", "ink": 157335, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 14, "group": "real", "ink": 204691, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003168.pdf", "page": 15, "group": "real", "ink": 73071, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003169.pdf", "page": 2, "group": "real", "ink": 172539, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003169.pdf", "page": 3, "group": "real", "ink": 165789, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003169.pdf", "page": 4, "group": "real", "ink": 149113, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003169.pdf", "page": 6, "group": "real", "ink": 1150604, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 0, "group": "real", "ink": 667106, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 7, "group": "real", "ink": 589219, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 8, "group": "real", "ink": 90639, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 9, "group": "real", "ink": 586617, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 10, "group": "real", "ink": 74638, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 11, "group": "real", "ink": 588728, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 12, "group": "real", "ink": 69906, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 13, "group": "real", "ink": 589129, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 14, "group": "real", "ink": 65626, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 15, "group": "real", "ink": 571626, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 16, "group": "real", "ink": 99255, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 17, "group": "real", "ink": 587049, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 18, "group": "real", "ink": 80315, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 19, "group": "real", "ink": 585281, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 20, "group": "real", "ink": 75103, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 21, "group": "real", "ink": 585441, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 22, "group": "real", "ink": 69682, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 23, "group": "real", "ink": 585369, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 24, "group": "real", "ink": 126020, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 25, "group": "real", "ink": 587885, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 26, "group": "real", "ink": 110296, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 27, "group": "real", "ink": 587410, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 28, "group": "real", "ink": 81097, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003170.pdf", "page": 29, "group": "real", "ink": 586831, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003173.pdf", "page": 0, "group": "real", "ink": 166875, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003173.pdf", "page": 1, "group": "real", "ink": 628626, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003174.pdf", "page": 0, "group": "real", "ink": 5888685, "coverage": 0.9999402243455033, "missed": {"text": 14, "image": 0, "vector": 0, "annot": 0, "other": 338}, "phantoms": {"path": 22}}
+{"file": "003179.pdf", "page": 0, "group": "real", "ink": 182484, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003179.pdf", "page": 8, "group": "real", "ink": 137218, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 9, "group": "real", "ink": 161888, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 13, "group": "real", "ink": 63477, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 18, "group": "real", "ink": 54232, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 19, "group": "real", "ink": 44969, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 20, "group": "real", "ink": 53794, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 21, "group": "real", "ink": 45270, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 22, "group": "real", "ink": 18059, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003179.pdf", "page": 24, "group": "real", "ink": 42153, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003181.pdf", "page": 1, "group": "real", "ink": 347475, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003181.pdf", "page": 2, "group": "real", "ink": 456461, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003182.pdf", "page": 0, "group": "real", "ink": 121233, "coverage": 0.9999752542624533, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003182.pdf", "page": 1, "group": "real", "ink": 45678, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003183.pdf", "page": 11, "group": "real", "ink": 1056515, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003183.pdf", "page": 12, "group": "real", "ink": 209707, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003183.pdf", "page": 13, "group": "real", "ink": 232512, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003183.pdf", "page": 18, "group": "real", "ink": 166742, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003183.pdf", "page": 23, "group": "real", "ink": 164423, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003183.pdf", "page": 28, "group": "real", "ink": 551023, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003183.pdf", "page": 29, "group": "real", "ink": 155377, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003184.pdf", "page": 1, "group": "real", "ink": 343455, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003184.pdf", "page": 2, "group": "real", "ink": 377442, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003184.pdf", "page": 3, "group": "real", "ink": 192226, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003184.pdf", "page": 4, "group": "real", "ink": 582249, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003185.pdf", "page": 0, "group": "real", "ink": 1091215, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003185.pdf", "page": 1, "group": "real", "ink": 70297, "coverage": 1.0, "missed": {}, "phantoms": {"word": 9}}
+{"file": "003185.pdf", "page": 2, "group": "real", "ink": 1012096, "coverage": 1.0, "missed": {}, "phantoms": {"word": 9}}
+{"file": "003185.pdf", "page": 3, "group": "real", "ink": 228337, "coverage": 1.0, "missed": {}, "phantoms": {"word": 9, "white_path": 1, "path": 1}}
+{"file": "003185.pdf", "page": 4, "group": "real", "ink": 560161, "coverage": 1.0, "missed": {}, "phantoms": {"word": 9}}
+{"file": "003185.pdf", "page": 6, "group": "real", "ink": 152670, "coverage": 1.0, "missed": {}, "phantoms": {"word": 9}}
+{"file": "003185.pdf", "page": 7, "group": "real", "ink": 176141, "coverage": 1.0, "missed": {}, "phantoms": {"word": 9}}
+{"file": "003185.pdf", "page": 8, "group": "real", "ink": 324980, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003185.pdf", "page": 10, "group": "real", "ink": 185793, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003185.pdf", "page": 11, "group": "real", "ink": 165073, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 5}}
+{"file": "003185.pdf", "page": 13, "group": "real", "ink": 321575, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 2}}
+{"file": "003185.pdf", "page": 15, "group": "real", "ink": 168879, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003185.pdf", "page": 17, "group": "real", "ink": 377998, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003186.pdf", "page": 0, "group": "real", "ink": 2068019, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003186.pdf", "page": 3, "group": "real", "ink": 137213, "coverage": 0.9999854241216212, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 4, "group": "real", "ink": 847191, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 5, "group": "real", "ink": 949140, "coverage": 0.9985207661672673, "missed": {"text": 1404, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {"word": 9, "white_path": 1}}
+{"file": "003186.pdf", "page": 6, "group": "real", "ink": 378771, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 8, "group": "real", "ink": 338543, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 9, "group": "real", "ink": 555012, "coverage": 0.999992792948621, "missed": {"text": 4, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 11, "group": "real", "ink": 381545, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 13, "group": "real", "ink": 895793, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003186.pdf", "page": 14, "group": "real", "ink": 374992, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 15, "group": "real", "ink": 311695, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 16, "group": "real", "ink": 434101, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 18, "group": "real", "ink": 895726, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003186.pdf", "page": 19, "group": "real", "ink": 394975, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 20, "group": "real", "ink": 499447, "coverage": 0.999965962354364, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 17}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 21, "group": "real", "ink": 413234, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 22, "group": "real", "ink": 362822, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 25, "group": "real", "ink": 397822, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 26, "group": "real", "ink": 350241, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 27, "group": "real", "ink": 307703, "coverage": 0.9998732544044094, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 39}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 28, "group": "real", "ink": 313443, "coverage": 0.9999330021726438, "missed": {"text": 5, "image": 0, "vector": 0, "annot": 0, "other": 16}, "phantoms": {"white_path": 1}}
+{"file": "003186.pdf", "page": 29, "group": "real", "ink": 464455, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003187.pdf", "page": 0, "group": "real", "ink": 1006331, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003190.pdf", "page": 0, "group": "real", "ink": 256598, "coverage": 0.9999922057069813, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"image": 5}}
+{"file": "003193.pdf", "page": 2, "group": "real", "ink": 287758, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003193.pdf", "page": 3, "group": "real", "ink": 320457, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003193.pdf", "page": 5, "group": "real", "ink": 412660, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 1, "group": "real", "ink": 247211, "coverage": 0.9999797743627913, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003194.pdf", "page": 2, "group": "real", "ink": 243195, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 3, "group": "real", "ink": 215723, "coverage": 0.9999768221283776, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003194.pdf", "page": 4, "group": "real", "ink": 253709, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 5, "group": "real", "ink": 261400, "coverage": 0.9999043611323641, "missed": {"text": 6, "image": 0, "vector": 0, "annot": 0, "other": 19}, "phantoms": {}}
+{"file": "003194.pdf", "page": 6, "group": "real", "ink": 261642, "coverage": 0.9999426697548559, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 13}, "phantoms": {}}
+{"file": "003194.pdf", "page": 7, "group": "real", "ink": 257498, "coverage": 0.9999456306456749, "missed": {"text": 5, "image": 0, "vector": 0, "annot": 0, "other": 9}, "phantoms": {}}
+{"file": "003194.pdf", "page": 8, "group": "real", "ink": 283360, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 9, "group": "real", "ink": 259026, "coverage": 0.9999305089064419, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 16}, "phantoms": {}}
+{"file": "003194.pdf", "page": 10, "group": "real", "ink": 275087, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 11, "group": "real", "ink": 256077, "coverage": 0.9999492340194551, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 12}, "phantoms": {}}
+{"file": "003194.pdf", "page": 12, "group": "real", "ink": 240446, "coverage": 0.9999459338063432, "missed": {"text": 4, "image": 0, "vector": 0, "annot": 0, "other": 9}, "phantoms": {}}
+{"file": "003194.pdf", "page": 13, "group": "real", "ink": 251140, "coverage": 0.9999561997292347, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 10}, "phantoms": {}}
+{"file": "003194.pdf", "page": 14, "group": "real", "ink": 258806, "coverage": 0.9999768166116705, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003194.pdf", "page": 15, "group": "real", "ink": 247236, "coverage": 0.9999352845054927, "missed": {"text": 5, "image": 0, "vector": 0, "annot": 0, "other": 11}, "phantoms": {}}
+{"file": "003194.pdf", "page": 16, "group": "real", "ink": 280253, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 17, "group": "real", "ink": 251438, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 18, "group": "real", "ink": 267995, "coverage": 0.9999888057613016, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003194.pdf", "page": 19, "group": "real", "ink": 179134, "coverage": 0.9999665055210066, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003194.pdf", "page": 20, "group": "real", "ink": 208184, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 21, "group": "real", "ink": 231070, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 22, "group": "real", "ink": 274452, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 23, "group": "real", "ink": 273278, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 24, "group": "real", "ink": 294455, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 25, "group": "real", "ink": 287061, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 26, "group": "real", "ink": 226943, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 27, "group": "real", "ink": 188788, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 28, "group": "real", "ink": 377395, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003194.pdf", "page": 29, "group": "real", "ink": 420436, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003196.pdf", "page": 6, "group": "real", "ink": 138386, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003196.pdf", "page": 7, "group": "real", "ink": 138875, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003196.pdf", "page": 8, "group": "real", "ink": 76166, "coverage": 0.9999868707822388, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {"white_path": 2}}
+{"file": "003196.pdf", "page": 13, "group": "real", "ink": 60811, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 4}}
+{"file": "003198.pdf", "page": 0, "group": "real", "ink": 26490742, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003201.pdf", "page": 0, "group": "real", "ink": 268301, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003201.pdf", "page": 1, "group": "real", "ink": 510799, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003205.pdf", "page": 0, "group": "real", "ink": 160540, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003205.pdf", "page": 19, "group": "real", "ink": 497921, "coverage": 1.0, "missed": {}, "phantoms": {"word": 1}}
+{"file": "003205.pdf", "page": 20, "group": "real", "ink": 718199, "coverage": 1.0, "missed": {}, "phantoms": {"word": 1}}
+{"file": "003205.pdf", "page": 21, "group": "real", "ink": 748574, "coverage": 1.0, "missed": {}, "phantoms": {"word": 3}}
+{"file": "003205.pdf", "page": 22, "group": "real", "ink": 739772, "coverage": 1.0, "missed": {}, "phantoms": {"word": 2}}
+{"file": "003205.pdf", "page": 23, "group": "real", "ink": 371575, "coverage": 1.0, "missed": {}, "phantoms": {"word": 2}}
+{"file": "003205.pdf", "page": 24, "group": "real", "ink": 686221, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003205.pdf", "page": 25, "group": "real", "ink": 726244, "coverage": 1.0, "missed": {}, "phantoms": {"word": 1}}
+{"file": "003205.pdf", "page": 26, "group": "real", "ink": 727330, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003205.pdf", "page": 27, "group": "real", "ink": 723478, "coverage": 1.0, "missed": {}, "phantoms": {"word": 3}}
+{"file": "003205.pdf", "page": 28, "group": "real", "ink": 724519, "coverage": 1.0, "missed": {}, "phantoms": {"word": 1}}
+{"file": "003205.pdf", "page": 29, "group": "real", "ink": 728793, "coverage": 1.0, "missed": {}, "phantoms": {"word": 1}}
+{"file": "003206.pdf", "page": 0, "group": "real", "ink": 175388, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 1, "group": "real", "ink": 167981, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 3, "group": "real", "ink": 153952, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 7, "group": "real", "ink": 147790, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 8, "group": "real", "ink": 168671, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 10, "group": "real", "ink": 189433, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 24, "group": "real", "ink": 149190, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 26, "group": "real", "ink": 187249, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 27, "group": "real", "ink": 127438, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 28, "group": "real", "ink": 116892, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003206.pdf", "page": 29, "group": "real", "ink": 105738, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 0, "group": "real", "ink": 750854, "coverage": 0.9999960045494863, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003207.pdf", "page": 1, "group": "real", "ink": 846028, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 4, "group": "real", "ink": 373804, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 5, "group": "real", "ink": 226612, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 6, "group": "real", "ink": 271195, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 7, "group": "real", "ink": 194845, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 8, "group": "real", "ink": 300073, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 10, "group": "real", "ink": 317896, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 12, "group": "real", "ink": 197021, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003207.pdf", "page": 14, "group": "real", "ink": 287184, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003209.pdf", "page": 0, "group": "real", "ink": 202418, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003209.pdf", "page": 4, "group": "real", "ink": 126510, "coverage": 0.9999762864595684, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003210.pdf", "page": 2, "group": "real", "ink": 388444, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003210.pdf", "page": 3, "group": "real", "ink": 510985, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003210.pdf", "page": 5, "group": "real", "ink": 422919, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003210.pdf", "page": 6, "group": "real", "ink": 182429, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 0, "group": "real", "ink": 314038, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 9, "group": "real", "ink": 231829, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 10, "group": "real", "ink": 203503, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 15, "group": "real", "ink": 179540, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 16, "group": "real", "ink": 193081, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 17, "group": "real", "ink": 178198, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 18, "group": "real", "ink": 190067, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 19, "group": "real", "ink": 184885, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 22, "group": "real", "ink": 147063, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 23, "group": "real", "ink": 176102, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003280.pdf", "page": 27, "group": "real", "ink": 194057, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 0, "group": "real", "ink": 1555960, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 1, "group": "real", "ink": 1602565, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 2, "group": "real", "ink": 1569842, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 3, "group": "real", "ink": 1572251, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 4, "group": "real", "ink": 1650820, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 5, "group": "real", "ink": 1523813, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 6, "group": "real", "ink": 1034464, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 9, "group": "real", "ink": 1447414, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 10, "group": "real", "ink": 1612380, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 11, "group": "real", "ink": 1661704, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 12, "group": "real", "ink": 1632897, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 13, "group": "real", "ink": 1654441, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 14, "group": "real", "ink": 1651846, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 15, "group": "real", "ink": 1649874, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 16, "group": "real", "ink": 1647499, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 17, "group": "real", "ink": 1645325, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 18, "group": "real", "ink": 1592525, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 19, "group": "real", "ink": 1571044, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 20, "group": "real", "ink": 1282143, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 21, "group": "real", "ink": 1561303, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 22, "group": "real", "ink": 1316410, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 23, "group": "real", "ink": 984510, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 24, "group": "real", "ink": 1001756, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 25, "group": "real", "ink": 997540, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 26, "group": "real", "ink": 147476, "coverage": 1.0, "missed": {}, "phantoms": {"word": 5}}
+{"file": "003298.pdf", "page": 27, "group": "real", "ink": 162864, "coverage": 1.0, "missed": {}, "phantoms": {"word": 4}}
+{"file": "003298.pdf", "page": 28, "group": "real", "ink": 1625603, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003298.pdf", "page": 29, "group": "real", "ink": 633657, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003316.pdf", "page": 0, "group": "real", "ink": 126195, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003316.pdf", "page": 2, "group": "real", "ink": 195674, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003316.pdf", "page": 17, "group": "real", "ink": 187176, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003398.pdf", "page": 4, "group": "real", "ink": 361611, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003398.pdf", "page": 11, "group": "real", "ink": 1056812, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003398.pdf", "page": 12, "group": "real", "ink": 690898, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003399.pdf", "page": 7, "group": "real", "ink": 870411, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003399.pdf", "page": 8, "group": "real", "ink": 120486, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003399.pdf", "page": 9, "group": "real", "ink": 1003159, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003399.pdf", "page": 10, "group": "real", "ink": 885306, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003399.pdf", "page": 12, "group": "real", "ink": 85574, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003401.pdf", "page": 0, "group": "real", "ink": 637860, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003402.pdf", "page": 0, "group": "real", "ink": 246631, "coverage": 0.9999959453596668, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003402.pdf", "page": 1, "group": "real", "ink": 427093, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003402.pdf", "page": 2, "group": "real", "ink": 427889, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003402.pdf", "page": 3, "group": "real", "ink": 462309, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003402.pdf", "page": 4, "group": "real", "ink": 578067, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003402.pdf", "page": 5, "group": "real", "ink": 16307, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003404.pdf", "page": 0, "group": "real", "ink": 1629892, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 1, "group": "real", "ink": 158617, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 5, "group": "real", "ink": 329808, "coverage": 0.9999939358657158, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003405.pdf", "page": 14, "group": "real", "ink": 416775, "coverage": 0.9999832043668646, "missed": {"text": 0, "image": 2, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003405.pdf", "page": 15, "group": "real", "ink": 838053, "coverage": 0.9999976135160903, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003405.pdf", "page": 16, "group": "real", "ink": 820397, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 17, "group": "real", "ink": 867856, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 18, "group": "real", "ink": 634719, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 20, "group": "real", "ink": 674346, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 21, "group": "real", "ink": 620090, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 23, "group": "real", "ink": 589270, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 24, "group": "real", "ink": 564512, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003405.pdf", "page": 26, "group": "real", "ink": 644588, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003407.pdf", "page": 0, "group": "real", "ink": 265487, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003407.pdf", "page": 1, "group": "real", "ink": 257209, "coverage": 0.9999494574451128, "missed": {"text": 6, "image": 0, "vector": 0, "annot": 0, "other": 7}, "phantoms": {}}
+{"file": "003407.pdf", "page": 2, "group": "real", "ink": 417522, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003408.pdf", "page": 1, "group": "real", "ink": 479985, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003410.pdf", "page": 2, "group": "real", "ink": 240433, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003410.pdf", "page": 3, "group": "real", "ink": 431609, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003410.pdf", "page": 4, "group": "real", "ink": 286244, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003410.pdf", "page": 6, "group": "real", "ink": 287216, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003410.pdf", "page": 7, "group": "real", "ink": 283284, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003410.pdf", "page": 8, "group": "real", "ink": 229154, "coverage": 0.9999956361224329, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003410.pdf", "page": 9, "group": "real", "ink": 254201, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003412.pdf", "page": 1, "group": "real", "ink": 215039, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003412.pdf", "page": 2, "group": "real", "ink": 212801, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003412.pdf", "page": 3, "group": "real", "ink": 206326, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003413.pdf", "page": 15, "group": "real", "ink": 237212, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003413.pdf", "page": 16, "group": "real", "ink": 318726, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003413.pdf", "page": 17, "group": "real", "ink": 370844, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003413.pdf", "page": 18, "group": "real", "ink": 239252, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003413.pdf", "page": 19, "group": "real", "ink": 223042, "coverage": 1.0, "missed": {}, "phantoms": {"path": 1}}
+{"file": "003413.pdf", "page": 20, "group": "real", "ink": 204502, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003415.pdf", "page": 2, "group": "real", "ink": 225993, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003415.pdf", "page": 3, "group": "real", "ink": 311432, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003415.pdf", "page": 4, "group": "real", "ink": 175438, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003415.pdf", "page": 5, "group": "real", "ink": 241977, "coverage": 0.9999917347516499, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003416.pdf", "page": 0, "group": "real", "ink": 376181, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003418.pdf", "page": 8, "group": "real", "ink": 290037, "coverage": 0.9999931043280685, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003418.pdf", "page": 9, "group": "real", "ink": 313350, "coverage": 0.9999936173607786, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003419.pdf", "page": 3, "group": "real", "ink": 248665, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003419.pdf", "page": 6, "group": "real", "ink": 703321, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003419.pdf", "page": 11, "group": "real", "ink": 205742, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003419.pdf", "page": 12, "group": "real", "ink": 738522, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003419.pdf", "page": 15, "group": "real", "ink": 481976, "coverage": 0.9999958504157883, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003419.pdf", "page": 24, "group": "real", "ink": 190258, "coverage": 0.9999789759169129, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003420.pdf", "page": 1, "group": "real", "ink": 235844, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003420.pdf", "page": 2, "group": "real", "ink": 199590, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003420.pdf", "page": 3, "group": "real", "ink": 121338, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003420.pdf", "page": 12, "group": "real", "ink": 228980, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003420.pdf", "page": 13, "group": "real", "ink": 334149, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003421.pdf", "page": 1, "group": "real", "ink": 63836, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003421.pdf", "page": 26, "group": "real", "ink": 689582, "coverage": 0.9999970996922773, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003421.pdf", "page": 29, "group": "real", "ink": 390557, "coverage": 0.9999948791085552, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003422.pdf", "page": 1, "group": "real", "ink": 479057, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003422.pdf", "page": 2, "group": "real", "ink": 236678, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 2, "group": "real", "ink": 155095, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 3, "group": "real", "ink": 268172, "coverage": 0.9999888131497695, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003423.pdf", "page": 4, "group": "real", "ink": 213888, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 5, "group": "real", "ink": 166122, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 6, "group": "real", "ink": 92391, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 7, "group": "real", "ink": 153206, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 8, "group": "real", "ink": 121575, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 11, "group": "real", "ink": 190235, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 12, "group": "real", "ink": 208575, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 13, "group": "real", "ink": 207354, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003423.pdf", "page": 14, "group": "real", "ink": 637573, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003424.pdf", "page": 2, "group": "real", "ink": 465269, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 2}}
+{"file": "003424.pdf", "page": 4, "group": "real", "ink": 251398, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 2}}
+{"file": "003424.pdf", "page": 5, "group": "real", "ink": 289803, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003426.pdf", "page": 5, "group": "real", "ink": 981717, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003426.pdf", "page": 6, "group": "real", "ink": 890924, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003427.pdf", "page": 7, "group": "real", "ink": 639295, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003427.pdf", "page": 9, "group": "real", "ink": 454474, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003429.pdf", "page": 0, "group": "real", "ink": 610765, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003430.pdf", "page": 0, "group": "real", "ink": 820969, "coverage": 0.9999866011993145, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 11}, "phantoms": {}}
+{"file": "003430.pdf", "page": 1, "group": "real", "ink": 373255, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003431.pdf", "page": 0, "group": "real", "ink": 186601, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003431.pdf", "page": 1, "group": "real", "ink": 245082, "coverage": 1.0, "missed": {}, "phantoms": {"word": 4}}
+{"file": "003431.pdf", "page": 2, "group": "real", "ink": 102660, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003431.pdf", "page": 3, "group": "real", "ink": 245242, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003431.pdf", "page": 4, "group": "real", "ink": 172612, "coverage": 1.0, "missed": {}, "phantoms": {"word": 36}}
+{"file": "003431.pdf", "page": 5, "group": "real", "ink": 98205, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003431.pdf", "page": 6, "group": "real", "ink": 113527, "coverage": 1.0, "missed": {}, "phantoms": {"word": 5}}
+{"file": "003431.pdf", "page": 7, "group": "real", "ink": 127679, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003431.pdf", "page": 8, "group": "real", "ink": 237982, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003431.pdf", "page": 9, "group": "real", "ink": 188278, "coverage": 1.0, "missed": {}, "phantoms": {"word": 2}}
+{"file": "003431.pdf", "page": 10, "group": "real", "ink": 70429, "coverage": 1.0, "missed": {}, "phantoms": {"word": 3}}
+{"file": "003433.pdf", "page": 3, "group": "real", "ink": 250864, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003433.pdf", "page": 4, "group": "real", "ink": 296574, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003433.pdf", "page": 6, "group": "real", "ink": 249886, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003433.pdf", "page": 7, "group": "real", "ink": 190582, "coverage": 0.9998478345279197, "missed": {"text": 5, "image": 0, "vector": 0, "annot": 0, "other": 24}, "phantoms": {}}
+{"file": "003433.pdf", "page": 8, "group": "real", "ink": 212600, "coverage": 0.9998635936030104, "missed": {"text": 5, "image": 0, "vector": 0, "annot": 0, "other": 24}, "phantoms": {}}
+{"file": "003433.pdf", "page": 9, "group": "real", "ink": 573240, "coverage": 0.9999738329495499, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 15}, "phantoms": {}}
+{"file": "003433.pdf", "page": 12, "group": "real", "ink": 230904, "coverage": 0.9999133839171257, "missed": {"text": 4, "image": 0, "vector": 0, "annot": 0, "other": 16}, "phantoms": {}}
+{"file": "003433.pdf", "page": 14, "group": "real", "ink": 244089, "coverage": 0.999991806267386, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003433.pdf", "page": 15, "group": "real", "ink": 476538, "coverage": 0.9999412428809454, "missed": {"text": 1, "image": 1, "vector": 0, "annot": 0, "other": 26}, "phantoms": {}}
+{"file": "003433.pdf", "page": 16, "group": "real", "ink": 196563, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003434.pdf", "page": 0, "group": "real", "ink": 393768, "coverage": 0.9999847626013287, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003434.pdf", "page": 1, "group": "real", "ink": 165167, "coverage": 0.9999636731308312, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {}}
+{"file": "003437.pdf", "page": 0, "group": "real", "ink": 228836, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003437.pdf", "page": 1, "group": "real", "ink": 298708, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003437.pdf", "page": 2, "group": "real", "ink": 238281, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003437.pdf", "page": 3, "group": "real", "ink": 244436, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003437.pdf", "page": 4, "group": "real", "ink": 201324, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003437.pdf", "page": 5, "group": "real", "ink": 218229, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003437.pdf", "page": 6, "group": "real", "ink": 172493, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003437.pdf", "page": 7, "group": "real", "ink": 251896, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003439.pdf", "page": 1, "group": "real", "ink": 268418, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003439.pdf", "page": 2, "group": "real", "ink": 161706, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 0, "group": "real", "ink": 369015, "coverage": 0.9999783206644717, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 8}, "phantoms": {}}
+{"file": "003441.pdf", "page": 1, "group": "real", "ink": 451538, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 2, "group": "real", "ink": 266871, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 3, "group": "real", "ink": 402079, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 5, "group": "real", "ink": 457136, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 6, "group": "real", "ink": 413000, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 7, "group": "real", "ink": 462833, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 8, "group": "real", "ink": 428698, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 9, "group": "real", "ink": 476435, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 11, "group": "real", "ink": 366674, "coverage": 0.9999918183454513, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003441.pdf", "page": 12, "group": "real", "ink": 364132, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 13, "group": "real", "ink": 442263, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 14, "group": "real", "ink": 372444, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 15, "group": "real", "ink": 296098, "coverage": 0.9999729819181488, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 8}, "phantoms": {}}
+{"file": "003441.pdf", "page": 16, "group": "real", "ink": 417307, "coverage": 0.999995207365321, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003441.pdf", "page": 17, "group": "real", "ink": 504488, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 18, "group": "real", "ink": 384706, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 19, "group": "real", "ink": 453952, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 20, "group": "real", "ink": 300117, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 21, "group": "real", "ink": 310350, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 22, "group": "real", "ink": 367293, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 23, "group": "real", "ink": 408652, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 24, "group": "real", "ink": 340480, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 25, "group": "real", "ink": 344737, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 26, "group": "real", "ink": 379683, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 27, "group": "real", "ink": 301050, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003441.pdf", "page": 28, "group": "real", "ink": 414595, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003442.pdf", "page": 0, "group": "real", "ink": 234249, "coverage": 0.9999573103833954, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 8}, "phantoms": {}}
+{"file": "003442.pdf", "page": 5, "group": "real", "ink": 561103, "coverage": 0.9999964355920392, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003442.pdf", "page": 6, "group": "real", "ink": 507916, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003443.pdf", "page": 1, "group": "real", "ink": 223423, "coverage": 0.999982096740264, "missed": {"text": 4, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003484.pdf", "page": 0, "group": "real", "ink": 74818, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 0, "group": "real", "ink": 399428, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 1, "group": "real", "ink": 416121, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 2, "group": "real", "ink": 398276, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 3, "group": "real", "ink": 340028, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 4, "group": "real", "ink": 971533, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 5, "group": "real", "ink": 481075, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 6, "group": "real", "ink": 461242, "coverage": 0.9999067734508132, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 43}, "phantoms": {}}
+{"file": "003602.pdf", "page": 7, "group": "real", "ink": 479354, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 8, "group": "real", "ink": 785798, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 9, "group": "real", "ink": 603503, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 10, "group": "real", "ink": 423820, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 11, "group": "real", "ink": 426018, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 13, "group": "real", "ink": 457081, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 14, "group": "real", "ink": 427865, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 15, "group": "real", "ink": 443204, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 16, "group": "real", "ink": 696606, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 17, "group": "real", "ink": 427111, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 18, "group": "real", "ink": 447386, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 19, "group": "real", "ink": 412070, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 20, "group": "real", "ink": 410762, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 21, "group": "real", "ink": 782537, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 22, "group": "real", "ink": 429603, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 23, "group": "real", "ink": 557827, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 24, "group": "real", "ink": 491859, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 25, "group": "real", "ink": 680572, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 26, "group": "real", "ink": 406667, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 27, "group": "real", "ink": 841778, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 28, "group": "real", "ink": 421897, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003602.pdf", "page": 29, "group": "real", "ink": 386619, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 0, "group": "real", "ink": 183390, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 9, "group": "real", "ink": 213568, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 10, "group": "real", "ink": 252161, "coverage": 0.9999841371187456, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003627.pdf", "page": 11, "group": "real", "ink": 208887, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 12, "group": "real", "ink": 256071, "coverage": 0.999988284499221, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003627.pdf", "page": 13, "group": "real", "ink": 188095, "coverage": 0.9999946835375741, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003627.pdf", "page": 14, "group": "real", "ink": 242709, "coverage": 0.9999876395189301, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003627.pdf", "page": 15, "group": "real", "ink": 255908, "coverage": 0.9999921846913734, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003627.pdf", "page": 16, "group": "real", "ink": 200100, "coverage": 0.9999950024987506, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003627.pdf", "page": 17, "group": "real", "ink": 170810, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 18, "group": "real", "ink": 243277, "coverage": 0.9999958894593406, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003627.pdf", "page": 19, "group": "real", "ink": 139524, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 20, "group": "real", "ink": 830155, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 22, "group": "real", "ink": 1058376, "coverage": 0.999975434061241, "missed": {"text": 26, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003627.pdf", "page": 23, "group": "real", "ink": 366352, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003627.pdf", "page": 24, "group": "real", "ink": 223659, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003633.pdf", "page": 0, "group": "real", "ink": 937916, "coverage": 0.9999850732901454, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 13}, "phantoms": {}}
+{"file": "003633.pdf", "page": 1, "group": "real", "ink": 1439112, "coverage": 0.9999979153811517, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003633.pdf", "page": 2, "group": "real", "ink": 1673487, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003633.pdf", "page": 3, "group": "real", "ink": 1332464, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003638.pdf", "page": 4, "group": "real", "ink": 118779, "coverage": 0.999966324013504, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003641.pdf", "page": 0, "group": "real", "ink": 1215000, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003641.pdf", "page": 16, "group": "real", "ink": 195301, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003647.pdf", "page": 0, "group": "real", "ink": 97654, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003664.pdf", "page": 0, "group": "real", "ink": 155532, "coverage": 0.9999871409099093, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003665.pdf", "page": 1, "group": "real", "ink": 322980, "coverage": 0.999981422998328, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {}}
+{"file": "003667.pdf", "page": 0, "group": "real", "ink": 1667710, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 2, "group": "real", "ink": 1676947, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 4, "group": "real", "ink": 684255, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003667.pdf", "page": 5, "group": "real", "ink": 683048, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003667.pdf", "page": 9, "group": "real", "ink": 1677016, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 10, "group": "real", "ink": 1677016, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 12, "group": "real", "ink": 169567, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003667.pdf", "page": 13, "group": "real", "ink": 843452, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 14, "group": "real", "ink": 1675445, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 17, "group": "real", "ink": 1677016, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 18, "group": "real", "ink": 848415, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003667.pdf", "page": 20, "group": "real", "ink": 1677010, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003667.pdf", "page": 22, "group": "real", "ink": 1667257, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 2, "group": "real", "ink": 720202, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 3, "group": "real", "ink": 732190, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 5, "group": "real", "ink": 671841, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 22, "group": "real", "ink": 290299, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 23, "group": "real", "ink": 785261, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 24, "group": "real", "ink": 688913, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 25, "group": "real", "ink": 665988, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003668.pdf", "page": 26, "group": "real", "ink": 687594, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003669.pdf", "page": 2, "group": "real", "ink": 209540, "coverage": 0.9999093251885082, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 19}, "phantoms": {}}
+{"file": "003670.pdf", "page": 0, "group": "real", "ink": 270036, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003670.pdf", "page": 1, "group": "real", "ink": 512598, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003670.pdf", "page": 2, "group": "real", "ink": 396054, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003670.pdf", "page": 4, "group": "real", "ink": 695328, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003670.pdf", "page": 5, "group": "real", "ink": 419128, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003672.pdf", "page": 2, "group": "real", "ink": 231517, "coverage": 0.9999913613255182, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003672.pdf", "page": 3, "group": "real", "ink": 256251, "coverage": 0.9999375612192732, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 14}, "phantoms": {}}
+{"file": "003672.pdf", "page": 5, "group": "real", "ink": 218547, "coverage": 0.999899335154452, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 22}, "phantoms": {}}
+{"file": "003672.pdf", "page": 6, "group": "real", "ink": 222543, "coverage": 0.9999460778366428, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 10}, "phantoms": {}}
+{"file": "003672.pdf", "page": 7, "group": "real", "ink": 196941, "coverage": 0.9999695340228799, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {}}
+{"file": "003676.pdf", "page": 9, "group": "real", "ink": 101454, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003676.pdf", "page": 10, "group": "real", "ink": 82471, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003678.pdf", "page": 0, "group": "real", "ink": 181929, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003678.pdf", "page": 1, "group": "real", "ink": 670252, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003678.pdf", "page": 2, "group": "real", "ink": 684206, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003678.pdf", "page": 3, "group": "real", "ink": 224950, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003680.pdf", "page": 0, "group": "real", "ink": 206556, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003681.pdf", "page": 0, "group": "real", "ink": 122833, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003688.pdf", "page": 0, "group": "real", "ink": 46425, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003690.pdf", "page": 22, "group": "real", "ink": 89144, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003691.pdf", "page": 0, "group": "real", "ink": 102250, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003692.pdf", "page": 0, "group": "real", "ink": 113302, "coverage": 0.9999911740304672, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003694.pdf", "page": 0, "group": "real", "ink": 1002324, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003694.pdf", "page": 1, "group": "real", "ink": 1088655, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003694.pdf", "page": 7, "group": "real", "ink": 601088, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003695.pdf", "page": 1, "group": "real", "ink": 149196, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 2, "group": "real", "ink": 236530, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 3, "group": "real", "ink": 172549, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 4, "group": "real", "ink": 156388, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 5, "group": "real", "ink": 181311, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 6, "group": "real", "ink": 212011, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 7, "group": "real", "ink": 207389, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 8, "group": "real", "ink": 133283, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 9, "group": "real", "ink": 228669, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 10, "group": "real", "ink": 206686, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003695.pdf", "page": 11, "group": "real", "ink": 115461, "coverage": 1.0, "missed": {}, "phantoms": {"word": 19}}
+{"file": "003697.pdf", "page": 1, "group": "real", "ink": 251628, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003697.pdf", "page": 2, "group": "real", "ink": 308241, "coverage": 0.9999870231409839, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003697.pdf", "page": 3, "group": "real", "ink": 448752, "coverage": 0.9999688023674547, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 14}, "phantoms": {}}
+{"file": "003697.pdf", "page": 5, "group": "real", "ink": 411471, "coverage": 0.9999270908520892, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 30}, "phantoms": {}}
+{"file": "003697.pdf", "page": 7, "group": "real", "ink": 455341, "coverage": 0.9999714499682656, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 11}, "phantoms": {}}
+{"file": "003697.pdf", "page": 10, "group": "real", "ink": 257553, "coverage": 0.9999611730401121, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 8}, "phantoms": {}}
+{"file": "003697.pdf", "page": 11, "group": "real", "ink": 544938, "coverage": 0.9999779791462515, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 10}, "phantoms": {}}
+{"file": "003697.pdf", "page": 12, "group": "real", "ink": 453363, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003697.pdf", "page": 13, "group": "real", "ink": 458986, "coverage": 0.9999956425686186, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003697.pdf", "page": 16, "group": "real", "ink": 756048, "coverage": 0.9999920639959368, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {}}
+{"file": "003697.pdf", "page": 17, "group": "real", "ink": 465025, "coverage": 0.9999741949357561, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 10}, "phantoms": {}}
+{"file": "003697.pdf", "page": 18, "group": "real", "ink": 970339, "coverage": 0.9999855720526538, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 12}, "phantoms": {}}
+{"file": "003697.pdf", "page": 19, "group": "real", "ink": 1057507, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003697.pdf", "page": 20, "group": "real", "ink": 401256, "coverage": 0.9999800626034252, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 8}, "phantoms": {}}
+{"file": "003697.pdf", "page": 26, "group": "real", "ink": 465884, "coverage": 0.9999742425153042, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 12}, "phantoms": {}}
+{"file": "003699.pdf", "page": 0, "group": "real", "ink": 2102797, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 1, "group": "real", "ink": 1414132, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 2, "group": "real", "ink": 1049519, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 3, "group": "real", "ink": 1046692, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 4, "group": "real", "ink": 1125263, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 5, "group": "real", "ink": 1574631, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 6, "group": "real", "ink": 1680830, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 7, "group": "real", "ink": 1131119, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 8, "group": "real", "ink": 1103607, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 9, "group": "real", "ink": 1140263, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 10, "group": "real", "ink": 602115, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003699.pdf", "page": 11, "group": "real", "ink": 2103743, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003702.pdf", "page": 0, "group": "real", "ink": 468737, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 1, "group": "real", "ink": 318605, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 2, "group": "real", "ink": 638134, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 3, "group": "real", "ink": 313954, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 4, "group": "real", "ink": 463654, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 5, "group": "real", "ink": 581500, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 6, "group": "real", "ink": 494517, "coverage": 0.9999797782482706, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 10}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 7, "group": "real", "ink": 292837, "coverage": 0.9999931702619546, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 8, "group": "real", "ink": 388932, "coverage": 0.9999665751339566, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 13}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 9, "group": "real", "ink": 453367, "coverage": 0.9999955885629082, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 10, "group": "real", "ink": 701361, "coverage": 0.9999800388102561, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 14}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 11, "group": "real", "ink": 548035, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 12, "group": "real", "ink": 570384, "coverage": 0.9999964935902831, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 13, "group": "real", "ink": 1049281, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 14, "group": "real", "ink": 506729, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 15, "group": "real", "ink": 320313, "coverage": 0.9999937561073076, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 16, "group": "real", "ink": 480440, "coverage": 0.9998001831654317, "missed": {"text": 96, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {"white_path": 2, "path": 1}}
+{"file": "003702.pdf", "page": 17, "group": "real", "ink": 834910, "coverage": 0.9999760453222503, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 20}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 18, "group": "real", "ink": 318941, "coverage": 0.9999874584954584, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 19, "group": "real", "ink": 315501, "coverage": 0.9999873217517535, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 20, "group": "real", "ink": 533175, "coverage": 0.9999568621934637, "missed": {"text": 11, "image": 0, "vector": 0, "annot": 0, "other": 12}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 21, "group": "real", "ink": 490709, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 22, "group": "real", "ink": 251160, "coverage": 0.9999920369485586, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 23, "group": "real", "ink": 286198, "coverage": 0.9999930118309701, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 24, "group": "real", "ink": 825019, "coverage": 0.9999830306938385, "missed": {"text": 9, "image": 3, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 25, "group": "real", "ink": 428762, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 26, "group": "real", "ink": 914293, "coverage": 0.9999956250348631, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 27, "group": "real", "ink": 486477, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 28, "group": "real", "ink": 439745, "coverage": 0.9999909038192589, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {"white_path": 1}}
+{"file": "003702.pdf", "page": 29, "group": "real", "ink": 466855, "coverage": 0.9999464501826049, "missed": {"text": 7, "image": 0, "vector": 0, "annot": 0, "other": 18}, "phantoms": {"white_path": 1}}
+{"file": "003703.pdf", "page": 0, "group": "real", "ink": 669338, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003703.pdf", "page": 2, "group": "real", "ink": 716056, "coverage": 0.9999720692236361, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 20}, "phantoms": {"white_path": 1}}
+{"file": "003703.pdf", "page": 3, "group": "real", "ink": 388640, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003704.pdf", "page": 0, "group": "real", "ink": 1827523, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 4}}
+{"file": "003704.pdf", "page": 10, "group": "real", "ink": 208218, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003704.pdf", "page": 24, "group": "real", "ink": 181583, "coverage": 0.9999669572592148, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {}}
+{"file": "003704.pdf", "page": 27, "group": "real", "ink": 196157, "coverage": 0.9999592163420118, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {"word": 1}}
+{"file": "003704.pdf", "page": 29, "group": "real", "ink": 182518, "coverage": 0.9999561687066482, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003705.pdf", "page": 0, "group": "real", "ink": 1540512, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003736.pdf", "page": 0, "group": "real", "ink": 310136, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003736.pdf", "page": 2, "group": "real", "ink": 185408, "coverage": 0.9999946064894719, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003737.pdf", "page": 5, "group": "real", "ink": 141742, "coverage": 0.9999858898562176, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003737.pdf", "page": 29, "group": "real", "ink": 188334, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003753.pdf", "page": 0, "group": "real", "ink": 54116, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003787.pdf", "page": 2, "group": "real", "ink": 239128, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 0, "group": "real", "ink": 195183, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 1, "group": "real", "ink": 153010, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 2, "group": "real", "ink": 682431, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 3, "group": "real", "ink": 203621, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 4, "group": "real", "ink": 252251, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 5, "group": "real", "ink": 281703, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 6, "group": "real", "ink": 276709, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 7, "group": "real", "ink": 233785, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 8, "group": "real", "ink": 270891, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 9, "group": "real", "ink": 342326, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 10, "group": "real", "ink": 191024, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 11, "group": "real", "ink": 268091, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 12, "group": "real", "ink": 187869, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 13, "group": "real", "ink": 259669, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 14, "group": "real", "ink": 330029, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 15, "group": "real", "ink": 330104, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 16, "group": "real", "ink": 317225, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 17, "group": "real", "ink": 266240, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 18, "group": "real", "ink": 249833, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003823.pdf", "page": 19, "group": "real", "ink": 144278, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003825.pdf", "page": 0, "group": "real", "ink": 599226, "coverage": 0.9999833118055625, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 7}, "phantoms": {}}
+{"file": "003825.pdf", "page": 1, "group": "real", "ink": 459896, "coverage": 0.999973907144224, "missed": {"text": 5, "image": 0, "vector": 0, "annot": 0, "other": 7}, "phantoms": {}}
+{"file": "003825.pdf", "page": 2, "group": "real", "ink": 613273, "coverage": 0.9999771716674303, "missed": {"text": 6, "image": 0, "vector": 0, "annot": 0, "other": 8}, "phantoms": {}}
+{"file": "003826.pdf", "page": 0, "group": "real", "ink": 704414, "coverage": 0.9999105639581269, "missed": {"text": 58, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003826.pdf", "page": 1, "group": "real", "ink": 550806, "coverage": 0.999858389342164, "missed": {"text": 63, "image": 0, "vector": 0, "annot": 0, "other": 15}, "phantoms": {}}
+{"file": "003826.pdf", "page": 2, "group": "real", "ink": 704160, "coverage": 0.9994120654396728, "missed": {"text": 413, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003826.pdf", "page": 3, "group": "real", "ink": 624404, "coverage": 0.9998846900404226, "missed": {"text": 59, "image": 0, "vector": 0, "annot": 0, "other": 13}, "phantoms": {}}
+{"file": "003826.pdf", "page": 4, "group": "real", "ink": 565290, "coverage": 0.9998956287923013, "missed": {"text": 54, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003827.pdf", "page": 0, "group": "real", "ink": 312115, "coverage": 0.9999935921054739, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003828.pdf", "page": 0, "group": "real", "ink": 1565856, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003833.pdf", "page": 1, "group": "real", "ink": 540715, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003833.pdf", "page": 2, "group": "real", "ink": 452420, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 0, "group": "real", "ink": 1435653, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 1, "group": "real", "ink": 479930, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 2, "group": "real", "ink": 330481, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 3, "group": "real", "ink": 287607, "coverage": 0.9999860921326671, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003837.pdf", "page": 4, "group": "real", "ink": 295415, "coverage": 0.9999796895892219, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {}}
+{"file": "003837.pdf", "page": 5, "group": "real", "ink": 289418, "coverage": 0.9999861791595547, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003837.pdf", "page": 6, "group": "real", "ink": 505920, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 7, "group": "real", "ink": 667795, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 8, "group": "real", "ink": 1461051, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 9, "group": "real", "ink": 1493431, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 10, "group": "real", "ink": 125082, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 14, "group": "real", "ink": 910394, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003837.pdf", "page": 15, "group": "real", "ink": 1341646, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 17, "group": "real", "ink": 1483171, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 19, "group": "real", "ink": 1341116, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 21, "group": "real", "ink": 1315906, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 23, "group": "real", "ink": 1313558, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 24, "group": "real", "ink": 911936, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 25, "group": "real", "ink": 1312231, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 27, "group": "real", "ink": 1323012, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003837.pdf", "page": 29, "group": "real", "ink": 1342516, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003838.pdf", "page": 2, "group": "real", "ink": 260158, "coverage": 0.9999807809100624, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003840.pdf", "page": 6, "group": "real", "ink": 203684, "coverage": 0.999960723473616, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 8}, "phantoms": {}}
+{"file": "003841.pdf", "page": 1, "group": "real", "ink": 384367, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003841.pdf", "page": 2, "group": "real", "ink": 390203, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003841.pdf", "page": 4, "group": "real", "ink": 408268, "coverage": 0.9999485631986832, "missed": {"text": 21, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003841.pdf", "page": 5, "group": "real", "ink": 547975, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003841.pdf", "page": 6, "group": "real", "ink": 367552, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003843.pdf", "page": 6, "group": "real", "ink": 236666, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003845.pdf", "page": 0, "group": "real", "ink": 891750, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003845.pdf", "page": 8, "group": "real", "ink": 1484312, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003845.pdf", "page": 9, "group": "real", "ink": 1578263, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003847.pdf", "page": 0, "group": "real", "ink": 895930, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003847.pdf", "page": 1, "group": "real", "ink": 1096514, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 0, "group": "real", "ink": 325375, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 1, "group": "real", "ink": 362425, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 2, "group": "real", "ink": 369206, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 3, "group": "real", "ink": 329288, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 4, "group": "real", "ink": 314715, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 5, "group": "real", "ink": 295318, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 6, "group": "real", "ink": 288929, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 7, "group": "real", "ink": 397938, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 8, "group": "real", "ink": 266998, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 9, "group": "real", "ink": 317143, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 10, "group": "real", "ink": 310930, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 11, "group": "real", "ink": 330277, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 12, "group": "real", "ink": 327517, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 13, "group": "real", "ink": 309859, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 14, "group": "real", "ink": 310189, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 15, "group": "real", "ink": 397653, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 16, "group": "real", "ink": 326631, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 17, "group": "real", "ink": 321664, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 18, "group": "real", "ink": 304877, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 19, "group": "real", "ink": 316618, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 20, "group": "real", "ink": 298105, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 21, "group": "real", "ink": 347075, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 22, "group": "real", "ink": 320308, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 23, "group": "real", "ink": 330785, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 24, "group": "real", "ink": 341292, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 25, "group": "real", "ink": 327712, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 26, "group": "real", "ink": 351956, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 27, "group": "real", "ink": 332096, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 28, "group": "real", "ink": 322845, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003849.pdf", "page": 29, "group": "real", "ink": 322755, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003851.pdf", "page": 1, "group": "real", "ink": 409245, "coverage": 0.9996334713924422, "missed": {"text": 150, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003851.pdf", "page": 4, "group": "real", "ink": 431331, "coverage": 0.999714836169902, "missed": {"text": 123, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003851.pdf", "page": 6, "group": "real", "ink": 384565, "coverage": 0.9998153758142316, "missed": {"text": 71, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003851.pdf", "page": 7, "group": "real", "ink": 1690102, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003856.pdf", "page": 0, "group": "real", "ink": 95519, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003856.pdf", "page": 9, "group": "real", "ink": 144478, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003857.pdf", "page": 1, "group": "real", "ink": 317585, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003857.pdf", "page": 2, "group": "real", "ink": 782514, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003857.pdf", "page": 3, "group": "real", "ink": 466121, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003857.pdf", "page": 4, "group": "real", "ink": 373126, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 2, "group": "real", "ink": 557071, "coverage": 1.0, "missed": {}, "phantoms": {"image": 5}}
+{"file": "003858.pdf", "page": 4, "group": "real", "ink": 404998, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 5, "group": "real", "ink": 262600, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 6, "group": "real", "ink": 492957, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 7, "group": "real", "ink": 500312, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 8, "group": "real", "ink": 308468, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 9, "group": "real", "ink": 1321193, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 17, "group": "real", "ink": 402995, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 18, "group": "real", "ink": 942916, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003858.pdf", "page": 27, "group": "real", "ink": 1281768, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003859.pdf", "page": 5, "group": "real", "ink": 138814, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003859.pdf", "page": 7, "group": "real", "ink": 111871, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003859.pdf", "page": 10, "group": "real", "ink": 130265, "coverage": 0.9999846466817641, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003859.pdf", "page": 11, "group": "real", "ink": 147680, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003859.pdf", "page": 12, "group": "real", "ink": 120465, "coverage": 0.9999833976673723, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003859.pdf", "page": 13, "group": "real", "ink": 120450, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003859.pdf", "page": 14, "group": "real", "ink": 110255, "coverage": 0.999981860233096, "missed": {"text": 1, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003859.pdf", "page": 15, "group": "real", "ink": 153746, "coverage": 0.999986991531487, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003859.pdf", "page": 16, "group": "real", "ink": 149865, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003859.pdf", "page": 19, "group": "real", "ink": 112477, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003859.pdf", "page": 23, "group": "real", "ink": 121040, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 6, "group": "real", "ink": 163414, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 9, "group": "real", "ink": 132317, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 10, "group": "real", "ink": 177068, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 12, "group": "real", "ink": 180514, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 14, "group": "real", "ink": 115468, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 15, "group": "real", "ink": 168539, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 16, "group": "real", "ink": 115003, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 17, "group": "real", "ink": 174336, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 18, "group": "real", "ink": 153815, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 20, "group": "real", "ink": 131361, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003865.pdf", "page": 25, "group": "real", "ink": 187781, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003867.pdf", "page": 0, "group": "real", "ink": 2057225, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003867.pdf", "page": 1, "group": "real", "ink": 1346143, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 2, "group": "real", "ink": 1129914, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 3, "group": "real", "ink": 361671, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 5, "group": "real", "ink": 303087, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 6, "group": "real", "ink": 341078, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 8, "group": "real", "ink": 622007, "coverage": 0.9999903538063076, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 9, "group": "real", "ink": 2008795, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003867.pdf", "page": 10, "group": "real", "ink": 732177, "coverage": 0.9998415683639339, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 116}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 11, "group": "real", "ink": 1493303, "coverage": 0.9999966517177024, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {}}
+{"file": "003867.pdf", "page": 12, "group": "real", "ink": 1233559, "coverage": 0.999995136025111, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 13, "group": "real", "ink": 1201303, "coverage": 0.9999916757054631, "missed": {"text": 5, "image": 0, "vector": 0, "annot": 0, "other": 5}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 14, "group": "real", "ink": 1244327, "coverage": 0.9999991963527273, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 15, "group": "real", "ink": 949010, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003867.pdf", "page": 16, "group": "real", "ink": 2102087, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003867.pdf", "page": 17, "group": "real", "ink": 1192184, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 18, "group": "real", "ink": 1239158, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 19, "group": "real", "ink": 1037374, "coverage": 0.9999363778155227, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 63}, "phantoms": {}}
+{"file": "003867.pdf", "page": 20, "group": "real", "ink": 1020117, "coverage": 0.999997059160861, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 3}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 21, "group": "real", "ink": 957175, "coverage": 0.9999937315537911, "missed": {"text": 6, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 22, "group": "real", "ink": 1187102, "coverage": 0.999998315224808, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 23, "group": "real", "ink": 973305, "coverage": 0.999995890291327, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 24, "group": "real", "ink": 1032961, "coverage": 0.9999970957277187, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003867.pdf", "page": 25, "group": "real", "ink": 1072097, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 26, "group": "real", "ink": 836427, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 27, "group": "real", "ink": 715793, "coverage": 0.9999427208704192, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 41}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 28, "group": "real", "ink": 1042592, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003867.pdf", "page": 29, "group": "real", "ink": 959875, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 1}}
+{"file": "003868.pdf", "page": 21, "group": "real", "ink": 788161, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003868.pdf", "page": 23, "group": "real", "ink": 432527, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003869.pdf", "page": 7, "group": "real", "ink": 259407, "coverage": 0.9999922901078229, "missed": {"text": 2, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003869.pdf", "page": 27, "group": "real", "ink": 229020, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003896.pdf", "page": 0, "group": "real", "ink": 603154, "coverage": 1.0, "missed": {}, "phantoms": {"white_path": 89}}
+{"file": "003896.pdf", "page": 2, "group": "real", "ink": 411238, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003896.pdf", "page": 3, "group": "real", "ink": 658133, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003896.pdf", "page": 4, "group": "real", "ink": 343844, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003897.pdf", "page": 0, "group": "real", "ink": 161425, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003942.pdf", "page": 0, "group": "real", "ink": 252889, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003946.pdf", "page": 0, "group": "real", "ink": 129532, "coverage": 0.999984559799895, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 2}, "phantoms": {}}
+{"file": "003948.pdf", "page": 0, "group": "real", "ink": 175073, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003953.pdf", "page": 0, "group": "real", "ink": 190518, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003953.pdf", "page": 14, "group": "real", "ink": 174253, "coverage": 0.9999770448715374, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003953.pdf", "page": 17, "group": "real", "ink": 203247, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003953.pdf", "page": 18, "group": "real", "ink": 34851, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003957.pdf", "page": 0, "group": "real", "ink": 826351, "coverage": 0.9999927391628981, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 6}, "phantoms": {}}
+{"file": "003957.pdf", "page": 1, "group": "real", "ink": 772037, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003957.pdf", "page": 2, "group": "real", "ink": 1037188, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003957.pdf", "page": 3, "group": "real", "ink": 1246003, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003957.pdf", "page": 4, "group": "real", "ink": 1243747, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003957.pdf", "page": 5, "group": "real", "ink": 555802, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003957.pdf", "page": 6, "group": "real", "ink": 557170, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003959.pdf", "page": 0, "group": "real", "ink": 7994012, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003961.pdf", "page": 0, "group": "real", "ink": 11774791, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003962.pdf", "page": 0, "group": "real", "ink": 735311, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003962.pdf", "page": 1, "group": "real", "ink": 668730, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003962.pdf", "page": 2, "group": "real", "ink": 672686, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003962.pdf", "page": 3, "group": "real", "ink": 648593, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003962.pdf", "page": 5, "group": "real", "ink": 877102, "coverage": 0.9999965796452408, "missed": {"text": 3, "image": 0, "vector": 0, "annot": 0, "other": 0}, "phantoms": {}}
+{"file": "003965.pdf", "page": 0, "group": "real", "ink": 62442, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003969.pdf", "page": 0, "group": "real", "ink": 190372, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003969.pdf", "page": 15, "group": "real", "ink": 174253, "coverage": 0.9999770448715374, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 4}, "phantoms": {}}
+{"file": "003969.pdf", "page": 18, "group": "real", "ink": 203247, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003969.pdf", "page": 19, "group": "real", "ink": 34851, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003971.pdf", "page": 0, "group": "real", "ink": 2091932, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003971.pdf", "page": 2, "group": "real", "ink": 346775, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003971.pdf", "page": 3, "group": "real", "ink": 2103702, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003971.pdf", "page": 4, "group": "real", "ink": 818355, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003971.pdf", "page": 5, "group": "real", "ink": 871819, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003971.pdf", "page": 6, "group": "real", "ink": 859359, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003971.pdf", "page": 7, "group": "real", "ink": 566499, "coverage": 0.99998411294636, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 9}, "phantoms": {}}
+{"file": "003971.pdf", "page": 8, "group": "real", "ink": 525190, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 0, "group": "real", "ink": 1573619, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 1, "group": "real", "ink": 568630, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 2, "group": "real", "ink": 170537, "coverage": 0.9990090127069199, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 169}, "phantoms": {}}
+{"file": "003975.pdf", "page": 3, "group": "real", "ink": 580928, "coverage": 0.9999053238955602, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 55}, "phantoms": {}}
+{"file": "003975.pdf", "page": 4, "group": "real", "ink": 984262, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 5, "group": "real", "ink": 457345, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 6, "group": "real", "ink": 160787, "coverage": 0.9994651308874474, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 86}, "phantoms": {}}
+{"file": "003975.pdf", "page": 7, "group": "real", "ink": 242818, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 8, "group": "real", "ink": 269544, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 9, "group": "real", "ink": 734996, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 10, "group": "real", "ink": 297510, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 11, "group": "real", "ink": 972128, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 12, "group": "real", "ink": 670690, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003975.pdf", "page": 13, "group": "real", "ink": 862268, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003978.pdf", "page": 0, "group": "real", "ink": 319181, "coverage": 0.9999968669814306, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 1}, "phantoms": {}}
+{"file": "003979.pdf", "page": 0, "group": "real", "ink": 1637738, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 1, "group": "real", "ink": 517034, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 2, "group": "real", "ink": 175661, "coverage": 0.999037919629286, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 169}, "phantoms": {}}
+{"file": "003979.pdf", "page": 3, "group": "real", "ink": 529693, "coverage": 0.999896166269896, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 55}, "phantoms": {}}
+{"file": "003979.pdf", "page": 4, "group": "real", "ink": 954633, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 5, "group": "real", "ink": 452333, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 6, "group": "real", "ink": 165911, "coverage": 0.999481649800194, "missed": {"text": 0, "image": 0, "vector": 0, "annot": 0, "other": 86}, "phantoms": {}}
+{"file": "003979.pdf", "page": 7, "group": "real", "ink": 247800, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 8, "group": "real", "ink": 306086, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 9, "group": "real", "ink": 931150, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 10, "group": "real", "ink": 355437, "coverage": 1.0, "missed": {}, "phantoms": {"image": 1}}
+{"file": "003979.pdf", "page": 11, "group": "real", "ink": 1020154, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 12, "group": "real", "ink": 684358, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003979.pdf", "page": 13, "group": "real", "ink": 886107, "coverage": 1.0, "missed": {}, "phantoms": {}}
+{"file": "003980.pdf", "page": 0, "group": "real", "ink": 238306, "coverage": 1.0, "missed": {}, "phantoms": {}}
