@@ -107,3 +107,10 @@ for label, enc, font in (('SYMBOL', 'SymbolEncoding', 'Symbol'), ('ZAPF_DINGBATS
         for i in range(0, 256, 16):
             out.write('    ' + ', '.join(f'0x{c:04x}' if not suffix else str(c) for c in t[i:i + 16]) + ',\n')
         out.write('];\n')
+
+# a ZapfDingbats font's /Differences names its glyphs a1 to a191, which aren't in the main glyph list
+out.write('\n/// ZapfDingbats glyph names (a1 to a191) -> Unicode scalar, sorted by name for binary search.\n')
+out.write(f'pub static ZAPF_NAMES: [(&str, u16); {len(zapf)}] = [\n')
+for n in sorted(zapf):
+    out.write(f'    ({rust_str(n)}, 0x{zapf[n]:04x}),\n')
+out.write('];\n')

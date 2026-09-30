@@ -190,6 +190,17 @@ mod tests {
     }
 
     #[test]
+    fn a_zapf_dingbats_name_in_differences_decodes() {
+        // 003186: /Differences [1 /space /a73] puts the black square (built-in 0x6E, 761) at code 2
+        let pdf = b"%PDF-1.4\n1 0 obj << /Type /Font /Subtype /Type1 /BaseFont /ZapfDingbats /Encoding << /Differences [1 /space /a73] >> >> endobj\ntrailer << >>\n%%EOF\n";
+        let doc = crate::Pdf::index(pdf);
+        let d = doc.dict(1).unwrap();
+        let f = super::Font::load(&doc, &d);
+        assert_eq!(f.unicode(2).as_deref(), Some("\u{25a0}"));
+        assert!((f.advance(2) - 0.761).abs() < 1e-9);
+    }
+
+    #[test]
     fn descent_is_below_the_baseline_whatever_its_sign() {
         assert_eq!(vertical_from(1068.0, 270.0, &[-1011.0, -329.0, 2260.0, 1079.0]), Some((1068.0, -270.0)));
         assert_eq!(vertical_from(905.0, -212.0, &[]), Some((905.0, -212.0)));
@@ -209,6 +220,13 @@ mod tests {
         assert_eq!(vertical_from(0.0, 0.0, &[0.0, -250.0, 1000.0, 900.0]), Some((900.0, -250.0)));
         assert_eq!(vertical_from(0.0, 0.0, &[]), None);
     }
+}
+
+/// Unicode for a ZapfDingbats glyph name (a1 to a191).
+fn zapf_unicode(name: &[u8]) -> Option<String> {
+    let name = std::str::from_utf8(name).ok()?;
+    let k = tables::ZAPF_NAMES.binary_search_by(|(n, _)| n.cmp(&name)).ok()?;
+    char::from_u32(tables::ZAPF_NAMES[k].1 as u32).map(|c| c.to_string())
 }
 
 /// Unicode for a glyph name, by the Adobe Glyph List specification's rules.
@@ -451,6 +469,7 @@ impl Font {
         if let Some(Val::Dict(d)) = &enc {
             if let Some(Val::Array(diff)) = get(d, b"/Differences").map(|v| pdf.direct(v)) {
                 let t = table.get_or_insert_with(|| vec![None; 256]);
+                let zapf = is_symbol(&bare) == Some(true);
                 let mut code = 0usize;
                 let mut i = 0;
                 while i < diff.len() {
@@ -458,7 +477,11 @@ impl Font {
                     if i >= diff.len() { break; }
                     match parse_val(&diff, i) {
                         Val::Num(n) => code = n as usize,
-                        Val::Name(nm) => { if code < 256 { t[code] = glyph_unicode(&nm); } code += 1; }
+                        Val::Name(nm) => {
+                            // a ZapfDingbats font names its glyphs a1 to a191 (Adobe zapfdingbats.txt)
+                            if code < 256 { t[code] = if zapf { zapf_unicode(&nm).or_else(|| glyph_unicode(&nm)) } else { glyph_unicode(&nm) }; }
+                            code += 1;
+                        }
                         _ => {}
                     }
                     i = skip_val(&diff, i).max(i + 1);
