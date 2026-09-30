@@ -201,6 +201,17 @@ mod tests {
     }
 
     #[test]
+    fn a_truetype_symbol_with_no_program_is_the_standard_symbol() {
+        // 004661: /Subtype /TrueType /BaseFont /Symbol, nothing embedded, no /Encoding: 0x44 is Delta, U+2206 in the built-in table (612)
+        let pdf = b"%PDF-1.4\n1 0 obj << /Type /Font /Subtype /TrueType /BaseFont /Symbol >> endobj\ntrailer << >>\n%%EOF\n";
+        let doc = crate::Pdf::index(pdf);
+        let d = doc.dict(1).unwrap();
+        let f = super::Font::load(&doc, &d);
+        assert_eq!(f.unicode(0x44).as_deref(), Some("\u{2206}"));
+        assert!((f.advance(0x44) - 0.612).abs() < 1e-9);
+    }
+
+    #[test]
     fn descent_is_below_the_baseline_whatever_its_sign() {
         assert_eq!(vertical_from(1068.0, 270.0, &[-1011.0, -329.0, 2260.0, 1079.0]), Some((1068.0, -270.0)));
         assert_eq!(vertical_from(905.0, -212.0, &[]), Some((905.0, -212.0)));
@@ -448,8 +459,14 @@ impl Font {
                     if let Some((t, d)) = symbol_table(&bare) { return (Some(from_table(t)), d.into()); }
                     (Some(from_table(&tables::STANDARD)), "Standard".into())
                 }
-                Kind::TrueType if symbolic => (None, "built-in symbolic".into()),
-                Kind::TrueType => (Some(from_table(&tables::WIN_ANSI)), "WinAnsi (default)".into()),
+                Kind::TrueType => {
+                    // a TrueType font named Symbol or ZapfDingbats with no program of its own is the standard
+                    // font, substituted: its built-in encoding applies, as for Type 1 (004661)
+                    if !this.embedded {
+                        if let Some((t, d)) = symbol_table(&bare) { return (Some(from_table(t)), d.into()); }
+                    }
+                    if symbolic { (None, "built-in symbolic".into()) } else { (Some(from_table(&tables::WIN_ANSI)), "WinAnsi (default)".into()) }
+                }
                 _ => (None, "none".into()),
             }
         };

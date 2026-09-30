@@ -56,7 +56,7 @@ Missed ink is 0.001% of all ink (367,662,810 pixels), on 24 pages put down to te
 The two pages under 99.9%:
 
 - 004050 p2, 99.26%, the one page under the 99.5% target. Its text is in three Type 3 fonts (FontMatrix identity, text size 0.1) whose /Widths give 0 to between 97 and 165 of their codes, while ink is drawn where those glyphs are. Boxes follow the advance width, so a zero-width glyph has a zero-width box and its ink falls outside (2,798 pixels "other"). PyMuPDF gives no character box there either. The box from the glyph procedure's d1 operands would cover it.
-- 004661 p26, 99.81%. A Symbol-font "∆" has a zero-width box. The file's ToUnicode maps the code to U+2206 (increment), while the built-in Symbol encoding has U+0394 (Greek capital delta) there; reading font.rs, the width lookup by glyph then searches the built-in table for U+2206, finds nothing and falls back to a missing width of 0 (to be confirmed in the fix). A parser bug: the code's own built-in width should be used when the encoding hasn't moved the glyph.
+- 004661 p26, 99.81%. A Symbol "∆" has a zero-width box. Corrected on 30 September after the fix chunk looked at the file (this line first blamed a ToUnicode map; the font has none): the font is /Subtype /TrueType /BaseFont /Symbol with nothing embedded, no /Encoding, no /Widths and no descriptor. The parser read it with the TrueType default, WinAnsi, so the code decoded as "D", and the width lookup by glyph found no "D" in Symbol's table and gave 0. It is the standard Symbol font, substituted; PyMuPDF reads "∆".
 
 Both are zero-width glyphs, the same class as the ZapfDingbats bug fixed during tuning (7a-3).
 
@@ -71,7 +71,7 @@ Phantoms on 004, sorted one file at a time:
 
 ## 4. Found on held-out, fixed after this report
 
-1. Symbol width by glyph when the ToUnicode differs from the built-in encoding (004661 p26). regions/src/font.rs, advance().
+1. A TrueType font named Symbol or ZapfDingbats with no program and no /Encoding is read with that font's built-in encoding (004661 p26; D82). Done after this report: 004661 p26 goes to 100% and its text reads "∆E".
 2. Type 3 glyphs with a zero /Widths entry that still draw (004050 p2): take the glyph's box from its d0/d1 operands as well as its advance.
 
 Each fix is its own chunk, with a new freeze, and its effect on 004 is reported separately and marked as coming after the held-out run. The numbers above stay as the held-out result.
