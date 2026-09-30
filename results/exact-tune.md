@@ -135,7 +135,7 @@ The code before 4a now takes 10.5 ms a median file, against 7.9 ms on 28 Septemb
 - Marks heldout: at least 99.5% of marks within 1 pt, no extra regions, every miss named.
 - Constructed heldout: every page at least 99.9% ink coverage; phantoms reported by kind and each explained.
 - govdocs1 004: every page at least 99.5%, at least 99% of pages at 99.9% or more, pages at 100% reported but not a target, every page under 99.9% explained.
-- Speed (proposed, not yet decided): keep the plan's median under 5 ms a page, which tune meets at 1.10 ms, and report the slow tail.
+- Speed: median under 5 ms a page, native, from bytes in memory (D79); tune is 1.10 ms. The slowest pages are reported, not failed.
 
 On tune, 003 meets the 004 target (all 967 pages at 99.9% or more), the constructed set meets its coverage target (all 300 at 99.99% or more, no unflagged phantoms) and the marks set meets its target (99.8%).
 
