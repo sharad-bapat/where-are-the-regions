@@ -17,7 +17,7 @@ usage:
   python tools/ink_check.py constructed [split=tune] [--worst=N] [--out=file.jsonl]
   python tools/ink_check.py real <labels.jsonl> <folder of PDFs> [--worst=N] [--out=file.jsonl]
 
-Held-out data (constructed heldout, govdocs1 004) is refused until the rules are frozen.
+Held-out data (constructed heldout, govdocs1 004) is refused unless tools/check_frozen.py passes.
 """
 import json
 import statistics
@@ -29,6 +29,8 @@ from pathlib import Path
 
 import fitz
 import numpy as np
+
+from check_frozen import require_frozen
 
 ROOT = Path(__file__).resolve().parent.parent
 CLI = ROOT / "regions" / "target" / "release" / "regions-cli.exe"
@@ -135,14 +137,14 @@ def check(page, pmap):
 
 def pages_constructed(split):
     if split != "tune":
-        sys.exit("only the tune split is checked until the rules are frozen")
+        require_frozen()
     man = json.loads((ROOT / "data" / "constructed" / "manifest.json").read_text(encoding="utf-8"))
     return [(ROOT / "data" / "constructed" / c["file"], 0, c["kind"]) for c in man["items"] if c["split"] == split]
 
 
 def pages_real(labels, folder):
     if "004" in Path(labels).name or Path(folder).name == "004":
-        sys.exit("govdocs1 004 is held out until the rules are frozen")
+        require_frozen()
     rows = [json.loads(l) for l in Path(labels).read_text(encoding="utf-8").splitlines() if l.strip()]
     return [(Path(folder) / r["file"], r["page"], "real") for r in rows]
 

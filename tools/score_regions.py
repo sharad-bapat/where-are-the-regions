@@ -26,6 +26,8 @@ import tempfile
 from collections import defaultdict
 from pathlib import Path
 
+from check_frozen import require_frozen
+
 ROOT = Path(__file__).resolve().parent.parent
 CLI = ROOT / "regions" / "target" / "release" / "regions-cli.exe"
 COVER = 0.90
@@ -60,7 +62,7 @@ def main():
     show = "--misses" in sys.argv
     cut = next((float(a.split("=", 1)[1]) for a in sys.argv if a.startswith("--cut=")), 0.4)
     if split != "tune":
-        sys.exit("only the tune split is scored until the rules are frozen")
+        require_frozen()
     man = json.loads((ROOT / "data" / "constructed" / "manifest.json").read_text(encoding="utf-8"))
     cases = [c for c in man["items"] if c["split"] == split]
     res = run([ROOT / "data" / "constructed" / c["file"] for c in cases])
