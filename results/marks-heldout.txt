@@ -1,0 +1,17 @@
+split heldout, 95 pages, tolerance 1.0 pt
+kind     expected flags             marks       found  flags ok  worst found  median err
+annot    -                             76    76 100.0%        76     0.000 pt     0.000 pt
+annot    no_appearance                 67    67 100.0%        67     0.000 pt     0.000 pt
+image    -                             56    56 100.0%        56     0.050 pt     0.040 pt
+text     -                            240   240 100.0%       240     0.050 pt     0.038 pt
+text     invisible                     65    65 100.0%        65     0.048 pt     0.036 pt
+vector   annot,stroke                  76    76 100.0%        76     0.000 pt     0.000 pt
+vector   clipped,fill                  41    41 100.0%        41     0.000 pt     0.000 pt
+vector   clipped,fill,shading          57    57 100.0%        57     0.000 pt     0.000 pt
+vector   fill                         109   109 100.0%       109     0.054 pt     0.030 pt
+vector   fill,hidden                   15    15 100.0%        15     0.000 pt     0.000 pt
+vector   fill,offpage                  84    84 100.0%        84     0.000 pt     0.000 pt
+vector   fill,white                    22    22 100.0%        22     0.051 pt     0.040 pt
+vector   stroke                       107   107 100.0%       107     0.050 pt     0.040 pt
+all                                  1015  1015 100.0%      1015
+map regions matching no mark: none

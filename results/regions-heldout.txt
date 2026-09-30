@@ -1,0 +1,75 @@
+split heldout, 300 cases, cut 0.4
+kind        check                           right   confidence min / median / max
+text        ocr box flagged           120/120  100.0%   0.800 / 0.800 / 0.800
+text_ocr    text_layer, not flagged    40/40   100.0%   0.040 / 0.040 / 0.040
+full_scan   one full-page region       20/20   100.0%   0.800 / 0.800 / 0.800
+control     nothing flagged            20/20   100.0%   0.000 / 0.000 / 0.000
+rule        never flagged              20/20   100.0%   0.000 / 0.001 / 0.007
+background  never flagged              20/20   100.0%   0.200 / 0.200 / 0.200
+photo       not flagged                 0/20     0.0%   0.800 / 0.800 / 0.800
+logo        not flagged                 0/20     0.0%   0.800 / 0.800 / 0.800
+blank       not flagged                 0/20     0.0%   0.800 / 0.800 / 0.800
+ocr box edges within 1 pt: 120/120, worst 0.05 pt
+photo flagged (option A can't tell): 20/20
+logo flagged (option A can't tell): 20/20
+blank flagged (option A can't tell): 20/20
+c0009 logo inline free_band [(0.8, [], 103.8, 599.7, 373.3, 689.6)]
+c0023 photo image shrunk_top [(0.8, [], 39.9, 18, 504.9, 395.2)]
+c0025 blank image shrunk_top [(0.8, [], 143.5, 18, 433.9, 184.9)]
+c0039 logo strips shrunk_top [(0.8, [], 226.2, 18, 419.5, 143.3)]
+c0053 photo strips shrunk_top [(0.8, [], 50.6, 18, 570.8, 483.9)]
+c0055 blank inline shrunk_bottom [(0.8, [], 302.2, 672.8, 528.4, 780)]
+c0069 logo strips shrunk_top [(0.8, [], 184.8, 18, 516.5, 164.1)]
+c0083 photo image shrunk_bottom [(0.8, [], 277.4, 508, 455.7, 780)]
+c0085 blank image free_band [(0.8, [], 113.8, 441.2, 264, 505.7)]
+c0099 logo inline shrunk_top [(0.8, [], 51.5, 18, 571.7, 344.1)]
+c0113 photo image shrunk_bottom [(0.8, [], 45.5, 314.1, 565.7, 780)]
+c0115 blank inline shrunk_top [(0.8, [], 120.7, 18, 527, 435.6)]
+c0129 logo form shrunk_bottom [(0.8, [], 109.5, 511.8, 470.9, 780)]
+c0143 photo form shrunk_bottom [(0.8, [], 376.5, 696.3, 492.2, 780)]
+c0145 blank image shrunk_bottom [(0.8, [], 40.2, 314.1, 560.4, 780)]
+c0159 logo image free_band [(0.8, [], 57.7, 425.5, 405.3, 702.4)]
+c0173 photo form free_band [(0.8, [], 103.9, 506.7, 513.8, 751.2)]
+c0175 blank image shrunk_top [(0.8, [], 170.8, 18, 472.4, 178.7)]
+c0189 logo image shrunk_bottom [(0.8, [], 285, 722.7, 518.6, 829.9)]
+c0203 photo image shrunk_bottom [(0.8, [], 158.4, 371.5, 573.7, 780)]
+c0205 blank image shrunk_bottom [(0.8, [], 55.9, 361, 460.8, 780)]
+c0219 logo form shrunk_top [(0.8, [], 162.8, 18, 543.5, 145.3)]
+c0233 photo form shrunk_top [(0.8, [], 78.9, 18, 502.2, 247)]
+c0235 blank strips shrunk_bottom [(0.8, [], 38.4, 446.7, 547.4, 780)]
+c0249 logo image shrunk_top [(0.8, [], 42.3, 18, 553.5, 492.1)]
+c0263 photo inline shrunk_bottom [(0.8, [], 196, 688.8, 461.8, 780)]
+c0265 blank form shrunk_top [(0.8, [], 130.7, 18, 526.7, 446.4)]
+c0279 logo image shrunk_bottom [(0.8, [], 83.7, 743.3, 199.3, 830)]
+c0293 photo form shrunk_top [(0.8, [], 143.4, 18, 341.5, 144.6)]
+c0295 blank strips free_band [(0.081, ['tiny', 'under_text'], 301.3, 743.8, 310.8, 756.7), (0.8, [], 398.6, 541.1, 563.4, 688.2)]
+c0309 logo inline shrunk_bottom [(0.8, [], 186.9, 660.7, 390.1, 780)]
+c0323 photo strips shrunk_top [(0.8, [], 85.3, 18, 386.5, 339.8)]
+c0325 blank form shrunk_bottom [(0.8, [], 148.5, 686.5, 407.7, 780)]
+c0339 logo image shrunk_bottom [(0.8, [], 219.6, 621.6, 525.6, 780)]
+c0353 photo image shrunk_bottom [(0.8, [], 52.3, 571.6, 517.4, 780)]
+c0355 blank inline shrunk_top [(0.8, [], 45.3, 18, 565.5, 344.1)]
+c0369 logo image shrunk_bottom [(0.8, [], 191.6, 681.5, 529, 830)]
+c0383 photo strips shrunk_top [(0.8, [], 346.3, 18, 437.1, 128.3)]
+c0385 blank inline shrunk_bottom [(0.8, [], 71.3, 453.7, 368.4, 780)]
+c0399 logo form shrunk_top [(0.8, [], 111.1, 18, 570.8, 387)]
+c0413 photo form shrunk_bottom [(0.8, [], 129.9, 692.3, 494.1, 829.9)]
+c0415 blank strips shrunk_top [(0.8, [], 267.7, 18, 524.4, 112.4)]
+c0429 logo image shrunk_bottom [(0.8, [], 37.6, 453.9, 557.8, 780)]
+c0443 photo inline shrunk_top [(0.8, [], 40.2, 18, 546.2, 364.7)]
+c0445 blank strips shrunk_bottom [(0.8, [], 246.3, 458.3, 547.6, 780)]
+c0459 logo strips shrunk_top [(0.8, [], 37.3, 18, 543.3, 513.2)]
+c0473 photo form shrunk_top [(0.8, [], 170.1, 18, 561, 266)]
+c0475 blank strips shrunk_bottom [(0.8, [], 200, 592, 328.9, 780)]
+c0489 logo image shrunk_bottom [(0.8, [], 185.8, 719.3, 412.5, 829.9)]
+c0503 photo inline shrunk_bottom [(0.8, [], 48.5, 392.1, 485.8, 780)]
+c0505 blank image shrunk_bottom [(0.8, [], 37.5, 314.1, 557.7, 780)]
+c0519 logo image shrunk_bottom [(0.8, [], 341.1, 653.9, 418, 780)]
+c0533 photo strips shrunk_bottom [(0.8, [], 37.9, 453.9, 558.1, 780)]
+c0535 blank image shrunk_bottom [(0.8, [], 300.6, 741.7, 414.1, 830)]
+c0549 logo inline free_band [(0.8, [], 176.2, 608.8, 545.5, 744.4)]
+c0563 photo strips shrunk_top [(0.8, [], 45.4, 18, 547.9, 516.7)]
+c0565 blank image shrunk_top [(0.8, [], 104.6, 18, 352.6, 115.7)]
+c0579 logo image shrunk_top [(0.8, [], 293.7, 18, 410.6, 101)]
+c0593 photo inline shrunk_top [(0.8, [], 359.9, 18, 483.2, 96.6)]
+c0595 blank form free_band [(0.8, [], 54.4, 519.3, 396.5, 661)]
