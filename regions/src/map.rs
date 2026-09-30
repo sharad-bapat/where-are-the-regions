@@ -5,7 +5,8 @@
 
 use crate::{Annot, Image, Vector, Word};
 
-/// Words on one line, drawn the same way (all visible or all invisible, all page or all annotation).
+/// Words on one line, drawn the same way (all visible or all invisible, all white or none, all page or
+/// all annotation).
 #[derive(Clone, Debug)]
 pub struct Line {
     pub text: String,
@@ -15,7 +16,7 @@ pub struct Line {
     pub order: u32,
     pub glyphs: usize,
     pub unmapped: usize,
-    pub invisible: bool, pub annot: bool, pub offpage: bool, pub hidden: bool,
+    pub invisible: bool, pub white: bool, pub annot: bool, pub offpage: bool, pub hidden: bool,
 }
 
 /// A gap between words wider than this many times the font size splits a line: two columns on one
@@ -30,7 +31,7 @@ pub fn lines(words: &[Word]) -> Vec<Line> {
         let joins = out.last().is_some_and(|l| {
             let p = &words[l.first + l.count - 1];
             let gap = (w.x0 - p.x1).max(p.x0 - w.x1).max(w.y0 - p.y1).max(p.y0 - w.y1);
-            p.line == w.line && p.invisible == w.invisible && p.annot == w.annot && gap <= COLUMN_GAP * p.size.max(w.size)
+            p.line == w.line && p.invisible == w.invisible && p.white == w.white && p.annot == w.annot && gap <= COLUMN_GAP * p.size.max(w.size)
         });
         if joins {
             let l = out.last_mut().unwrap();
@@ -46,7 +47,7 @@ pub fn lines(words: &[Word]) -> Vec<Line> {
         } else {
             out.push(Line {
                 text: w.text.clone(), x0: w.x0, y0: w.y0, x1: w.x1, y1: w.y1, first: i, count: 1, order: w.order,
-                glyphs: w.count, unmapped: w.unmapped, invisible: w.invisible, annot: w.annot, offpage: w.offpage, hidden: w.hidden,
+                glyphs: w.count, unmapped: w.unmapped, invisible: w.invisible, white: w.white, annot: w.annot, offpage: w.offpage, hidden: w.hidden,
             });
         }
     }
@@ -72,6 +73,7 @@ pub fn map(lines: &[Line], images: &[Image], vectors: &[Vector], annots: &[Annot
     for (i, l) in lines.iter().enumerate() {
         let mut flags = Vec::new();
         if l.invisible { flags.push("invisible"); }
+        if l.white { flags.push("white"); }
         if l.annot { flags.push("annot"); }
         if l.offpage { flags.push("offpage"); } else if l.hidden { flags.push("hidden"); }
         // at least half its glyphs have no usable Unicode: drawn text the file can't give as characters
@@ -117,7 +119,7 @@ mod tests {
 
     fn word(text: &str, x0: f64, line: usize, order: u32, invisible: bool) -> Word {
         Word { text: text.into(), x0, y0: 100.0, x1: x0 + 30.0, y1: 110.0, line, font: 0, size: 10.0, unmapped: 0,
-            invisible, annot: false, offpage: false, hidden: false, first: 0, count: 3, order }
+            invisible, white: false, annot: false, offpage: false, hidden: false, first: 0, count: 3, order }
     }
 
     #[test]

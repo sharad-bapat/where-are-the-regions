@@ -171,7 +171,7 @@ mod tests {
 
     fn word(x0: f64, y0: f64, x1: f64, y1: f64, invisible: bool) -> Word {
         Word { text: "w".into(), x0, y0, x1, y1, line: 0, font: 0, size: 10.0, unmapped: 0,
-            invisible, annot: false, offpage: false, hidden: false, first: 0, count: 1, order: 0 }
+            invisible, white: false, annot: false, offpage: false, hidden: false, first: 0, count: 1, order: 0 }
     }
 
     fn one(m: Image, words: &[Word]) -> Region { regions(&[m], words, 600.0, 800.0).remove(0) }

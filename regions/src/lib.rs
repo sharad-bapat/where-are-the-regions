@@ -686,6 +686,9 @@ pub struct Glyph {
     pub font: u32,
     /// Drawn with render mode 3 or 7 (neither filled nor stroked), as OCR layers are.
     pub invisible: bool,
+    /// Painted only in white (the fill for render modes 0 and 4, the stroke for 1 and 5, both for 2
+    /// and 6), so it shows nothing on a white page.
+    pub white: bool,
     /// Drawn by an annotation's appearance stream, not the page's content.
     pub annot: bool,
     /// The box's centre is outside the visible page.
@@ -714,6 +717,8 @@ pub struct Word {
     pub size: f64,
     pub unmapped: usize,
     pub invisible: bool, pub annot: bool, pub offpage: bool,
+    /// Every glyph of it is painted only in white.
+    pub white: bool,
     /// Every glyph of it is hidden by its clip.
     pub hidden: bool,
     /// Index of the word's first glyph in `Page::glyphs`, and how many glyphs it has.
@@ -936,12 +941,13 @@ impl<'p, 'a> Run<'p, 'a> {
     /// (ISO 32000-1 9.4.4), then the text matrix advanced by the glyph's width.
     fn show(&mut self, g: &GState, tm: &mut M, bytes: &[u8]) {
         let invisible = g.tr == 3 || g.tr == 7;
+        let white = match g.tr { 0 | 4 => g.fill_white, 1 | 5 => g.stroke_white, 2 | 6 => g.fill_white && g.stroke_white, _ => false };
         let th = g.tz / 100.0;
         let fid = match g.font { Some(f) => f, None => {
             // text shown before any font was set: it can't be decoded or measured
             for &b in bytes {
                 let (x, y) = apply(&mul(tm, &g.ctm), 0.0, 0.0);
-                self.out.push(blank(b as u32, invisible, self.annot, x, y, self.seq, g.clip));
+                self.out.push(blank(b as u32, invisible, white, self.annot, x, y, self.seq, g.clip));
                 self.seq += 1;
             }
             return;
@@ -959,7 +965,7 @@ impl<'p, 'a> Run<'p, 'a> {
             let size = (trm[2] * trm[2] + trm[3] * trm[3]).sqrt();
             let t = f.unicode(code);
             self.out.push(Glyph {
-                mapped: t.is_some(), text: t.unwrap_or_default(), code, font: fid, invisible, annot: self.annot, offpage: false, clipped: false, hidden: false,
+                mapped: t.is_some(), text: t.unwrap_or_default(), code, font: fid, invisible, white, annot: self.annot, offpage: false, clipped: false, hidden: false,
                 x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size, order: self.seq, ux, uy, ex, ey, dx, dy, quad, clip: g.clip,
             });
             self.seq += 1;
@@ -1277,8 +1283,8 @@ impl<'p, 'a> Run<'p, 'a> {
     }
 }
 
-fn blank(code: u32, invisible: bool, annot: bool, x: f64, y: f64, order: u32, clip: Option<[f64; 4]>) -> Glyph {
-    Glyph { text: String::new(), mapped: false, code, font: u32::MAX, invisible, annot, offpage: false, clipped: false, hidden: false,
+fn blank(code: u32, invisible: bool, white: bool, annot: bool, x: f64, y: f64, order: u32, clip: Option<[f64; 4]>) -> Glyph {
+    Glyph { text: String::new(), mapped: false, code, font: u32::MAX, invisible, white, annot, offpage: false, clipped: false, hidden: false,
             x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size: 0.0, order,
             ux: x, uy: y, ex: x, ey: y, dx: 1.0, dy: 0.0, quad: [(x, y); 4], clip }
 }
@@ -1485,7 +1491,7 @@ fn words(glyphs: &[Glyph]) -> Vec<Word> {
             x1: gs.iter().map(|g| g.x1).fold(f64::MIN, f64::max), y1: gs.iter().map(|g| g.y1).fold(f64::MIN, f64::max),
             line: 0, font: gs[0].font, size: gs[0].size,
             unmapped: gs.iter().filter(|g| !g.mapped).count(),
-            invisible: gs[0].invisible, annot: gs[0].annot, offpage: gs.iter().all(|g| g.offpage), hidden: gs.iter().all(|g| g.hidden),
+            invisible: gs[0].invisible, white: gs[0].white, annot: gs[0].annot, offpage: gs.iter().all(|g| g.offpage), hidden: gs.iter().all(|g| g.hidden),
             first, count: last - first + 1, order: gs.iter().map(|g| g.order).min().unwrap_or(0),
         });
     };
@@ -1501,7 +1507,7 @@ fn words(glyphs: &[Glyph]) -> Vec<Word> {
             let along = vx * p.dx + vy * p.dy;
             let across = (p.dx * vy - p.dy * vx).abs();
             let same_dir = p.dx * g.dx + p.dy * g.dy > 0.99;
-            let same_kind = p.invisible == g.invisible && p.annot == g.annot;
+            let same_kind = p.invisible == g.invisible && p.white == g.white && p.annot == g.annot;
             if !same_dir || !same_kind || across > BASELINE_SHIFT * size || along > WORD_GAP * size || along < -BACKSTEP * size {
                 close(&mut out, f, l);
                 cur = Some((i, i));
@@ -1604,9 +1610,10 @@ pub fn json_str(s: &str) -> String {
 
 fn r1(v: f64) -> f64 { (v * 10.0).round() / 10.0 }
 
-fn flags(invisible: bool, annot: bool, offpage: bool, hidden: bool) -> String {
+fn flags(invisible: bool, white: bool, annot: bool, offpage: bool, hidden: bool) -> String {
     let mut s = String::new();
     if invisible { s.push_str(",\"invisible\":true"); }
+    if white { s.push_str(",\"white\":true"); }
     if annot { s.push_str(",\"annot\":true"); }
     if offpage { s.push_str(",\"offpage\":true"); }
     if hidden { s.push_str(",\"hidden\":true"); }
@@ -1631,13 +1638,13 @@ impl Doc {
                 json_str(&w.text), r1(w.x0), r1(w.y0), r1(w.x1), r1(w.y1), r1(p.glyphs[w.first].oy), w.line,
                 if w.font == u32::MAX { -1 } else { w.font as i64 }, r1(w.size),
                 if w.unmapped > 0 { format!(",\"unmapped\":{}", w.unmapped) } else { String::new() },
-                flags(w.invisible, w.annot, w.offpage, w.hidden)
+                flags(w.invisible, w.white, w.annot, w.offpage, w.hidden)
             )).collect();
             let gl = if glyphs {
                 let g: Vec<String> = p.glyphs.iter().map(|g| format!(
                     "{{\"c\":{},\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"ox\":{},\"oy\":{},\"size\":{}{}{}}}",
                     json_str(if g.mapped { &g.text } else { "\u{fffd}" }), r1(g.x0), r1(g.y0), r1(g.x1), r1(g.y1), r1(g.ox), r1(g.oy), r1(g.size),
-                    if g.mapped { "" } else { ",\"unmapped\":true" }, flags(g.invisible, g.annot, g.offpage, g.hidden)
+                    if g.mapped { "" } else { ",\"unmapped\":true" }, flags(g.invisible, g.white, g.annot, g.offpage, g.hidden)
                 )).collect();
                 format!(",\"glyphs\":[{}]", g.join(","))
             } else { String::new() };
@@ -1834,6 +1841,16 @@ mod tests {
         assert!(v.len() == 1 && v[0].hidden && !v[0].offpage);
         let e = extract(&pdf("q 500 500 10 10 re W n q 100 0 0 100 0 0 cm /A Do Q Q", "")).pages.remove(0);
         assert_eq!(e.map[0].flags, ["hidden"]);
+    }
+
+    #[test]
+    fn white_text_is_flagged() {
+        // 003077: "VerDate" slugs filled white; mode 1 strokes, so the black stroke shows
+        let e = extract(&pdf("1 g BT 100 100 Td (a) Tj ET 0 g BT 200 100 Td (b) Tj ET 1 g 0 G 1 Tr BT 300 100 Td (c) Tj ET 1 G 2 Tr BT 400 100 Td (d) Tj ET", "")).pages.remove(0);
+        let w: Vec<bool> = e.words.iter().map(|w| w.white).collect();
+        assert_eq!(w, [true, false, false, true]);
+        // no font, so the glyphs are also undecodable
+        assert!(e.map[0].flags.contains(&"white") && !e.map[1].flags.contains(&"white"));
     }
 
     #[test]
