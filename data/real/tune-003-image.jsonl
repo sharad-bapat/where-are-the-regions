@@ -177,51 +177,39 @@
 {"file": "003170.pdf", "xref": 299, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 300, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 301, "ocr_words": 7, "label": "text", "sample": ["O16", "0.20", "0.26", "Ganopy", "fuel", "bulk", "density"]}
-{"file": "003170.pdf", "xref": 22, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 23, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 24, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 28, "ocr_words": 32, "label": "text", "sample": ["trees", "per", "\u00a300", "600", "500", "400", "300", "200"]}
-{"file": "003170.pdf", "xref": 32, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 33, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 34, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 38, "ocr_words": 33, "label": "text", "sample": ["trees", "per", "100", "600", "Douglas-fir", "lodgepole", "pine", "500"]}
-{"file": "003170.pdf", "xref": 42, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 43, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 44, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 48, "ocr_words": 33, "label": "text", "sample": ["trees", "per", "100", "600", "Douglas-fir", "lodgepole", "pine", "500"]}
-{"file": "003170.pdf", "xref": 52, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 53, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 54, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 58, "ocr_words": 31, "label": "text", "sample": ["trees", "per", "100", "600", "Douglas-fir", "lodgepole", "pine", "500"]}
-{"file": "003170.pdf", "xref": 62, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 63, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 64, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 68, "ocr_words": 34, "label": "text", "sample": ["rees", "per", "100", "600", "500", "400", "300", "200"]}
-{"file": "003170.pdf", "xref": 72, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 73, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 74, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 78, "ocr_words": 32, "label": "text", "sample": ["trees", "per", "100", "600", "subalpine", "fir", "lodgepole", "pine"]}
-{"file": "003170.pdf", "xref": 82, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 83, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 84, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 88, "ocr_words": 32, "label": "text", "sample": ["trees", "per", "100", "600", "subalpine", "fir", "lodgepole", "pine"]}
-{"file": "003170.pdf", "xref": 92, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 93, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 94, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 98, "ocr_words": 32, "label": "text", "sample": ["trees", "per", "100", "600", "subalpine", "fir", "lodgepole", "pine"]}
-{"file": "003170.pdf", "xref": 102, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 103, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 104, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 108, "ocr_words": 28, "label": "text", "sample": ["trees", "per", "200", "175", "150", "125", "100", "75"]}
-{"file": "003170.pdf", "xref": 112, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 113, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 114, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 118, "ocr_words": 20, "label": "text", "sample": ["trees", "per", "200", "175", "150", "125", "100", "75"]}
-{"file": "003170.pdf", "xref": 122, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 123, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 124, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 128, "ocr_words": 14, "label": "text", "sample": ["trees", "per", "200", "175", "150", "125", "100", "75"]}
-{"file": "003170.pdf", "xref": 132, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003170.pdf", "xref": 133, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003170.pdf", "xref": 134, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003173.pdf", "xref": 188, "ocr_words": 0, "label": "none", "sample": []}
@@ -599,7 +587,6 @@
 {"file": "003415.pdf", "xref": 17, "ocr_words": 16, "label": "text", "sample": ["Location", "Royale", "Cluster", "Western", "Cluster|", "Eastem", "Cluster", "0.0"]}
 {"file": "003415.pdf", "xref": 21, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003416.pdf", "xref": 57, "ocr_words": 6, "label": "text", "sample": ["showing", "the", "time", "and", "cycle-dependent", "min,"]}
-{"file": "003418.pdf", "xref": 142, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003418.pdf", "xref": 155, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003419.pdf", "xref": 14, "ocr_words": 2, "label": "unsure", "sample": ["post", "(new)"]}
 {"file": "003419.pdf", "xref": 181, "ocr_words": 0, "label": "none", "sample": []}
@@ -641,7 +628,6 @@
 {"file": "003423.pdf", "xref": 44, "ocr_words": 4, "label": "unsure", "sample": ["Layer", "Layer", "Spatial", "Layer"]}
 {"file": "003423.pdf", "xref": 48, "ocr_words": 18, "label": "text", "sample": ["Local", "Memory", "Training", "Data", "Input", "Data", "Class", "labels"]}
 {"file": "003423.pdf", "xref": 50, "ocr_words": 13, "label": "text", "sample": ["Start", "optimization", "During", "optimization", "HOST", "Writes", "Training", "Data"]}
-{"file": "003423.pdf", "xref": 51, "ocr_words": 10, "label": "text", "sample": ["End", "optimization", "HOST", "HOST", "Reads", "error", "Reads", "Result"]}
 {"file": "003423.pdf", "xref": 61, "ocr_words": 1, "label": "unsure", "sample": ["par"]}
 {"file": "003423.pdf", "xref": 62, "ocr_words": 21, "label": "text", "sample": ["0.4", "Mult", "Coef", "Mutate", "Sum", "Coef", "0.05", "10"]}
 {"file": "003423.pdf", "xref": 66, "ocr_words": 29, "label": "text", "sample": ["Crossover", "Node", "0.5", "0.5", "Crossover", "Points", "with", "equal"]}
@@ -982,8 +968,6 @@
 {"file": "003736.pdf", "xref": 168, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003736.pdf", "xref": 169, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003736.pdf", "xref": 12, "ocr_words": 0, "label": "none", "sample": []}
-{"file": "003737.pdf", "xref": 17, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
-{"file": "003737.pdf", "xref": 16, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003753.pdf", "xref": 7687, "ocr_words": 10, "label": "text", "sample": ["Agency", "for", "Healthcare", "Research", "and", "Quality", "Advancing", "Excellence"]}
 {"file": "003787.pdf", "xref": 7, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003823.pdf", "xref": 438, "ocr_words": 0, "label": "none", "sample": []}
@@ -1010,7 +994,6 @@
 {"file": "003826.pdf", "xref": 30, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003826.pdf", "xref": 37, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003826.pdf", "xref": 42, "ocr_words": 0, "label": "none", "sample": []}
-{"file": "003826.pdf", "xref": 43, "error": "FzErrorArgument: code=4: pixmap must be grayscale or rgb to write as png"}
 {"file": "003826.pdf", "xref": 44, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003826.pdf", "xref": 55, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003826.pdf", "xref": 56, "ocr_words": 0, "label": "none", "sample": []}
@@ -1311,3 +1294,20 @@
 {"file": "003979.pdf", "xref": 47, "ocr_words": 0, "label": "none", "sample": []}
 {"file": "003979.pdf", "xref": 50, "ocr_words": 17, "label": "text", "sample": ["NORTH", "BYPASS", "ROAD", "ALIGNMENT", "CORE", "AREA", "PERSPECTIVE", "FRAMEWORK"]}
 {"file": "003980.pdf", "xref": 36, "ocr_words": 3, "label": "unsure", "sample": ["Farm", "Service", "Agency"]}
+{"file": "003170.pdf", "xref": 22, "ocr_words": 10, "label": "text", "sample": ["Height", "006", "0.16", "Canopy", "fuel", "bulk", "density", "(kg/m)"]}
+{"file": "003170.pdf", "xref": 32, "ocr_words": 16, "label": "text", "sample": ["total", "available", "branchwood", "Height", "10", "10", "cho", "0.00"]}
+{"file": "003170.pdf", "xref": 42, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 52, "ocr_words": 8, "label": "text", "sample": ["Height", "0.05", "0.10", "015", "Canopy", "fuel", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 62, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 72, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 82, "ocr_words": 11, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 92, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 102, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 112, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 122, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003170.pdf", "xref": 132, "ocr_words": 10, "label": "text", "sample": ["Height", "0.06", "O18", "0.20", "Canopy", "fue!", "bulk", "density"]}
+{"file": "003418.pdf", "xref": 142, "ocr_words": 0, "label": "none", "sample": []}
+{"file": "003423.pdf", "xref": 51, "ocr_words": 10, "label": "text", "sample": ["End", "optimization", "HOST", "HOST", "Reads", "error", "Reads", "Result"]}
+{"file": "003737.pdf", "xref": 17, "ocr_words": 8, "label": "text", "sample": ["Nancy", "Nord", "Acting", "Chainnan,", "Consumer", "Product", "Safety", "Comraission"]}
+{"file": "003737.pdf", "xref": 16, "ocr_words": 0, "label": "none", "sample": []}
+{"file": "003826.pdf", "xref": 43, "ocr_words": 0, "label": "none", "sample": []}

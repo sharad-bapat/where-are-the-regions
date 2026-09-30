@@ -19,8 +19,9 @@ text (D67); "held" means has_text at or above HAS_CUT.
 Calibration (D84): by confidence band, the share right. Target: at 0.9 or more, at least 90% right.
 Inline images (no object) and images that don't decode are counted apart, never dropped.
 
-usage: python tools/score_kinds.py [constructed] [real] [--misses]
-Held-out splits are refused unless tools/check_frozen.py passes (8f).
+usage: python tools/score_kinds.py [constructed] [real] [--heldout] [--misses]
+--heldout scores the constructed heldout split and govdocs1 004 (region labels heldout-004.jsonl,
+image labels heldout-004-image.jsonl) and is refused unless tools/check_frozen.py passes (8f).
 """
 import json
 import subprocess
@@ -31,7 +32,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 THUMBS = ROOT / "regions" / "target" / "release" / "thumbs.exe"
-REAL = Path("C:/Users/sharad/Downloads/05_Research-Reference/Datasets/govdocs1/003")
+GOVDOCS = Path("C:/Users/sharad/Downloads/05_Research-Reference/Datasets/govdocs1")
+REAL = GOVDOCS / "003"
 TEXT = {"text", "text_ocr", "full_scan"}
 BANDS = [(0.9, 1.01), (0.7, 0.9), (0.5, 0.7), (0.0, 0.5)]
 HAS_CUT = 0.5
@@ -61,9 +63,9 @@ def has_band(h):
     return band_of(max(h, 1 - h))
 
 
-def constructed(calib, misses, hcalib):
+def constructed(calib, misses, hcalib, split="tune"):
     man = json.loads((ROOT / "data" / "constructed" / "manifest.json").read_text(encoding="utf-8"))
-    items = [c for c in man["items"] if c["split"] == "tune"]
+    items = [c for c in man["items"] if c["split"] == split]
     got = kinds([ROOT / "data" / "constructed" / c["file"] for c in items])
     by_file = defaultdict(list)
     for (name, _), j in got.items():
@@ -104,7 +106,7 @@ def constructed(calib, misses, hcalib):
         else:
             has["logo held"] += j["has_text"] >= HAS_CUT
             has["logo"] += 1
-    print("constructed tune: kind of the pasted image, by case kind")
+    print(f"constructed {split}: kind of the pasted image, by case kind")
     for kind in sorted(table):
         print(f"  {kind:11s} {dict(table[kind].most_common())}")
     t_ok, t_all = found[(True, True)], found[(True, True)] + found[(True, False)]
@@ -119,10 +121,9 @@ def constructed(calib, misses, hcalib):
             print("   miss", m)
 
 
-def real_has_text(got, hcalib, misses):
-    path = ROOT / "data" / "real" / "tune-003-image.jsonl"
+def real_has_text(got, hcalib, misses, path, name):
     if not path.exists():
-        print("govdocs1 003 has-text: no image labels yet (tools/label_images.py)")
+        print(f"govdocs1 {name} has-text: no image labels yet (tools/label_images.py)")
         return
     labs = [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
     tab = Counter()
@@ -143,19 +144,19 @@ def real_has_text(got, hcalib, misses):
         if held != want:
             miss.append((lab["file"], lab["xref"], lab["label"], j["kind"], j["has_text"], j["features"]["word_marks"], lab.get("sample", [])[:4]))
     tp, fn, fp, tn = tab[(True, True)], tab[(True, False)], tab[(False, True)], tab[(False, False)]
-    print(f"govdocs1 003 has-text against image-only labels ({len(labs)} images, unsure as text):")
+    print(f"govdocs1 {name} has-text against image-only labels ({len(labs)} images, unsure as text):")
     print(f"  text found {tp}/{tp + fn} ({100 * tp / max(tp + fn, 1):.1f}%); none not held {tn}/{tn + fp} ({100 * tn / max(tn + fp, 1):.1f}%); counted apart {dict(apart)}")
     if misses:
         for m in miss[:60]:
             print("   has-text miss", m)
 
 
-def real(calib, misses, hcalib=None):
-    rows = [json.loads(l) for l in (ROOT / "data" / "real" / "tune-003.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+def real(calib, misses, hcalib=None, name="003", labels="tune-003.jsonl", image_labels="tune-003-image.jsonl"):
+    rows = [json.loads(l) for l in (ROOT / "data" / "real" / labels).read_text(encoding="utf-8").splitlines() if l.strip()]
     files = sorted({r["file"] for r in rows})
-    got = kinds([REAL / f for f in files])
+    got = kinds([GOVDOCS / name / f for f in files])
     if hcalib is not None:
-        real_has_text(got, hcalib, misses)
+        real_has_text(got, hcalib, misses, ROOT / "data" / "real" / image_labels, name)
     table = defaultdict(Counter)
     apart = Counter()
     miss = []
@@ -180,7 +181,7 @@ def real(calib, misses, hcalib=None):
             calib[band_of(conf)][right] += 1
             if not right:
                 miss.append((r["file"], r["page"], g["xref"], lab, k, conf, g.get("sample", [])[:4]))
-    print("govdocs1 003: kind by Tesseract label (placements)")
+    print(f"govdocs1 {name}: kind by Tesseract region label (placements)")
     for lab in ("text", "none", "unsure"):
         print(f"  {lab:7s} {dict(table[lab].most_common())}")
     tt = table["text"]
@@ -195,17 +196,20 @@ def real(calib, misses, hcalib=None):
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     misses = "--misses" in sys.argv
-    if any(a in ("heldout", "004") for a in args):
+    held = "--heldout" in sys.argv or any(a in ("heldout", "004") for a in args)
+    if held:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from check_frozen import require_frozen
         require_frozen()
-        sys.exit("held-out scoring comes with the kind layer's freeze (8f)")
     calib = defaultdict(Counter)
     hcalib = defaultdict(Counter)
     if not args or "constructed" in args:
-        constructed(calib, misses, hcalib)
+        constructed(calib, misses, hcalib, "heldout" if held else "tune")
     if not args or "real" in args:
-        real(calib, misses, hcalib)
+        if held:
+            real(calib, misses, hcalib, "004", "heldout-004.jsonl", "heldout-004-image.jsonl")
+        else:
+            real(calib, misses, hcalib)
     for name, cal in (("kind", calib), ("has-text", hcalib)):
         print(f"calibration of {name} (share right by confidence band; target: 0.9 and up at least 90%):")
         for b in BANDS:

@@ -25,7 +25,7 @@ Text images found 157 of 157 and other images not called text 85 of 85 (targets 
 
 Kind against the region labels (tools/select_real.py): text labels called text 218 of 354; none labels not called text 951 of 1,001. Most text labels given another kind are charts and logos with labels (a graphic that holds text, which has-text answers) and images with text drawn over them by other marks (results/handcheck-kinds-003.md).
 
-Has-text against labels from each image's own pixels (tools/label_images.py, data/real/tune-003-image.jsonl; unsure counts as text, D67): images with text held 288 of 364 (79.1%), images without not held 768 of 842 (91.2%). 16 images failed to label (a PyMuPDF colour error) and 91 aren't placed or decoded; all counted apart.
+Has-text against labels from each image's own pixels (tools/label_images.py, data/real/tune-003-image.jsonl; unsure counts as text, D67): images with text held 300 of 376 (79.8%), images without not held 770 of 844 (91.2%). 93 aren't placed or decoded and are counted apart. (A first labelling run failed on 17 Separation-colour images; tools/label_images.py now converts them, and they're labelled.)
 
 ## Calibration
 
@@ -33,7 +33,7 @@ Share right by confidence band, both sets together (target: at 0.9 or more, at l
 
 | Band | Kind | Has-text |
 | --- | --- | --- |
-| 0.9 and up | 1,061 of 1,126 (94.2%) | 1,182 of 1,281 (92.3%) |
+| 0.9 and up | 1,061 of 1,126 (94.2%) | 1,196 of 1,295 (92.4%) |
 | 0.7 to 0.9 | 91 of 130 (70.0%) | 54 of 78 (69.2%) |
 | 0.5 to 0.7 | 97 of 129 (75.2%) | 45 of 72 (62.5%) |
 | under 0.5 | 162 of 212 (76.4%) | none |

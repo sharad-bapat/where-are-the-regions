@@ -29,7 +29,8 @@ def image_pixmap(doc, xref, box):
         pix = fitz.Pixmap(fitz.csGRAY, pix.width, pix.height, grey, 0)
     elif pix.alpha:
         pix = fitz.Pixmap(pix, 0)
-    if pix.colorspace is not None and pix.colorspace.n not in (1, 3):
+    # anything but plain grey or RGB (CMYK, Separation, Indexed...) through RGB, which PNG can hold
+    if pix.colorspace is not None and pix.colorspace.name not in ("DeviceGray", "DeviceRGB"):
         pix = fitz.Pixmap(fitz.csRGB, pix)
     # the placement's size at DPI
     w = max(1, round((box[2] - box[0]) * DPI / 72))
