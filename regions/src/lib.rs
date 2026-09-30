@@ -24,6 +24,8 @@ mod font;
 pub mod map;
 /// Image pixels as grey thumbnails, for the kind layer (chunk 8).
 pub mod pixels;
+/// The kind of each image (text image, photo, graphic, blank) from its pixels.
+pub mod kind;
 pub use map::{Entry, Line};
 pub mod vector;
 pub use vector::{Path, Vector};

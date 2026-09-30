@@ -21,13 +21,16 @@ pub struct Thumb {
     pub grey: Vec<u8>,
 }
 
-/// The thumbnail of image XObject `obj` in the PDF `data`.
-pub fn image_thumbnail(data: &[u8], obj: u32) -> Result<Thumb, &'static str> {
+/// The thumbnail of image XObject `obj` in the PDF `data`, at most THUMB pixels on the long side.
+pub fn image_thumbnail(data: &[u8], obj: u32) -> Result<Thumb, &'static str> { image_thumbnail_max(data, obj, THUMB) }
+
+/// The same, at most `max` pixels on the long side (the kind layer uses kind::KIND_THUMB).
+pub fn image_thumbnail_max(data: &[u8], obj: u32, max: u32) -> Result<Thumb, &'static str> {
     let pdf = Pdf::index(data);
-    thumbnail(&pdf, obj)
+    thumbnail(&pdf, obj, max.max(1))
 }
 
-pub(crate) fn thumbnail(pdf: &Pdf, obj: u32) -> Result<Thumb, &'static str> {
+pub(crate) fn thumbnail(pdf: &Pdf, obj: u32, limit: u32) -> Result<Thumb, &'static str> {
     let d = pdf.dict(obj).ok_or("no_object")?;
     let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
     let (width, height) = (int(b"/Width"), int(b"/Height"));
@@ -84,7 +87,7 @@ pub(crate) fn thumbnail(pdf: &Pdf, obj: u32) -> Result<Thumb, &'static str> {
     let max = if bpc == 16 { 255 } else { (1u32 << bpc) - 1 };
     let flip: Vec<bool> = (0..n).map(|c| dec.len() >= 2 * (c + 1) && dec[2 * c] > dec[2 * c + 1]).collect();
 
-    let f = ((width.max(height) + THUMB - 1) / THUMB).max(1);
+    let f = ((width.max(height) + limit - 1) / limit).max(1);
     let (w, h) = ((width + f - 1) / f, (height + f - 1) / f);
     let mut sum = vec![0u32; (w * h) as usize];
     let mut cnt = vec![0u32; (w * h) as usize];

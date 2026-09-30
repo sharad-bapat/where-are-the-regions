@@ -1,19 +1,26 @@
-//! Checking tool for regions::pixels: every image XObject the map places, as a grey thumbnail.
-//! usage: thumbs <out dir> [--list files.txt] [file.pdf...]
-//! Writes <out dir>/<file stem>_<obj>.pgm for each image it can decode and prints one JSON line per
-//! image: file, obj, its size, the thumbnail's size, or the reason it wasn't decoded.
+//! Checking tool for regions::pixels and regions::kind: every image XObject the map places.
+//! usage: thumbs <out dir | -> [--kinds] [--list files.txt] [file.pdf...]
+//! Writes <out dir>/<file stem>_<obj>.pgm for each image it can decode (not with "-") and prints one
+//! JSON line per image: file, obj, its size, the thumbnail's size, or the reason it wasn't decoded.
+//! With --kinds each line also has the image's kind, confidence, reasons and features (the kind is
+//! judged on a thumbnail of up to kind::KIND_THUMB px, so the PGM is that size too).
 use std::collections::BTreeSet;
 use std::io::Write;
 use std::path::Path;
 
 fn main() {
     let mut args: Vec<String> = std::env::args().skip(1).collect();
-    if args.is_empty() { eprintln!("usage: thumbs <out dir> [--list files.txt] [file.pdf...]"); return; }
+    if args.is_empty() { eprintln!("usage: thumbs <out dir | -> [--kinds] [--list files.txt] [file.pdf...]"); return; }
     let out = args.remove(0);
-    std::fs::create_dir_all(&out).ok();
+    let write = out != "-";
+    if write { std::fs::create_dir_all(&out).ok(); }
+    let mut kinds = false;
     let mut paths = Vec::new();
     while let Some(a) = args.first().cloned() {
-        if a == "--list" {
+        if a == "--kinds" {
+            kinds = true;
+            args.remove(0);
+        } else if a == "--list" {
             if let Some(list) = args.get(1).and_then(|p| std::fs::read_to_string(p).ok()) {
                 paths.extend(list.lines().map(|l| l.trim().to_string()).filter(|l| !l.is_empty()));
             }
@@ -21,20 +28,31 @@ fn main() {
         } else { break; }
     }
     paths.extend(args);
+    let max = if kinds { regions::kind::KIND_THUMB } else { regions::pixels::THUMB };
     for path in paths {
         let Ok(data) = std::fs::read(&path) else { continue };
         let doc = regions::extract(&data);
         let objs: BTreeSet<u32> = doc.pages.iter().flat_map(|p| p.images.iter().map(|i| i.obj)).filter(|&o| o != 0).collect();
         let stem = Path::new(&path).file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
         for obj in objs {
-            match regions::pixels::image_thumbnail(&data, obj) {
+            match regions::pixels::image_thumbnail_max(&data, obj, max) {
                 Ok(t) => {
-                    let name = format!("{}/{}_{}.pgm", out, stem, obj);
-                    if let Ok(mut f) = std::fs::File::create(&name) {
-                        let _ = write!(f, "P5\n{} {}\n255\n", t.w, t.h);
-                        let _ = f.write_all(&t.grey);
+                    if write {
+                        let name = format!("{}/{}_{}.pgm", out, stem, obj);
+                        if let Ok(mut f) = std::fs::File::create(&name) {
+                            let _ = write!(f, "P5\n{} {}\n255\n", t.w, t.h);
+                            let _ = f.write_all(&t.grey);
+                        }
                     }
-                    println!("{{\"file\":{},\"obj\":{},\"width\":{},\"height\":{},\"w\":{},\"h\":{}}}", regions::json_str(&path), obj, t.width, t.height, t.w, t.h);
+                    let mut line = format!("{{\"file\":{},\"obj\":{},\"width\":{},\"height\":{},\"w\":{},\"h\":{}", regions::json_str(&path), obj, t.width, t.height, t.w, t.h);
+                    if kinds {
+                        let k = regions::kind::classify(t.w, t.h, &t.grey);
+                        let f = &k.features;
+                        let reasons: Vec<String> = k.reasons.iter().map(|(n, v)| format!("[\"{}\",{:.3}]", n, v)).collect();
+                        line += &format!(",\"kind\":\"{}\",\"confidence\":{},\"reasons\":[{}],\"features\":{{\"spread\":{:.2},\"levels\":{},\"extremes\":{:.4},\"ink\":{:.4},\"inverted\":{},\"components\":{},\"glyphs\":{},\"glyph_height\":{:.1},\"height_spread\":{:.3},\"aligned\":{:.3}}}",
+                            k.kind, k.confidence, reasons.join(","), f.spread, f.levels, f.extremes, f.ink, f.inverted, f.components, f.glyphs, f.glyph_height, f.height_spread, f.aligned);
+                    }
+                    println!("{}}}", line);
                 }
                 Err(e) => println!("{{\"file\":{},\"obj\":{},\"error\":\"{}\"}}", regions::json_str(&path), obj, e),
             }
