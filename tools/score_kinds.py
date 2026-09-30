@@ -126,9 +126,10 @@ def real_has_text(got, hcalib, misses, path, name):
         print(f"govdocs1 {name} has-text: no image labels yet (tools/label_images.py)")
         return
     labs = [json.loads(l) for l in path.read_text(encoding="utf-8").splitlines() if l.strip()]
-    tab = Counter()
+    # a merged image (strips) is judged whole, so its truth is whole too: it holds text when any of
+    # its strips does; each image counts once (8g)
+    groups = {}
     apart = Counter()
-    miss = []
     for lab in labs:
         if "label" not in lab:
             apart["label error"] += 1
@@ -137,14 +138,25 @@ def real_has_text(got, hcalib, misses, path, name):
         if j is None or "kind" not in j:
             apart["not placed" if j is None else j.get("error")] += 1
             continue
-        want = lab["label"] in ("text", "unsure")
+        key = (lab["file"], j.get("image", lab["xref"]))
+        g = groups.setdefault(key, {"file": lab["file"], "xref": key[1], "label": "none", "sample": [], "j": j, "strips": 0})
+        g["strips"] += 1
+        if lab["label"] in ("text", "unsure"):
+            g["label"] = "text"
+            g["sample"] = g["sample"] or lab.get("sample", [])
+    tab = Counter()
+    miss = []
+    labs = list(groups.values())
+    for lab in labs:
+        j = lab["j"]
+        want = lab["label"] == "text"
         held = j["has_text"] >= HAS_CUT
         tab[(want, held)] += 1
         hcalib[has_band(j["has_text"])][held == want] += 1
         if held != want:
             miss.append((lab["file"], lab["xref"], lab["label"], j["kind"], j["has_text"], j["features"]["word_marks"], lab.get("sample", [])[:4]))
     tp, fn, fp, tn = tab[(True, True)], tab[(True, False)], tab[(False, True)], tab[(False, False)]
-    print(f"govdocs1 {name} has-text against image-only labels ({len(labs)} images, unsure as text):")
+    print(f"govdocs1 {name} has-text against image-only labels ({len(labs)} images, merged strips as one, unsure as text):")
     print(f"  text found {tp}/{tp + fn} ({100 * tp / max(tp + fn, 1):.1f}%); none not held {tn}/{tn + fp} ({100 * tn / max(tn + fp, 1):.1f}%); counted apart {dict(apart)}")
     if misses:
         for m in miss[:60]:

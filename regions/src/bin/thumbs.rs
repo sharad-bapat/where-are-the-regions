@@ -32,10 +32,21 @@ fn main() {
     for path in paths {
         let Ok(data) = std::fs::read(&path) else { continue };
         let doc = regions::extract(&data);
-        let objs: BTreeSet<u32> = doc.pages.iter().flat_map(|p| p.images.iter().map(|i| i.obj)).filter(|&o| o != 0).collect();
         let stem = Path::new(&path).file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
-        for obj in objs {
-            match regions::pixels::image_thumbnail_max(&data, obj, max) {
+        // each image region once; a merged one (strips) is judged from all its pieces, and its line
+        // is printed for every piece's object, so a label on any strip finds it
+        let mut seen: BTreeSet<u32> = BTreeSet::new();
+        for img in doc.pages.iter().flat_map(|p| p.images.iter()) {
+            let objs: Vec<u32> = img.pieces.iter().map(|p| p.0).filter(|&o| o != 0).collect();
+            if objs.is_empty() || objs.iter().all(|o| seen.contains(o)) { continue; }
+            let result = if img.pieces.len() > 1 {
+                regions::pixels::merged_thumbnail(&data, &img.pieces, max)
+            } else {
+                regions::pixels::image_thumbnail_max(&data, objs[0], max)
+            };
+            for &obj in &objs {
+                if !seen.insert(obj) { continue; }
+            match &result {
                 Ok(t) => {
                     if write {
                         let name = format!("{}/{}_{}.pgm", out, stem, obj);
@@ -44,7 +55,7 @@ fn main() {
                             let _ = f.write_all(&t.grey);
                         }
                     }
-                    let mut line = format!("{{\"file\":{},\"obj\":{},\"width\":{},\"height\":{},\"w\":{},\"h\":{}", regions::json_str(&path), obj, t.width, t.height, t.w, t.h);
+                    let mut line = format!("{{\"file\":{},\"obj\":{},\"image\":{},\"parts\":{},\"width\":{},\"height\":{},\"w\":{},\"h\":{}", regions::json_str(&path), obj, objs[0], img.pieces.len(), t.width, t.height, t.w, t.h);
                     if kinds {
                         let k = regions::kind::classify(t.w, t.h, &t.grey);
                         let f = &k.features;
@@ -56,6 +67,7 @@ fn main() {
                     println!("{}}}", line);
                 }
                 Err(e) => println!("{{\"file\":{},\"obj\":{},\"error\":\"{}\"}}", regions::json_str(&path), obj, e),
+            }
             }
         }
     }

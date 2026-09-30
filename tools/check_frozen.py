@@ -49,10 +49,12 @@ def problems():
         elif digest_of(name) != digest:
             out.append(f"CHANGED {name}")
     out += [f"NEW {n} (not in the record)" for n in names() if n not in recorded]
-    for exe in (CLI, THUMBS):
+    # each binary against the sources built into it: regions-cli doesn't contain src/bin/thumbs.rs
+    for exe, skip in ((CLI, "regions/src/bin/"), (THUMBS, None)):
         if not exe.exists():
             out.append(f"no release binary {exe.name}: cargo build --release")
-        elif any((ROOT / n).stat().st_mtime > exe.stat().st_mtime for n in recorded if n.startswith("regions/") and (ROOT / n).exists()):
+        elif any((ROOT / n).stat().st_mtime > exe.stat().st_mtime for n in recorded
+                 if n.startswith("regions/") and not (skip and n.startswith(skip)) and (ROOT / n).exists()):
             out.append(f"{exe.name} is older than the source: cargo build --release")
     return out
 

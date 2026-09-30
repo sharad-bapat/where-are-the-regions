@@ -761,6 +761,9 @@ pub struct Image {
     pub obj: u32,
     /// How many drawn images were merged into this one (1 when it wasn't).
     pub parts: u32,
+    /// Each drawn piece: its object number (0 inline) and its box on the page, for judging a merged
+    /// image by all its strips (kind layer, 8g). Not in the JSON.
+    pub pieces: Vec<(u32, [f64; 4])>,
     /// Clipping to the page cut part of the drawn box.
     pub clipped: bool,
     /// Axis-aligned on the page (the image's unit square isn't rotated or skewed).
@@ -1454,7 +1457,7 @@ fn place_images(drawn: &[Drawn], pb: &PageBox) -> Vec<Image> {
         let upright = (m[1].abs() < 1e-6 && m[2].abs() < 1e-6) || (m[0].abs() < 1e-6 && m[3].abs() < 1e-6);
         out.push(Image {
             x0, y0, x1, y1, px_w: d.px_w, px_h: d.px_h, dpi_x: dpi(d.px_w, side_w), dpi_y: dpi(d.px_h, side_h),
-            mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1,
+            mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1, pieces: vec![(d.obj, [x0, y0, x1, y1])],
             clipped: offpage || hidden || cut_by_clip || x0 > bx0 + 1e-6 || y0 > by0 + 1e-6 || x1 < bx1 - 1e-6 || y1 < by1 - 1e-6, upright,
             offpage, hidden, order: d.order,
         });
@@ -1487,6 +1490,7 @@ fn merge_strips(mut imgs: Vec<Image>) -> Vec<Image> {
         p.x0 = p.x0.min(q.x0); p.y0 = p.y0.min(q.y0); p.x1 = p.x1.max(q.x1); p.y1 = p.y1.max(q.y1);
         p.dpi_x = p.dpi_x.min(q.dpi_x); p.dpi_y = p.dpi_y.min(q.dpi_y);
         p.parts += q.parts; p.inline |= q.inline; p.clipped |= q.clipped; p.order = p.order.min(q.order);
+        p.pieces.extend(q.pieces);
         p.obj = if p.obj == 0 { q.obj } else if q.obj == 0 { p.obj } else { p.obj.min(q.obj) };
         imgs.remove(b);
     }

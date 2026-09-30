@@ -30,6 +30,51 @@ pub fn image_thumbnail_max(data: &[u8], obj: u32, max: u32) -> Result<Thumb, &'s
     thumbnail(&pdf, obj, max.max(1))
 }
 
+/// One thumbnail for an image drawn as several pieces (merged strips): each piece's thumbnail is
+/// pasted where the piece sits in the merged box, at the pieces' own resolution (the coarsest), capped
+/// at `max` px on the long side. Inline pieces, and pieces that don't decode, stay white; it fails
+/// only when no piece decodes.
+pub fn merged_thumbnail(data: &[u8], pieces: &[(u32, [f64; 4])], max: u32) -> Result<Thumb, &'static str> {
+    let pdf = Pdf::index(data);
+    let bx = pieces.iter().fold([f64::MAX, f64::MAX, f64::MIN, f64::MIN], |b, (_, p)| [b[0].min(p[0]), b[1].min(p[1]), b[2].max(p[2]), b[3].max(p[3])]);
+    let (bw, bh) = (bx[2] - bx[0], bx[3] - bx[1]);
+    if bw <= 0.0 || bh <= 0.0 { return Err("no_size"); }
+    // pixels per point: the coarsest piece's own, and no more than the cap allows
+    let mut ppp = f64::MAX;
+    let mut first_err = "undecoded";
+    let mut thumbs = Vec::new();
+    for &(obj, b) in pieces {
+        if obj == 0 { continue; }
+        match thumbnail(&pdf, obj, max.max(1)) {
+            Ok(t) => {
+                let (pw, ph) = (b[2] - b[0], b[3] - b[1]);
+                if pw > 0.0 && ph > 0.0 { ppp = ppp.min(t.width as f64 / pw).min(t.height as f64 / ph); }
+                thumbs.push((t, b));
+            }
+            Err(e) => first_err = e,
+        }
+    }
+    if thumbs.is_empty() { return Err(first_err); }
+    ppp = ppp.min(max as f64 / bw.max(bh)).max(1e-6);
+    let (w, h) = (((bw * ppp).round() as u32).max(1), ((bh * ppp).round() as u32).max(1));
+    let mut grey = vec![255u8; (w * h) as usize];
+    for (t, b) in &thumbs {
+        // the piece's place on the canvas, filled from its thumbnail by nearest pixel
+        let (x0, y0) = (((b[0] - bx[0]) * ppp).round() as i64, ((b[1] - bx[1]) * ppp).round() as i64);
+        let (x1, y1) = (((b[2] - bx[0]) * ppp).round() as i64, ((b[3] - bx[1]) * ppp).round() as i64);
+        let (rw, rh) = ((x1 - x0).max(1), (y1 - y0).max(1));
+        for y in y0.max(0)..y1.min(h as i64) {
+            let sy = (((y - y0) * t.h as i64) / rh).min(t.h as i64 - 1) as usize;
+            for x in x0.max(0)..x1.min(w as i64) {
+                let sx = (((x - x0) * t.w as i64) / rw).min(t.w as i64 - 1) as usize;
+                grey[y as usize * w as usize + x as usize] = t.grey[sy * t.w as usize + sx];
+            }
+        }
+    }
+    let (width, height) = thumbs.iter().fold((0u32, 0u32), |(a, c), (t, _)| (a.max(t.width), c + t.height));
+    Ok(Thumb { width, height, w, h, grey })
+}
+
 pub(crate) fn thumbnail(pdf: &Pdf, obj: u32, limit: u32) -> Result<Thumb, &'static str> {
     let d = pdf.dict(obj).ok_or("no_object")?;
     let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
@@ -436,6 +481,21 @@ mod tests {
         let t = image_thumbnail(&pdf_with("/Width 8 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 1 /Filter /CCITTFaxDecode /DecodeParms << /K -1 /Columns 8 >>",
             &[0b0010_1110, 0b1110_0000]), 1).unwrap();
         assert_eq!(t.grey, [255, 255, 0, 0, 0, 0, 255, 255]);
+    }
+
+    #[test]
+    fn strips_make_one_canvas() {
+        // two objects, 4 x 1 each: a black strip over a white one, drawn as two halves of a box
+        let mut s = b"%PDF-1.4\n".to_vec();
+        for (n, v) in [(1u32, 0u8), (2, 255)] {
+            s.extend_from_slice(format!("{} 0 obj << /Type /XObject /Subtype /Image /Width 4 /Height 1 /ColorSpace /DeviceGray /BitsPerComponent 8 /Length 4 >> stream\n", n).as_bytes());
+            s.extend_from_slice(&[v; 4]);
+            s.extend_from_slice(b"\nendstream endobj\n");
+        }
+        s.extend_from_slice(b"trailer << >>\n%%EOF\n");
+        let t = merged_thumbnail(&s, &[(1, [0.0, 0.0, 4.0, 1.0]), (2, [0.0, 1.0, 4.0, 2.0])], 256).unwrap();
+        assert_eq!((t.w, t.h), (4, 2));
+        assert_eq!(t.grey, [0, 0, 0, 0, 255, 255, 255, 255]);
     }
 
     #[test]
