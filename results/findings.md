@@ -2,6 +2,18 @@
 
 Facts the checks turned up about libraries, data sources and PDFs in the wild, as opposed to bugs in this repo's own code. Each entry says how it was found and what it was checked against.
 
+## pdfminer.six ignores the sh operator, so pdfplumber lists no shadings (1 October 2026)
+
+In pdfminer.six 20251230, PDFPageInterpreter.do_sh ("Paint area defined by shading pattern") has a docstring and no body, so a shading painted with sh reaches no device and pdfplumber 0.11.9 reports nothing for it. On govdocs1 003694 p1 an axial shading (/ShadingType 2) clipped to 297 x 758 pt is most of the page's ink; a pdfplumber map covers 36.55% of it. PyMuPDF's get_bboxlog lists it as fill-shade, but with an unbounded box (plus or minus 2^31), not the clip. Found by the baseline ink run (results/ink-baseline-readers.md).
+
+## PyMuPDF boxes a tiling-pattern fill by its tile, not the area it paints (1 October 2026)
+
+On govdocs1 003404 p0 (/Rotate 90) the page background is a 509 x 792 pt rectangle filled with a coloured tiling pattern (/PatternType 1, /PaintType 1, inside a /Background artifact and an optional content group). MuPDF renders it, about half the page's ink at 150 dpi, but neither get_drawings nor get_bboxlog in PyMuPDF 1.24.9 (MuPDF 1.24.8) gives any box over it. Checked on a one-path file: "/Pattern cs /P0 scn 50 50 100 100 re f" with a 10 pt tile holding one 5 x 5 pt black square. The render has 2,500 dark pixels at 72 dpi, spread over the 100 x 100 area; get_drawings returns one black fill at (0, 195, 5, 200) and get_bboxlog one fill-path at the same box, which is the tile's own content in pattern space at the origin, drawn once. The same rectangle filled with "0 g" is reported at (50, 50, 150, 150). Found by the baseline ink run (tools/ink_baseline.py pymupdf), where 003404 p0 fell to 51.83% while regions-cli covers it fully.
+
+## PyMuPDF's words leave out glyphs that decode to control codes (1 October 2026)
+
+On govdocs1 003437 (fonts AdvPS6F00 and AdvPS6F0B, codes below 32 with no Unicode mapping that changes them) 3,661 of the 4,578 characters rawdict gives on page 7 are control codes, each with a box and each drawn. get_text("words") in PyMuPDF 1.24.9 keeps none of them: 128 words holding 228 characters. A map built from words misses those glyphs' ink altogether (14.88% coverage on p7, all eight pages of the file under 45%); rawdict's character boxes cover them, and regions-cli covers all eight pages at 100%. Not a bug as such, since words are split on whitespace and control codes count as such, but the words call isn't a safe box source for garbled fonts. Found by the baseline ink run.
+
 ## MuPDF lists fills it then doesn't render, where pdfium does (29 September 2026)
 
 On govdocs1 003174 p0 (a 4320 x 3024 pt drawing) 21 filled and stroked paths and on 003413 p19 one black fill (230 x 25 pt) appear in PyMuPDF 1.24.9's get_drawings and get_bboxlog, with nothing later in the paint log touching them, but its render has no ink there. pdfium 149.0.7825.0 (pypdfium2 5.8.0) renders ink at every one of the 21 on 003174 and 1,889 dark pixels in the 003413 fill (both at 300 dpi). 003174 has 208 ExtGStates with overprint mode 1 and overprint on in 139, so overprint handling is the likely difference, but that isn't verified. No upstream draft until the cause is found. Found by the ink test's phantom count.
