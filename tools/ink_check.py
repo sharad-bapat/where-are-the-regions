@@ -5,7 +5,8 @@ regions-cli gives for it:
 
   ink        a pixel darker than INK_LEVEL on any channel (the page background is white)
   map        every visible region's box, grown by MARGIN_PT for anti-aliasing: the images, the
-             visible words and the painted paths (invisible and offpage marks are flagged, not ink)
+             visible words (their ink box when the map gives one) and the painted paths (invisible
+             and offpage marks are flagged, not ink)
   coverage   share of ink pixels inside the map, per page
   missed     ink outside the map, attributed to what PyMuPDF says is there, first match wins:
              text (its characters), image (its image boxes), vector (its drawings), annot
@@ -115,7 +116,8 @@ def check(page, pmap):
     for what, r, flagged in regions:
         if flagged:
             continue
-        box = (r["x0"], r["y0"], r["x1"], r["y1"])
+        # a word's ink box, where its glyph outlines reach past the typographic box (D91)
+        box = tuple(r["ink"]) if "ink" in r else (r["x0"], r["y0"], r["x1"], r["y1"])
         fill(covered, box, scale, MARGIN_PT)
         # its own box grown by half a pixel: a mark thinner than a pixel can put its ink in the next row
         own = np.zeros(ink.shape, bool)

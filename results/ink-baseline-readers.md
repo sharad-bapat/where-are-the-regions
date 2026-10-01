@@ -49,6 +49,10 @@ Reader time a page, median, timing only the reader's calls on a page already loa
 
 On completeness, MuPDF's own paint log and regions-cli are level on 003, apart from one tiling-pattern page where bboxlog loses half the ink and a few pixels of glyph overhang a page where regions-cli does. The test favours bboxlog: it is MuPDF reporting on MuPDF's own render. The calls people usually make, in PyMuPDF and in pdfplumber, miss whole marks on 37 and 49 files. So the exact layer's claim is matching MuPDF's own view of the page from an independent parser, with flags and drawing order on every region, in Rust and WebAssembly, rather than more coverage than MuPDF.
 
+## After glyph outlines (GB1, 1 October)
+
+regions-cli now adds each embedded glyph's outline to its word's ink box (D91, results/exact-heldout.md). On 003: 895 pages at 100% (from 787), all 967 at least 99.9%, worst 99.90%, missed ink 1,690 px (from 3,634), no page losing coverage. bboxlog still has more pages at 100% (966); the gap is now mostly text in fonts that aren't embedded, which MuPDF draws with its own substitutes.
+
 ## Notes
 
 - The pdfplumber run above was made before the reader stopped dropping control-code characters as spaces (str.isspace() is true for them). Rerun on 003437's 8 pages after the change: identical numbers. Other pages weren't rerun.

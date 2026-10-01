@@ -90,6 +90,17 @@ Page by page against results/ink-004.jsonl, no page lost coverage. Four rose to 
 
 govdocs1 003 (results/ink-003-post.jsonl): identical to results/ink-003-7a4.jsonl on every page, in coverage and in phantoms. Neither kind of font occurs in the tuning files, which is why tuning didn't catch them.
 
+### Glyph outlines (GB1, 1 October)
+
+A later change, also after the held-out run (D91): a word now carries an ink box as well, its glyphs' boxes with their outlines added where an embedded TrueType, OpenType or CFF program's outline reaches past the advance or above /Ascent (regions/src/outline.rs, through ttf-parser 0.25.1). The typographic box is unchanged, and tools/ink_check.py counts the ink box when there is one. Relocked first; regions-cli's output is otherwise identical on all 1,553 files of the sets (diffed without the new key).
+
+| Set | At 100% before | After | At least 99.9% | Worst | Missed ink | Pages losing coverage |
+|---|---|---|---|---|---|---|
+| govdocs1 004 (results/ink-004-gb1.jsonl) | 639 | 682 of 704 | 704 | 99.98% | 552 to 276 px | none |
+| govdocs1 003 (results/ink-003-gb1.jsonl) | 787 | 895 of 967 | 967 | 99.90% | 3,634 to 1,690 px | none |
+
+Phantoms are the same on both, page by page. Most pages still short of 100% draw text in fonts that aren't embedded, whose outlines the parser doesn't have.
+
 ## 5. Speed
 
 Not measured on the held-out files. On tune (003, 7,633 pages, results/exact-tune.md section 7) the median page takes 1.10 ms, under the 5 ms target. A held-out timing would need a quiet machine and one session; it can be added without changing anything frozen.

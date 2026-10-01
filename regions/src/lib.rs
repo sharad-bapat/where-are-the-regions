@@ -21,6 +21,7 @@ mod crypt;
 pub mod ocr;
 pub use ocr::Region;
 mod font;
+mod outline;
 pub mod map;
 /// Image pixels as grey thumbnails, for the kind layer (chunk 8).
 pub mod pixels;
@@ -713,6 +714,9 @@ pub struct Glyph {
     pub clipped: bool,
     pub hidden: bool,
     pub x0: f64, pub y0: f64, pub x1: f64, pub y1: f64,
+    /// The box with the glyph's outline added, where the outline reaches past it (D91): italic overhang,
+    /// capitals above the font's /Ascent. Clipped like the box. None when the outline is unknown or inside.
+    pub ink: Option<[f64; 4]>,
     /// Baseline start, in page coordinates.
     pub ox: f64, pub oy: f64,
     /// Font size on the page, in points.
@@ -721,6 +725,7 @@ pub struct Glyph {
     pub order: u32,
     // in default user space, for grouping: baseline start and end, unit direction, and the glyph's quad
     ux: f64, uy: f64, ex: f64, ey: f64, dx: f64, dy: f64, quad: [(f64, f64); 4],
+    ink_quad: Option<[(f64, f64); 4]>,
     clip: Option<[f64; 4]>,
 }
 
@@ -979,6 +984,11 @@ impl<'p, 'a> Run<'p, 'a> {
             let (mut bx0, mut by0, mut bx1, mut by1) = (0.0f64, desc, w0, asc);
             if let Some(b) = f.glyph_box(code) { bx0 = bx0.min(b[0]); by0 = by0.min(b[1]); bx1 = bx1.max(b[2]); by1 = by1.max(b[3]); }
             let quad = [apply(&trm, bx0, by0), apply(&trm, bx1, by0), apply(&trm, bx1, by1), apply(&trm, bx0, by1)];
+            // the outline, where it reaches past that box
+            let ink_quad = f.outline_box(code).filter(|b| b[0] < bx0 || b[1] < by0 || b[2] > bx1 || b[3] > by1).map(|b| {
+                let (ix0, iy0, ix1, iy1) = (bx0.min(b[0]), by0.min(b[1]), bx1.max(b[2]), by1.max(b[3]));
+                [apply(&trm, ix0, iy0), apply(&trm, ix1, iy0), apply(&trm, ix1, iy1), apply(&trm, ix0, iy1)]
+            });
             let (ux, uy) = apply(&trm, 0.0, 0.0);
             let (ex, ey) = apply(&trm, w0, 0.0);
             let dl = (trm[0] * trm[0] + trm[1] * trm[1]).sqrt();
@@ -987,7 +997,7 @@ impl<'p, 'a> Run<'p, 'a> {
             let t = f.unicode(code);
             self.out.push(Glyph {
                 mapped: t.is_some(), text: t.unwrap_or_default(), code, font: fid, invisible, white, annot: self.annot, offpage: false, clipped: false, hidden: false,
-                x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size, order: self.seq, ux, uy, ex, ey, dx, dy, quad, clip: g.clip,
+                x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ink: None, ox: 0.0, oy: 0.0, size, order: self.seq, ux, uy, ex, ey, dx, dy, quad, ink_quad, clip: g.clip,
             });
             self.seq += 1;
             let mut tx = w0 * g.size + g.tc;
@@ -1314,8 +1324,8 @@ impl<'p, 'a> Run<'p, 'a> {
 
 fn blank(code: u32, invisible: bool, white: bool, annot: bool, x: f64, y: f64, order: u32, clip: Option<[f64; 4]>) -> Glyph {
     Glyph { text: String::new(), mapped: false, code, font: u32::MAX, invisible, white, annot, offpage: false, clipped: false, hidden: false,
-            x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ox: 0.0, oy: 0.0, size: 0.0, order,
-            ux: x, uy: y, ex: x, ey: y, dx: 1.0, dy: 0.0, quad: [(x, y); 4], clip }
+            x0: 0.0, y0: 0.0, x1: 0.0, y1: 0.0, ink: None, ox: 0.0, oy: 0.0, size: 0.0, order,
+            ux: x, uy: y, ex: x, ey: y, dx: 1.0, dy: 0.0, quad: [(x, y); 4], ink_quad: None, clip }
 }
 
 /// The visible page: CropBox (clipped to MediaBox) and /Rotate, as a map from default user space to
@@ -1410,13 +1420,32 @@ fn place(glyphs: &mut [Glyph], pb: &PageBox) {
         g.oy = oy;
         let (cx, cy) = ((g.x0 + g.x1) / 2.0, (g.y0 + g.y1) / 2.0);
         g.offpage = cx < 0.0 || cy < 0.0 || cx > w || cy > h;
+        g.ink = g.ink_quad.map(|q| {
+            let pts: Vec<(f64, f64)> = q.iter().map(|p| pb.map(p.0, p.1)).collect();
+            [pts.iter().map(|p| p.0).fold(f64::MAX, f64::min), pts.iter().map(|p| p.1).fold(f64::MAX, f64::min),
+             pts.iter().map(|p| p.0).fold(f64::MIN, f64::max), pts.iter().map(|p| p.1).fold(f64::MIN, f64::max)]
+        });
         if let Some(c) = g.clip {
-            match cut([g.x0, g.y0, g.x1, g.y1], page_rect(pb, c)) {
+            let c = page_rect(pb, c);
+            match cut([g.x0, g.y0, g.x1, g.y1], c) {
                 Some((v, cutoff)) => { [g.x0, g.y0, g.x1, g.y1] = v; g.clipped = cutoff; }
                 None => { g.hidden = true; g.clipped = true; }
             }
+            // a hidden glyph keeps its drawn box, as above; otherwise the ink box is cut the same way
+            if !g.hidden { g.ink = g.ink.and_then(|k| cut(k, c).map(|(v, _)| v)); }
         }
     }
+}
+
+/// A word's ink box: its glyphs' boxes with their outlines added (D91), when any outline reaches past
+/// the word's own box.
+fn word_ink(p: &Page, w: &Word) -> Option<[f64; 4]> {
+    let gs = &p.glyphs[w.first..w.first + w.count];
+    if gs.iter().all(|g| g.ink.is_none()) { return None; }
+    let b = gs.iter().map(|g| g.ink.unwrap_or([g.x0, g.y0, g.x1, g.y1]))
+        .fold([w.x0, w.y0, w.x1, w.y1], |a, k| [a[0].min(k[0]), a[1].min(k[1]), a[2].max(k[2]), a[3].max(k[3])]);
+    let grown = r1(b[0]) != r1(w.x0) || r1(b[1]) != r1(w.y0) || r1(b[2]) != r1(w.x1) || r1(b[3]) != r1(w.y1);
+    if grown { Some(b) } else { None }
 }
 
 // regions: placing and merging images
@@ -1664,9 +1693,10 @@ impl Doc {
     pub fn to_json(&self, glyphs: bool) -> String {
         let pages: Vec<String> = self.pages.iter().map(|p| {
             let words: Vec<String> = p.words.iter().map(|w| format!(
-                "{{\"t\":{},\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"b\":{},\"line\":{},\"font\":{},\"size\":{}{}{}}}",
+                "{{\"t\":{},\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"b\":{},\"line\":{},\"font\":{},\"size\":{}{}{}{}}}",
                 json_str(&w.text), r1(w.x0), r1(w.y0), r1(w.x1), r1(w.y1), r1(p.glyphs[w.first].oy), w.line,
                 if w.font == u32::MAX { -1 } else { w.font as i64 }, r1(w.size),
+                match word_ink(p, w) { Some(k) => format!(",\"ink\":[{},{},{},{}]", r1(k[0]), r1(k[1]), r1(k[2]), r1(k[3])), None => String::new() },
                 if w.unmapped > 0 { format!(",\"unmapped\":{}", w.unmapped) } else { String::new() },
                 flags(w.invisible, w.white, w.annot, w.offpage, w.hidden)
             )).collect();
@@ -1785,6 +1815,19 @@ mod tests {
 
     fn near(p: &Path, b: [f64; 4]) -> bool {
         (p.x0 - b[0]).abs() < 1e-6 && (p.y0 - b[1]).abs() < 1e-6 && (p.x1 - b[2]).abs() < 1e-6 && (p.y1 - b[3]).abs() < 1e-6
+    }
+
+    #[test]
+    fn a_glyph_whose_outline_reaches_out_gets_an_ink_box() {
+        // 10 pt at (100, 700): advance box x 100..105, ascent 800 and descent -200 give y 92..102 from the
+        // top; the outline adds x 99..107 and reaches y 91 (D91). The word's JSON carries both.
+        let pdf = font::tiny_truetype_pdf(Some("BT /F1 10 Tf 100 700 Td (A) Tj ET"));
+        let doc = extract(&pdf);
+        let g = &doc.pages[0].glyphs[0];
+        assert!(near_box(g.x0, g.y0, g.x1, g.y1, [100.0, 92.0, 105.0, 102.0]), "{:?}", (g.x0, g.y0, g.x1, g.y1));
+        let k = g.ink.unwrap();
+        assert!(near_box(k[0], k[1], k[2], k[3], [99.0, 91.0, 107.0, 102.0]), "{k:?}");
+        assert!(doc.to_json(false).contains("\"ink\":[99,91,107,102]"));
     }
 
     #[test]
