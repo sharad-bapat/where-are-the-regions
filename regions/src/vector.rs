@@ -32,6 +32,10 @@ pub struct Path {
     pub curves: u32,
     pub rect: bool,
     pub closed: bool,
+    /// Distinct rows of its horizontal straight segments and columns of its vertical ones that span
+    /// at least half the path's own width or height (a table drawn as one path has several).
+    pub seg_rows: u32,
+    pub seg_cols: u32,
 }
 
 /// Touching paths, as one region.
@@ -117,6 +121,30 @@ pub fn stroke_box(subs: &[(Vec<Seg>, bool, (f64, f64))], hw: f64, cap: i64) -> O
         }
     }
     b
+}
+
+/// A path's own grid: distinct rows (to a point) of its horizontal straight segments spanning at least
+/// half the path's box width, and columns of its vertical ones spanning half its height. In the
+/// path's user space before placement, so a rotated page swaps the two, which the grid test doesn't mind.
+pub fn seg_grid(subs: &[(Vec<Seg>, bool, (f64, f64))], b: &[f64; 4]) -> (u32, u32) {
+    let (w, h) = (b[2] - b[0], b[3] - b[1]);
+    let (mut ys, mut xs) = (Vec::new(), Vec::new());
+    for (segs, _, _) in subs {
+        for s in segs {
+            if let Seg::Line(p, q) = *s {
+                let (dx, dy) = ((q.0 - p.0).abs(), (q.1 - p.1).abs());
+                if dy < 0.5 && dx >= 0.5 * w && dx > 1.0 { ys.push(p.1); }
+                if dx < 0.5 && dy >= 0.5 * h && dy > 1.0 { xs.push(p.0); }
+            }
+        }
+    }
+    let count = |mut v: Vec<f64>| {
+        v.sort_by(|a, c| a.partial_cmp(c).unwrap());
+        let (mut n, mut last) = (0u32, f64::NEG_INFINITY);
+        for x in v { if x - last > 1.0 { n += 1; last = x; } }
+        n
+    };
+    (count(ys), count(xs))
 }
 
 /// Paths closer than this, in points, are one cluster.
@@ -213,7 +241,7 @@ mod tests {
     use super::*;
 
     fn path(x0: f64, y0: f64, x1: f64, y1: f64, order: u32) -> Path {
-        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false, hidden: false, dot: false, empty: false, lines: 4, curves: 0, rect: true, closed: true }
+        Path { x0, y0, x1, y1, order, fill: true, stroke: false, shading: false, white: false, annot: false, clipped: false, offpage: false, hidden: false, dot: false, empty: false, lines: 4, curves: 0, rect: true, closed: true, seg_rows: 2, seg_cols: 2 }
     }
 
     #[test]

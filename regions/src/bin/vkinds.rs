@@ -23,9 +23,9 @@ fn main() {
             for (i, (v, k)) in page.vectors.iter().zip(kinds.iter()).enumerate() {
                 let f = &k.features;
                 let reasons: Vec<String> = k.reasons.iter().map(|(n, x)| format!("[\"{}\",{:.3}]", n, x)).collect();
-                println!("{{\"file\":{},\"page\":{},\"index\":{},\"box\":[{:.1},{:.1},{:.1},{:.1}],\"kind\":\"{}\",\"confidence\":{},\"has_text\":{},\"reasons\":[{}],\"features\":{{\"paths\":{},\"hlines\":{},\"vlines\":{},\"rows\":{},\"cols\":{},\"rects\":{},\"open_rects\":{},\"rect_cols\":{},\"rect_rows\":{},\"rect_cover\":{:.3},\"filled\":{:.3},\"curved\":{},\"glyphs\":{},\"w\":{:.1},\"h\":{:.1}}}}}",
+                println!("{{\"file\":{},\"page\":{},\"index\":{},\"box\":[{:.1},{:.1},{:.1},{:.1}],\"kind\":\"{}\",\"confidence\":{},\"has_text\":{},\"reasons\":[{}],\"features\":{{\"paths\":{},\"hlines\":{},\"vlines\":{},\"rows\":{},\"cols\":{},\"rects\":{},\"open_rects\":{},\"rect_cols\":{},\"rect_rows\":{},\"rect_cover\":{:.3},\"filled\":{:.3},\"curved\":{},\"glyphs\":{},\"w\":{:.1},\"h\":{:.1},\"rows_in\":{},\"cols_in\":{},\"framed\":{}}}}}",
                     regions::json_str(&path), pno, i, v.x0, v.y0, v.x1, v.y1, k.kind, k.confidence, k.has_text, reasons.join(","),
-                    f.paths, f.hlines, f.vlines, f.rows, f.cols, f.rects, f.open_rects, f.rect_cols, f.rect_rows, f.rect_cover, f.filled, f.curved, f.glyphs, f.w, f.h);
+                    f.paths, f.hlines, f.vlines, f.rows, f.cols, f.rects, f.open_rects, f.rect_cols, f.rect_rows, f.rect_cover, f.filled, f.curved, f.glyphs, f.w, f.h, f.rows_in, f.cols_in, f.framed);
             }
         }
     }

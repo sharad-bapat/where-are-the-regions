@@ -857,7 +857,7 @@ impl Default for GState {
 /// A painted path or shading as drawn: its box in default user space (None: the whole clip, or
 /// the page when there's no clip), before placement on the page.
 #[derive(Clone)]
-struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool, dot: bool, empty: bool, lines: u32, curves: u32, rect: bool, closed: bool }
+struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool, dot: bool, empty: bool, lines: u32, curves: u32, rect: bool, closed: bool, seg_rows: u32, seg_cols: u32 }
 
 fn grow(b: &mut Option<[f64; 4]>, x: f64, y: f64) {
     match b {
@@ -1101,7 +1101,8 @@ impl<'p, 'a> Run<'p, 'a> {
                             let lines = subs.iter().map(|s| s.0.iter().filter(|x| matches!(x, vector::Seg::Line(..))).count() as u32).sum();
                             let curves = subs.iter().map(|s| s.0.iter().filter(|x| matches!(x, vector::Seg::Curve(..))).count() as u32).sum();
                             let closed = subs.iter().any(|s| s.1);
-                            self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot, dot, empty: point && !dot && !fill, lines, curves, rect: had_re, closed });
+                            let (seg_rows, seg_cols) = vector::seg_grid(&subs, &b);
+                            self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot, dot, empty: point && !dot && !fill, lines, curves, rect: had_re, closed, seg_rows, seg_cols });
                             self.seq += 1;
                         }
                         if clip_next { g.clip = Some(intersect(g.clip, b)); }
@@ -1112,7 +1113,7 @@ impl<'p, 'a> Run<'p, 'a> {
                     clip_next = false;
                 }
                 b"sh" => {
-                    self.paths.push(RawPath { b: None, clip: g.clip, order: self.seq, fill: true, stroke: false, shading: true, white: false, annot: self.annot, dot: false, empty: false, lines: 0, curves: 0, rect: false, closed: false });
+                    self.paths.push(RawPath { b: None, clip: g.clip, order: self.seq, fill: true, stroke: false, shading: true, white: false, annot: self.annot, dot: false, empty: false, lines: 0, curves: 0, rect: false, closed: false, seg_rows: 0, seg_cols: 0 });
                     self.seq += 1;
                 }
                 b"w" if n >= 1 => g.lw = num(&ops[n - 1]),
@@ -1364,7 +1365,7 @@ fn place_paths(raw: &[RawPath], pb: &PageBox) -> Vec<Path> {
             },
         };
         Path { x0: b[0], y0: b[1], x1: b[2], y1: b[3], order: r.order, fill: r.fill, stroke: r.stroke, shading: r.shading,
-            white: r.white, annot: r.annot, clipped, offpage, hidden, dot: r.dot, empty: r.empty, lines: r.lines, curves: r.curves, rect: r.rect, closed: r.closed }
+            white: r.white, annot: r.annot, clipped, offpage, hidden, dot: r.dot, empty: r.empty, lines: r.lines, curves: r.curves, rect: r.rect, closed: r.closed, seg_rows: r.seg_rows, seg_cols: r.seg_cols }
     }).collect()
 }
 
