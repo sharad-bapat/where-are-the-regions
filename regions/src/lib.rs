@@ -15,6 +15,7 @@
 use std::collections::HashMap;
 
 mod ccitt;
+mod cff;
 mod cmap;
 mod crypt;
 // regions: images to OCR regions
