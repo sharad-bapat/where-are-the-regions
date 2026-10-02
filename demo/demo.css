@@ -1,0 +1,54 @@
+[hidden] { display: none !important; }
+/* Where are the regions? demo. Uses the site's tokens when present, with fallbacks for the standalone page. */
+#demo {
+  --rg-ink: var(--text, #1c1c1c);
+  --rg-muted: var(--muted, #6b6b6b);
+  --rg-line: var(--rule, #d6d6d4);
+  --rg-bg: var(--bg, #ffffff);
+  --rg-accent: #1e50a2;
+  --rg-text: 30, 80, 162;
+  --rg-image: 46, 125, 50;
+  --rg-vector: 123, 31, 162;
+  --rg-annot: 179, 92, 0;
+}
+@media (prefers-color-scheme: dark) {
+  #demo { --rg-ink: var(--text, #ececec); --rg-muted: var(--muted, #a3a3a3); --rg-line: var(--rule, #3a3a3a); --rg-bg: var(--bg, #1f1f1f); --rg-accent: #7aa0e8; }
+}
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.rg-drop { border: 1.5px dashed var(--rg-line); border-radius: 12px; padding: 1.25rem; text-align: center; }
+.rg-drop.over { border-color: var(--rg-accent); }
+.rg-drop p { margin: 0 0 0.75rem; color: var(--rg-muted); }
+.rg-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.rg-btn { display: inline-flex; align-items: center; min-height: 44px; font: inherit; font-size: 0.9rem; padding: 0.45rem 0.95rem; border-radius: 999px; border: 1px solid var(--rg-ink); background: var(--rg-ink); color: var(--rg-bg); cursor: pointer; }
+.rg-btn.ghost { background: transparent; color: var(--rg-ink); border-color: var(--rg-line); }
+.rg-btn:disabled { opacity: 0.4; cursor: default; }
+.rg-btn:focus-visible, .rg-toggle input:focus-visible { outline: 2px solid var(--rg-accent); outline-offset: 2px; }
+.rg-status { min-height: 1.4em; color: var(--rg-muted); font-size: 0.9rem; }
+.rg-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 0.75rem; margin: 0.5rem 0; font-size: 0.9rem; }
+.rg-page { font-variant-numeric: tabular-nums; }
+.rg-counts { color: var(--rg-muted); }
+.rg-toggles { display: flex; flex-wrap: wrap; gap: 0 0.9rem; margin-left: auto; }
+.rg-toggle { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 44px; }
+.rg-toggle input { width: 1.1rem; height: 1.1rem; }
+.rg-swatch { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 2px; }
+.rg-view { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1rem; align-items: start; }
+@media (max-width: 760px) { .rg-view { grid-template-columns: 1fr; } }
+.rg-stage { position: relative; background: #fff; border: 1px solid var(--rg-line); border-radius: 4px; overflow: hidden; }
+.rg-stage canvas { display: block; }
+.rg-overlay { position: absolute; inset: 0; }
+.rg-box { position: absolute; border: 1px solid rgba(var(--c), 0.7); background: rgba(var(--c), 0.08); }
+.rg-box.unseen { border-style: dashed; background: transparent; }
+.rg-box.hot { background: rgba(var(--c), 0.3); border-color: rgb(var(--c)); }
+.k-text { --c: var(--rg-text); }
+.k-image { --c: var(--rg-image); }
+.k-vector { --c: var(--rg-vector); }
+.k-annot { --c: var(--rg-annot); }
+.hide-text .rg-box.k-text, .hide-image .rg-box.k-image, .hide-vector .rg-box.k-vector, .hide-annot .rg-box.k-annot { display: none; }
+.rg-list { max-height: 70vh; overflow: auto; border: 1px solid var(--rg-line); border-radius: 4px; padding: 0.25rem 0; font-size: 0.85rem; line-height: 1.4; margin: 0; list-style: none; }
+.rg-item { padding: 0.3rem 0.75rem; border-left: 3px solid rgb(var(--c)); margin: 0 0 1px; }
+.rg-item.hot { background: rgba(var(--c), 0.15); }
+.rg-item .what { font-weight: 600; }
+.rg-item .kind { color: var(--rg-ink); }
+.rg-item .flags { color: var(--rg-muted); }
+.rg-item .t { display: block; color: var(--rg-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rg-empty, .rg-note { color: var(--rg-muted); font-size: 0.9rem; }
