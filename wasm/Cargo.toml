@@ -1,0 +1,24 @@
+[package]
+name = "regions-wasm"
+version = "0.1.0"
+edition = "2021"
+description = "The browser build of Where are the regions?: the page map and the kind layer as JSON. A separate crate, so the frozen library stays untouched."
+license = "MIT"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# the same calls run natively, for tools/wasm_check.mjs to compare with the browser build byte for byte
+[[bin]]
+name = "native"
+path = "src/bin/native.rs"
+
+[dependencies]
+regions = { path = "../regions" }
+wasm-bindgen = "0.2"
+
+[profile.release]
+opt-level = "s"
+lto = true
+codegen-units = 1
+panic = "abort"
