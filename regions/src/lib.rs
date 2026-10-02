@@ -1420,13 +1420,21 @@ fn place(glyphs: &mut [Glyph], pb: &PageBox) {
         let (ox, oy) = pb.map(g.ux, g.uy);
         g.ox = ox;
         g.oy = oy;
-        let (cx, cy) = ((g.x0 + g.x1) / 2.0, (g.y0 + g.y1) / 2.0);
-        g.offpage = cx < 0.0 || cy < 0.0 || cx > w || cy > h;
         g.ink = g.ink_quad.map(|q| {
             let pts: Vec<(f64, f64)> = q.iter().map(|p| pb.map(p.0, p.1)).collect();
             [pts.iter().map(|p| p.0).fold(f64::MAX, f64::min), pts.iter().map(|p| p.1).fold(f64::MAX, f64::min),
              pts.iter().map(|p| p.0).fold(f64::MIN, f64::max), pts.iter().map(|p| p.1).fold(f64::MIN, f64::max)]
         });
+        // like paths and images: cut to the visible page, and offpage only when none of it is on the page
+        // (D94; 003627 p22 draws a glyph across the left edge). An offpage glyph keeps its drawn box.
+        let page = [0.0, 0.0, w, h];
+        let ink = g.ink.and_then(|k| cut(k, page));
+        match cut([g.x0, g.y0, g.x1, g.y1], page) {
+            Some((v, cutoff)) => { [g.x0, g.y0, g.x1, g.y1] = v; g.clipped = cutoff; g.ink = ink.map(|(k, _)| k); }
+            // the outline can reach the page when the advance box doesn't
+            None if ink.is_some() => { g.clipped = true; g.ink = ink.map(|(k, _)| k); }
+            None => g.offpage = true,
+        }
         if let Some(c) = g.clip {
             let c = page_rect(pb, c);
             match cut([g.x0, g.y0, g.x1, g.y1], c) {
@@ -1830,6 +1838,19 @@ mod tests {
         let k = g.ink.unwrap();
         assert!(near_box(k[0], k[1], k[2], k[3], [99.0, 91.0, 107.0, 102.0]), "{k:?}");
         assert!(doc.to_json(false).contains("\"ink\":[99,91,107,102]"));
+    }
+
+    #[test]
+    fn a_glyph_across_the_page_edge_keeps_its_visible_part() {
+        // at x -3 the advance box is -3..2 and its centre is off the page, but its right part shows: cut to
+        // 0..2, not offpage; the outline (-4..4) is cut the same way (D94). At x -50 nothing shows.
+        let doc = extract(&font::tiny_truetype_pdf(Some("BT /F1 10 Tf -3 700 Td (A) Tj ET")));
+        let g = &doc.pages[0].glyphs[0];
+        assert!(!g.offpage && near_box(g.x0, g.y0, g.x1, g.y1, [0.0, 92.0, 2.0, 102.0]), "{:?}", (g.offpage, g.x0, g.x1));
+        let k = g.ink.unwrap();
+        assert!(near_box(k[0], k[1], k[2], k[3], [0.0, 91.0, 4.0, 102.0]), "{k:?}");
+        let doc = extract(&font::tiny_truetype_pdf(Some("BT /F1 10 Tf -50 700 Td (A) Tj ET")));
+        assert!(doc.pages[0].glyphs[0].offpage && doc.pages[0].words[0].offpage);
     }
 
     #[test]
