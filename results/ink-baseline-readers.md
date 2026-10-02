@@ -61,6 +61,10 @@ regions-cli now also boxes glyphs of fonts that aren't embedded by the standard 
 
 With Type 1 programs read as well (results/exact-heldout.md), regions-cli has 965 of 967 pages of 003 at 100%, the worst at 99.997%, and 35 missed pixels in all. bboxlog has 966 at 100% but misses 710,374 pixels and has a page at 56.42%.
 
+## After the CFF and page-edge fixes (GB4 and GB5, 2 October)
+
+regions-cli now covers every one of the 967 pages of 003 at 100%, with no missed pixel, against bboxlog's 966 pages at 100% and 710,374 missed pixels (results/exact-heldout.md). On this test it is now level with or ahead of all three other readers on every measure: pages at 100%, pages at 99.9% or more, the worst page, missed ink and unflagged phantoms.
+
 ## Notes
 
 - The pdfplumber run above was made before the reader stopped dropping control-code characters as spaces (str.isspace() is true for them). Rerun on 003437's 8 pages after the change: identical numbers. Other pages weren't rerun.

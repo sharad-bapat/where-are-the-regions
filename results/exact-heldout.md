@@ -123,6 +123,17 @@ A third change after the held-out run (D91): glyphs in embedded Type 1 programs 
 
 Phantoms are the same on both, page by page. Two 003 pages are left: 003161 p1 (9 pixels), where ttf-parser gives no outline for CFF glyphs that use the deprecated dotsection operator (results/findings.md), and 003627 p22 (26 pixels), a glyph straddling the page's left edge that is flagged offpage by its centre. Both are planned (D94).
 
+### CFF glyphs with dotsection, and glyphs at the page edge (GB4 and GB5, 2 October)
+
+Two last changes after the held-out run (D94), each relocked and committed on its own, then measured together. GB4: a CFF glyph that ttf-parser won't outline, because it uses the deprecated dotsection operator (results/findings.md), is boxed by regions/src/cff.rs, a small CFF reader and Type 2 interpreter; on all 1,235 CFF programs of threads 003 and 004 it gives the same box as fontTools for 45,531 of 45,534 glyphs, the 3 others being empty spaces. GB5: a glyph's box is cut to the page as paths' and images' boxes are, and the glyph is flagged offpage only when none of it is on the page, not by its centre. GB4 changes no field of regions-cli's output but "ink"; GB5 changes 14 of the 1,553 files: 374 word boxes cut to the page, 15 offpage flags dropped, and the text lines built from those words.
+
+| Set | At 100% after GB3 | After GB5 | At least 99.9% | Worst | Missed ink | Pages losing coverage |
+|---|---|---|---|---|---|---|
+| govdocs1 003 (results/ink-003-gb5.jsonl) | 965 | 967 of 967 | 967 | 100% | 35 to 0 px | none |
+| govdocs1 004 (results/ink-004-gb5.jsonl) | 703 | 703 of 704 | 704 | 99.998% | 3 to 3 px | none |
+
+On 003, GB4 brings 003161 p1 to 100% and GB5 003627 p22. Phantoms are the same on both sets, page by page. The one 004 page short of 100% (004660 p17) misses 3 pixels that PyMuPDF puts down to nothing it reports; it is held-out data and wasn't looked into.
+
 ## 5. Speed
 
 Not measured on the held-out files. On tune (003, 7,633 pages, results/exact-tune.md section 7) the median page takes 1.10 ms, under the 5 ms target. A held-out timing would need a quiet machine and one session; it can be added without changing anything frozen.
