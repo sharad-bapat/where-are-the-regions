@@ -101,6 +101,17 @@ A later change, also after the held-out run (D91): a word now carries an ink box
 
 Phantoms are the same on both, page by page. Most pages still short of 100% draw text in fonts that aren't embedded, whose outlines the parser doesn't have.
 
+### Fonts that aren't embedded (GB2, 2 October)
+
+A second change after the held-out run (D93): a font that isn't embedded now gets the glyph boxes of the font MuPDF draws in its place, from Adobe's core-14 AFM files (tools/data/afm). A standard name or a common Windows spelling of one (ArialMT, TimesNewRomanPS-ItalicMT, CourierNewPSMT) is the standard font at its own widths; any other name is Helvetica, Times or Courier by its flags, bold and italic by its name and flags, stretched along x to the file's widths. Both rules were measured on one-glyph files rendered by MuPDF. Relocked first; regions-cli's output is otherwise identical on all 1,553 files (diffed without the "ink" key).
+
+| Set | At 100% after GB1 | After GB2 | At least 99.9% | Worst | Missed ink | Pages losing coverage |
+|---|---|---|---|---|---|---|
+| govdocs1 004 (results/ink-004-gb2.jsonl) | 682 | 703 of 704 | 704 | 99.998% | 276 to 3 px | none |
+| govdocs1 003 (results/ink-003-gb2.jsonl) | 895 | 950 of 967 | 967 | 99.99% | 1,690 to 152 px | none |
+
+Phantoms are again the same on both, page by page. The one 004 page short of 100% (004660 p17) misses 3 pixels. Most of the 17 pages left on 003 draw text in embedded Type 1 fonts (JansonText, ParisFlash), whose programs the parser doesn't read yet.
+
 ## 5. Speed
 
 Not measured on the held-out files. On tune (003, 7,633 pages, results/exact-tune.md section 7) the median page takes 1.10 ms, under the 5 ms target. A held-out timing would need a quiet machine and one session; it can be added without changing anything frozen.
