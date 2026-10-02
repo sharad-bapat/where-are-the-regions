@@ -4,6 +4,8 @@ Where are the regions? This tool reads a PDF and lists everything each page draw
 
 It's the fourth in a series, after [file-checker](https://github.com/sharad-bapat/file-checker) (what is this upload?), [scan-or-text](https://github.com/sharad-bapat/scan-or-text) (does this PDF need OCR?) and [wordbox](https://github.com/sharad-bapat/wordbox) (where is the text?). Deciding what to send to OCR is left to a later tool that reads this map.
 
+The write-up, with a demo you can try, is at https://sharadbapat.com/experiments/where-are-the-regions/.
+
 ## Output
 
 regions-cli prints one JSON object per file. Coordinates are PDF points from the top-left of the page as displayed (after the CropBox and /Rotate), so a box can be drawn straight onto a rendered page. Each page has:
