@@ -1,10 +1,11 @@
 """Check the frozen source: every file in results/frozen.sha256 must hash as recorded, and the
 release binary must be newer than all of them.
 
-What is frozen (plans/chunk7-freeze.md, D76; the kind layer joined in 8f): regions/Cargo.toml,
-Cargo.lock, every file in regions/src except ocr.rs (the map, pixels, the decoders, kind.rs), the
-thumbs tool, the tools that build the test sets, label the images and measure the map and the
-kinds, the two set manifests (each lists a sha256 per PDF), and this file. ocr.rs and
+What is frozen (plans/chunk7-freeze.md, D76; the kind layer joined in 8f, the vector kinds in 9d):
+regions/Cargo.toml, Cargo.lock, every file in regions/src except ocr.rs (the map, pixels, the
+decoders, kind.rs, vkind.rs), the thumbs and vkinds tools, the tools that build the test sets, label
+the images and measure the map and the kinds, the three set manifests (each lists a sha256 per PDF),
+and this file. ocr.rs and
 score_regions.py are left out: the OCR scoring belongs to the next repo.
 
 Line endings are normalised to LF first, so a checkout that converts them doesn't count as a change.
@@ -21,9 +22,11 @@ ROOT = Path(__file__).resolve().parent.parent
 RECORD = ROOT / "results" / "frozen.sha256"
 CLI = ROOT / "regions" / "target" / "release" / "regions-cli.exe"
 THUMBS = ROOT / "regions" / "target" / "release" / "thumbs.exe"
+VKINDS = ROOT / "regions" / "target" / "release" / "vkinds.exe"
 TOOLS = ["tools/check_frozen.py", "tools/diff_exact.py", "tools/ink_check.py", "tools/score_map.py", "tools/build_marks.py", "tools/build_set.py",
-         "tools/score_kinds.py", "tools/label_images.py", "tools/select_real.py", "regions/src/bin/thumbs.rs"]
-MANIFESTS = ["data/constructed/manifest.json", "data/constructed/marks/manifest.json"]
+         "tools/score_kinds.py", "tools/label_images.py", "tools/select_real.py", "regions/src/bin/thumbs.rs",
+         "tools/build_vectors.py", "tools/score_vkinds.py", "regions/src/bin/vkinds.rs"]
+MANIFESTS = ["data/constructed/manifest.json", "data/constructed/marks/manifest.json", "data/constructed/vectors/manifest.json"]
 
 
 def names():
@@ -50,7 +53,7 @@ def problems():
             out.append(f"CHANGED {name}")
     out += [f"NEW {n} (not in the record)" for n in names() if n not in recorded]
     # each binary against the sources built into it: regions-cli doesn't contain src/bin/thumbs.rs
-    for exe, skip in ((CLI, "regions/src/bin/"), (THUMBS, None)):
+    for exe, skip in ((CLI, "regions/src/bin/"), (THUMBS, None), (VKINDS, None)):
         if not exe.exists():
             out.append(f"no release binary {exe.name}: cargo build --release")
         elif any((ROOT / n).stat().st_mtime > exe.stat().st_mtime for n in recorded
