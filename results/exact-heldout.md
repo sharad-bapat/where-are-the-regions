@@ -112,6 +112,17 @@ A second change after the held-out run (D93): a font that isn't embedded now get
 
 Phantoms are again the same on both, page by page. The one 004 page short of 100% (004660 p17) misses 3 pixels. Most of the 17 pages left on 003 draw text in embedded Type 1 fonts (JansonText, ParisFlash), whose programs the parser doesn't read yet.
 
+### Embedded Type 1 fonts (GB3, 2 October)
+
+A third change after the held-out run (D91): glyphs in embedded Type 1 programs (/FontFile) now get their outline boxes too, from regions/src/type1.rs, which decrypts the program and runs each glyph's charstring (subroutines, flex, hint replacement and accented composites included). On the four Type 1 programs of govdocs1 003702, all 746 glyph boxes equal fontTools' control boxes. Relocked first; regions-cli's output is otherwise identical on all 1,553 files (diffed without the "ink" key).
+
+| Set | At 100% after GB2 | After GB3 | At least 99.9% | Worst | Missed ink | Pages losing coverage |
+|---|---|---|---|---|---|---|
+| govdocs1 003 (results/ink-003-gb3.jsonl) | 950 | 965 of 967 | 967 | 99.997% | 152 to 35 px | none |
+| govdocs1 004 (results/ink-004-gb3.jsonl) | 703 | 703 of 704 | 704 | 99.998% | 3 to 3 px | none |
+
+Phantoms are the same on both, page by page. Two 003 pages are left: 003161 p1 (9 pixels), where ttf-parser gives no outline for CFF glyphs that use the deprecated dotsection operator (results/findings.md), and 003627 p22 (26 pixels), a glyph straddling the page's left edge that is flagged offpage by its centre. Both are planned (D94).
+
 ## 5. Speed
 
 Not measured on the held-out files. On tune (003, 7,633 pages, results/exact-tune.md section 7) the median page takes 1.10 ms, under the 5 ms target. A held-out timing would need a quiet machine and one session; it can be added without changing anything frozen.

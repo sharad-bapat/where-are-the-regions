@@ -2,6 +2,10 @@
 
 Facts the checks turned up about libraries, data sources and PDFs in the wild, as opposed to bugs in this repo's own code. Each entry says how it was found and what it was checked against.
 
+## ttf-parser rejects a CFF glyph that uses dotsection (2 October 2026)
+
+ttf-parser 0.25.1 fails to outline any CFF charstring containing the escape operator 12 0 (dotsection): under the escape byte it accepts only hflex, flex, hflex1 and flex1 and returns CFFError::UnsupportedOperator for the rest (src/tables/cff/cff1.rs, parse_char_string), so the glyph has no outline and no box. Adobe's Type 2 Charstring Format (TN 5177, 16 March 2000, Appendix C, p35) says the obsolete and deprecated operators "should be supported in all Type 2 charstring processors that may encounter such programs", and that dotsection "has always been treated as a no-op by Adobe ATM renderers"; the operator table (p32) marks 12 0 as deprecated. FreeType, and so MuPDF, draws these glyphs. Found on govdocs1 003161 p1, JansonText-Italic (FontFile3 /Type1C), where 8 of 59 non-empty glyphs fail, 'j' among them (fontTools reads its control box as -202 -270 274 690). Counted with fontTools over every FontFile3 /Type1C and /CIDFontType0C program: 36 files of thread 003 (681 programs, 647 of 30,088 charstrings and subroutines) and 24 of thread 004 (554 programs, 395 of 15,902) use it.
+
 ## pdfminer.six ignores the sh operator, so pdfplumber lists no shadings (1 October 2026)
 
 In pdfminer.six 20251230, PDFPageInterpreter.do_sh ("Paint area defined by shading pattern") has a docstring and no body, so a shading painted with sh reaches no device and pdfplumber 0.11.9 reports nothing for it. On govdocs1 003694 p1 an axial shading (/ShadingType 2) clipped to 297 x 758 pt is most of the page's ink; a pdfplumber map covers 36.55% of it. PyMuPDF's get_bboxlog lists it as fill-shade, but with an unbounded box (plus or minus 2^31), not the clip. Found by the baseline ink run (results/ink-baseline-readers.md).

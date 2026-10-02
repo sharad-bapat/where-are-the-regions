@@ -34,6 +34,7 @@ pub mod vector;
 pub use vector::{Path, Vector};
 mod tables;
 mod truetype;
+mod type1;
 
 pub use font::Kind;
 

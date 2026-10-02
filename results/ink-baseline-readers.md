@@ -57,6 +57,10 @@ regions-cli now adds each embedded glyph's outline to its word's ink box (D91, r
 
 regions-cli now also boxes glyphs of fonts that aren't embedded by the standard font MuPDF draws instead (D93). On 003: 950 pages at 100%, all 967 at least 99.9%, worst 99.99%, missed ink 152 px, no page losing coverage. Against bboxlog (966 pages at 100%, worst 56.42%, 710,374 px missed) regions-cli now has fewer missed pixels, a better worst page and more pages at 99.9% or more; bboxlog still has 16 more pages at exactly 100%, most of them a few pixels short in embedded Type 1 fonts.
 
+## After embedded Type 1 fonts (GB3, 2 October)
+
+With Type 1 programs read as well (results/exact-heldout.md), regions-cli has 965 of 967 pages of 003 at 100%, the worst at 99.997%, and 35 missed pixels in all. bboxlog has 966 at 100% but misses 710,374 pixels and has a page at 56.42%.
+
 ## Notes
 
 - The pdfplumber run above was made before the reader stopped dropping control-code characters as spaces (str.isspace() is true for them). Rerun on 003437's 8 pages after the change: identical numbers. Other pages weren't rerun.
