@@ -134,6 +134,11 @@ Two last changes after the held-out run (D94), each relocked and committed on it
 
 On 003, GB4 brings 003161 p1 to 100% and GB5 003627 p22. Phantoms are the same on both sets, page by page. The one 004 page short of 100% (004660 p17) misses 3 pixels that PyMuPDF puts down to nothing it reports; it is held-out data and wasn't looked into.
 
+
+### Widths by the glyph, not by ToUnicode (3 October)
+
+Found while building the next tool's test set, after the held-out run, and relocked on its own. A standard font with no /Widths had its built-in widths looked up by the character ToUnicode gives, so a ToUnicode map that says something else gave the drawn glyph no width: a garbled text layer (every code mapped to private use) came out as zero-width words. A width belongs to the glyph the encoding names, and regions/src/font.rs now looks it up by that, falling back to ToUnicode only where the encoding gives nothing; the Symbol and ZapfDingbats width-by-glyph lookup does the same. A unit test covers it. Old and new output on all 1,553 files of threads 003 and 004 and the constructed sets: one file changes, 003685, whose words end in a soft hyphen (ToUnicode U+00AD, drawn as WinAnsi's hyphen). Its right edges move out by about 2.4 pt and land nearer PyMuPDF's: "Vice" with its soft hyphen, on page 2, now ends at 335.1 pt (PyMuPDF 335.3, before 332.8). The boxes only grow, so the ink test wasn't rerun.
+
 ## 5. Speed
 
 Not measured on the held-out files. On tune (003, 7,633 pages, results/exact-tune.md section 7) the median page takes 1.10 ms, under the 5 ms target. A held-out timing would need a quiet machine and one session; it can be added without changing anything frozen.
