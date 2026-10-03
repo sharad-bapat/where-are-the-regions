@@ -1,0 +1,3366 @@
+{
+ "seed": 20260930,
+ "cases": 240,
+ "items": [
+  {
+   "id": "v0000",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    390.01,
+    207.3,
+    394.01,
+    453.22
+   ],
+   "split": "tune",
+   "file": "tune/v0000.pdf",
+   "sha256": "f28175ddb628fc8e99c739f0a486c622b1d19fab97d1124993182805afd479db"
+  },
+  {
+   "id": "v0001",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    92.46,
+    283.79,
+    497.96,
+    749.4
+   ],
+   "split": "heldout",
+   "file": "heldout/v0001.pdf",
+   "sha256": "7bfbca7a60daff2913ec73310a1439aa5987b95cf9fdeb4258f8b39d6f102a99"
+  },
+  {
+   "id": "v0002",
+   "kind": "table",
+   "note": "lines 10x2",
+   "box": [
+    66.93,
+    384.02,
+    225.54,
+    545.76
+   ],
+   "split": "tune",
+   "file": "tune/v0002.pdf",
+   "sha256": "2838584dcb8e61e8fe719619ff53fddc39dc5073747b784b8e57223bb11c26f6"
+  },
+  {
+   "id": "v0003",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    83.02,
+    653.59,
+    372.74,
+    731.08
+   ],
+   "split": "heldout",
+   "file": "heldout/v0003.pdf",
+   "sha256": "333ce50e9774f9b9edc377aed39fe119c8f1a46bf9598cbd2bd1fa7269f6d1e0"
+  },
+  {
+   "id": "v0004",
+   "kind": "chart",
+   "note": "pie",
+   "box": [
+    126.45,
+    186.31,
+    394.26,
+    348.05
+   ],
+   "split": "heldout",
+   "file": "heldout/v0004.pdf",
+   "sha256": "96b52208ad157b87fa26cd1fff504cdee5a2e2d6a37f9c14e1731a546b6eb4cd"
+  },
+  {
+   "id": "v0005",
+   "kind": "outlined",
+   "note": "3 words at 32.2 pt",
+   "box": [
+    89.18,
+    286.02,
+    547.95,
+    326.26
+   ],
+   "split": "tune",
+   "file": "tune/v0005.pdf",
+   "sha256": "f945cc0dd4c521728c6bef998ed33af1cc735669b881e4991d96b2fc5e114758"
+  },
+  {
+   "id": "v0006",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    441.62,
+    54.19,
+    445.62,
+    249.59
+   ],
+   "split": "tune",
+   "file": "tune/v0006.pdf",
+   "sha256": "baf5b033d78698e8c10aee8dcc67ec3d2225f2a654632c4e98c4cda865745164"
+  },
+  {
+   "id": "v0007",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    252.05,
+    140.45,
+    508.68,
+    682.36
+   ],
+   "split": "heldout",
+   "file": "heldout/v0007.pdf",
+   "sha256": "b48a98a295e2f2d2e47d36559fda53e6ab6c6e2b26694403dd01faf6b9668720"
+  },
+  {
+   "id": "v0008",
+   "kind": "table",
+   "note": "cells 8x2",
+   "box": [
+    216.29,
+    541.45,
+    405.04,
+    732.67
+   ],
+   "split": "tune",
+   "file": "tune/v0008.pdf",
+   "sha256": "dfc83ecd5198e510f9bff9867d396f31d0bc75d1d7c2983cc8177c49de808091"
+  },
+  {
+   "id": "v0009",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    162.05,
+    228.73,
+    532.52,
+    391.05
+   ],
+   "split": "tune",
+   "file": "tune/v0009.pdf",
+   "sha256": "912e30706eaa7d9b6b25c773233cde4eee11bcbc055e990dfaa372886aaac972"
+  },
+  {
+   "id": "v0010",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    141.94,
+    249.75,
+    559.23,
+    483.61
+   ],
+   "split": "heldout",
+   "file": "heldout/v0010.pdf",
+   "sha256": "3c4cc8408d9b26cbf16bb88b5b9e9aeb5dfb3d3d1fbefc0ce7bb81abd10d6ce7"
+  },
+  {
+   "id": "v0011",
+   "kind": "outlined",
+   "note": "1 words at 29.9 pt",
+   "box": [
+    115.82,
+    137.2,
+    198.86,
+    174.61
+   ],
+   "split": "tune",
+   "file": "tune/v0011.pdf",
+   "sha256": "00213fef17d44c4d9bba53718e742a2896232aeb8cb3d8b6d5296188377fdf39"
+  },
+  {
+   "id": "v0012",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    249.01,
+    176.38,
+    552.0,
+    180.38
+   ],
+   "split": "tune",
+   "file": "tune/v0012.pdf",
+   "sha256": "94266eb7feaf434ab5629504805ec6550bf4a97bc1b248f8a46634dadceb77be"
+  },
+  {
+   "id": "v0013",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    94.3,
+    42.87,
+    279.03,
+    596.12
+   ],
+   "split": "heldout",
+   "file": "heldout/v0013.pdf",
+   "sha256": "8e26477d136eb1ef5aeaee64177fbe48bfb394ca466416fc60bac1cbd347cd8d"
+  },
+  {
+   "id": "v0014",
+   "kind": "table",
+   "note": "cells 3x3",
+   "box": [
+    89.48,
+    174.46,
+    324.82,
+    237.24
+   ],
+   "split": "tune",
+   "file": "tune/v0014.pdf",
+   "sha256": "f7f5aca5c3a8719e8967f78c88ad2e777ae2c8d2f57ea5245b2aa31069eda2fa"
+  },
+  {
+   "id": "v0015",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    204.86,
+    613.0,
+    317.16
+   ],
+   "split": "heldout",
+   "file": "heldout/v0015.pdf",
+   "sha256": "9c87c1ad19f2a8b5ed35d6760e446df20ad7ac226762fe1f3007fee97e9a9eb8"
+  },
+  {
+   "id": "v0016",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    171.05,
+    62.48,
+    473.71,
+    297.14
+   ],
+   "split": "tune",
+   "file": "tune/v0016.pdf",
+   "sha256": "b54f0809b0baa452cd192bacd693950f9bfb9271e415672b6381f662a74c1c92"
+  },
+  {
+   "id": "v0017",
+   "kind": "outlined",
+   "note": "4 words at 32.7 pt",
+   "box": [
+    63.34,
+    321.48,
+    574.03,
+    362.35
+   ],
+   "split": "heldout",
+   "file": "heldout/v0017.pdf",
+   "sha256": "56035d06bd0c500ab65b429d8777dcc18ed2d63fe9593350c54c9dc63391dcb9"
+  },
+  {
+   "id": "v0018",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    99.92,
+    115.46,
+    534.05,
+    119.46
+   ],
+   "split": "heldout",
+   "file": "heldout/v0018.pdf",
+   "sha256": "b67a6459cb6b07cf905b488520dd69cab7af7d590eee3465da86fabea0f01b94"
+  },
+  {
+   "id": "v0019",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    149.87,
+    506.62,
+    507.14,
+    694.1
+   ],
+   "split": "tune",
+   "file": "tune/v0019.pdf",
+   "sha256": "1ba3fd95c91cfc5a30f4d02c3ca91177eb990795eb27586954eaee5d69f34b4c"
+  },
+  {
+   "id": "v0020",
+   "kind": "table",
+   "note": "cells 12x4",
+   "box": [
+    298.02,
+    445.66,
+    494.26,
+    635.18
+   ],
+   "split": "tune",
+   "file": "tune/v0020.pdf",
+   "sha256": "77d0e5f3cae0d03ee7c79dc105536f1c1a10e795e7cb4bba50ae0d941d3e4b76"
+  },
+  {
+   "id": "v0021",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    384.03,
+    613.0,
+    709.89
+   ],
+   "split": "tune",
+   "file": "tune/v0021.pdf",
+   "sha256": "980ab9e3babe8f464ad639e9a4aa9100029ac0ccfc0929e103543284423ade8d"
+  },
+  {
+   "id": "v0022",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    139.93,
+    116.0,
+    392.2,
+    292.83
+   ],
+   "split": "heldout",
+   "file": "heldout/v0022.pdf",
+   "sha256": "c18fe935b5d39d4250387eb77d7f764e66ba5dd1080ddac8bf0b3f758857eee3"
+  },
+  {
+   "id": "v0023",
+   "kind": "outlined",
+   "note": "4 words at 15.5 pt",
+   "box": [
+    164.3,
+    594.18,
+    432.63,
+    613.6
+   ],
+   "split": "heldout",
+   "file": "heldout/v0023.pdf",
+   "sha256": "b059a0f35316b680a66b3b387c5deda0d12d21980b02c017533648c5e30ed263"
+  },
+  {
+   "id": "v0024",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    327.58,
+    614.03,
+    475.63,
+    618.03
+   ],
+   "split": "heldout",
+   "file": "heldout/v0024.pdf",
+   "sha256": "780a621c8a81502c08bc872e69f74870996cd50498918ca4951e549ea075843b"
+  },
+  {
+   "id": "v0025",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    89.37,
+    327.05,
+    546.36,
+    723.19
+   ],
+   "split": "heldout",
+   "file": "heldout/v0025.pdf",
+   "sha256": "323d048ac7f9f8a87510dff0a87f48a82835f67dc0d307e0e355d3cb0130f425"
+  },
+  {
+   "id": "v0026",
+   "kind": "table",
+   "note": "cells 8x6",
+   "box": [
+    39.18,
+    516.93,
+    411.2,
+    655.77
+   ],
+   "split": "heldout",
+   "file": "heldout/v0026.pdf",
+   "sha256": "111dc18dc362dab9221d78cc3786771ad85c3bd5ca3d38ee37ebaa1299486c8e"
+  },
+  {
+   "id": "v0027",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    92.06,
+    300.79,
+    410.31,
+    341.82
+   ],
+   "split": "heldout",
+   "file": "heldout/v0027.pdf",
+   "sha256": "df59ce46e4faf42a4f41fc9e4d73b8bcdd7056f41d695d6220050d82172563d5"
+  },
+  {
+   "id": "v0028",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    285.55,
+    171.15,
+    511.77,
+    435.2
+   ],
+   "split": "heldout",
+   "file": "heldout/v0028.pdf",
+   "sha256": "64719768d4690ba8a0218d8b7302aeede902d3d02718bb59865711c90f62a6bc"
+  },
+  {
+   "id": "v0029",
+   "kind": "outlined",
+   "note": "3 words at 26.2 pt",
+   "box": [
+    146.12,
+    191.37,
+    440.56,
+    224.1
+   ],
+   "split": "heldout",
+   "file": "heldout/v0029.pdf",
+   "sha256": "4b22490283116d018c1cebebebfe6d393abd65e9ffa7ea3a41b8649b717aaa4f"
+  },
+  {
+   "id": "v0030",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    47.18,
+    119.49,
+    491.94,
+    123.49
+   ],
+   "split": "tune",
+   "file": "tune/v0030.pdf",
+   "sha256": "c416bc4c09fc9cca0e39b04c54d5f6a08b63e10da0db2dbfc2f4db2650f6dfef"
+  },
+  {
+   "id": "v0031",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    98.75,
+    246.62,
+    520.93,
+    739.46
+   ],
+   "split": "tune",
+   "file": "tune/v0031.pdf",
+   "sha256": "9b652adf9f881fded499620e2ca99db4d56cbf273e62526868de0b705d5de56f"
+  },
+  {
+   "id": "v0032",
+   "kind": "table",
+   "note": "cells 12x3",
+   "box": [
+    128.47,
+    461.6,
+    280.85,
+    719.27
+   ],
+   "split": "tune",
+   "file": "tune/v0032.pdf",
+   "sha256": "4b73108b34666fc83de3e817beeac5833a32581f7a64b1b9d83fc13ef462b8e7"
+  },
+  {
+   "id": "v0033",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    134.6,
+    613.0,
+    436.13
+   ],
+   "split": "heldout",
+   "file": "heldout/v0033.pdf",
+   "sha256": "8daed0034fbb2eef7a2e2a2552271ed9cc3e676389d201690b69bf11bc008257"
+  },
+  {
+   "id": "v0034",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    198.12,
+    240.1,
+    556.79,
+    570.31
+   ],
+   "split": "heldout",
+   "file": "heldout/v0034.pdf",
+   "sha256": "d99627d35b1b04a63324c8f74b5108f382193eb8270d0aa43b41a0eecdb0acbf"
+  },
+  {
+   "id": "v0035",
+   "kind": "outlined",
+   "note": "1 words at 26.6 pt",
+   "box": [
+    95.61,
+    303.53,
+    171.79,
+    336.82
+   ],
+   "split": "tune",
+   "file": "tune/v0035.pdf",
+   "sha256": "2b721d8aa7fccc0c31558ea4ced2c37254e5989c3cd25fd9c3aa2d21151c8924"
+  },
+  {
+   "id": "v0036",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    281.31,
+    311.51,
+    460.94,
+    315.51
+   ],
+   "split": "tune",
+   "file": "tune/v0036.pdf",
+   "sha256": "4c68cc277befffd8f0ae1353ea26e6ffbc35c58acc8fe47dbaf02cf8cc4e57ce"
+  },
+  {
+   "id": "v0037",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    167.08,
+    60.76,
+    507.99,
+    316.32
+   ],
+   "split": "tune",
+   "file": "tune/v0037.pdf",
+   "sha256": "8ca17f822f918c8a28b2cad0adb88fe3a480f5427ec8c0cde680a9416cfc6646"
+  },
+  {
+   "id": "v0038",
+   "kind": "table",
+   "note": "lines 8x6",
+   "box": [
+    45.96,
+    179.7,
+    551.48,
+    345.6
+   ],
+   "split": "heldout",
+   "file": "heldout/v0038.pdf",
+   "sha256": "3855213da339c81eb697af4b77cd5aba96c2246487e8dab0138ea9f07ab64e30"
+  },
+  {
+   "id": "v0039",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    333.76,
+    305.41,
+    520.57,
+    517.78
+   ],
+   "split": "heldout",
+   "file": "heldout/v0039.pdf",
+   "sha256": "30cfb9967995a8e85bb767e1d6270a171de10e3609ea8c60c80c34771f5e01df"
+  },
+  {
+   "id": "v0040",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    200.53,
+    77.1,
+    569.13,
+    312.68
+   ],
+   "split": "tune",
+   "file": "tune/v0040.pdf",
+   "sha256": "79c107ef0c0832a2787d39caa2d6e680f402ec1784f3d07a84ae66a9f911e129"
+  },
+  {
+   "id": "v0041",
+   "kind": "outlined",
+   "note": "1 words at 23.1 pt",
+   "box": [
+    161.64,
+    490.14,
+    254.57,
+    518.95
+   ],
+   "split": "tune",
+   "file": "tune/v0041.pdf",
+   "sha256": "bb5f8b190018184f6c64a56531a52ec7c71202601a2d66fee3232393ff57f978"
+  },
+  {
+   "id": "v0042",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    314.83,
+    530.22,
+    481.33,
+    534.22
+   ],
+   "split": "heldout",
+   "file": "heldout/v0042.pdf",
+   "sha256": "0d7d85f5f80ed57ebc79d0f7c27377b641cb2ea2ec9b8b8bbb40cfee89cb766f"
+  },
+  {
+   "id": "v0043",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    208.17,
+    69.43,
+    442.51,
+    454.3
+   ],
+   "split": "heldout",
+   "file": "heldout/v0043.pdf",
+   "sha256": "b35b926744e7139695c69d9f7aa08aaf9edc0c929ef248d95179a103b67d2788"
+  },
+  {
+   "id": "v0044",
+   "kind": "table",
+   "note": "lines 7x5",
+   "box": [
+    246.09,
+    552.08,
+    490.43,
+    682.67
+   ],
+   "split": "heldout",
+   "file": "heldout/v0044.pdf",
+   "sha256": "cf1ed9d0ac2c4a372667c16c0ffbf72454ab51a6430bad25010afd228b9a3f25"
+  },
+  {
+   "id": "v0045",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    127.93,
+    299.7,
+    467.74,
+    439.32
+   ],
+   "split": "tune",
+   "file": "tune/v0045.pdf",
+   "sha256": "eda379579525c91b2c70fe074450377d049b6938c1db6a611210e10025123e74"
+  },
+  {
+   "id": "v0046",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    135.74,
+    133.17,
+    520.19,
+    422.02
+   ],
+   "split": "tune",
+   "file": "tune/v0046.pdf",
+   "sha256": "8c375297ee43267be510d823b20744ad6d818d3829f4e78a2d2f451df8e03de1"
+  },
+  {
+   "id": "v0047",
+   "kind": "outlined",
+   "note": "1 words at 33.4 pt",
+   "box": [
+    101.94,
+    492.46,
+    217.92,
+    534.23
+   ],
+   "split": "tune",
+   "file": "tune/v0047.pdf",
+   "sha256": "793e8df0cef69a41840b17a8e06c605e7a50b557a58fd0c18181ea8116b767d0"
+  },
+  {
+   "id": "v0048",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    81.65,
+    159.78,
+    495.46,
+    163.78
+   ],
+   "split": "tune",
+   "file": "tune/v0048.pdf",
+   "sha256": "e2047dc651fe538fb5f59ef5103d58b479721b871817bf35fe82e0e9643ec3ae"
+  },
+  {
+   "id": "v0049",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    56.33,
+    163.39,
+    475.87,
+    656.53
+   ],
+   "split": "tune",
+   "file": "tune/v0049.pdf",
+   "sha256": "f0ee6a7cc0a118f9538daeab0115b9caa7ba80b8d08fb53abd7f367f9083c8da"
+  },
+  {
+   "id": "v0050",
+   "kind": "table",
+   "note": "lines 8x2",
+   "box": [
+    329.79,
+    113.85,
+    443.43,
+    275.88
+   ],
+   "split": "tune",
+   "file": "tune/v0050.pdf",
+   "sha256": "41ead8644f97f73d949011788723c76d0935fdbf22187e2a085f2c08dbf49ac1"
+  },
+  {
+   "id": "v0051",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    153.05,
+    212.79,
+    277.34,
+    405.51
+   ],
+   "split": "heldout",
+   "file": "heldout/v0051.pdf",
+   "sha256": "73e19ee6b051378012b1d87e6e19caed23105f9348dcdd60f2c08c1ddb11d67f"
+  },
+  {
+   "id": "v0052",
+   "kind": "chart",
+   "note": "pie",
+   "box": [
+    216.67,
+    318.03,
+    502.46,
+    604.23
+   ],
+   "split": "tune",
+   "file": "tune/v0052.pdf",
+   "sha256": "5e62f9bad357c6e58fe32bfc38e1454cf3804b9903cfdc2454356c24cc6cf59c"
+  },
+  {
+   "id": "v0053",
+   "kind": "outlined",
+   "note": "3 words at 30.9 pt",
+   "box": [
+    107.21,
+    299.13,
+    455.04,
+    337.71
+   ],
+   "split": "heldout",
+   "file": "heldout/v0053.pdf",
+   "sha256": "b23295d05ca646d0812be857d60d2a68ca0ac7f33ce2503493629964cb7d468b"
+  },
+  {
+   "id": "v0054",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    72.9,
+    354.29,
+    338.0,
+    358.29
+   ],
+   "split": "tune",
+   "file": "tune/v0054.pdf",
+   "sha256": "e1601ddb8e19d8638f8434646472e002d0d240e927543cd49af88ed24a1b54ec"
+  },
+  {
+   "id": "v0055",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    266.01,
+    64.76,
+    544.31,
+    575.81
+   ],
+   "split": "tune",
+   "file": "tune/v0055.pdf",
+   "sha256": "95c2284d03623441a4c1ba5de90d6c6c9eded9f5651f14443272e96c0dde1ce7"
+  },
+  {
+   "id": "v0056",
+   "kind": "table",
+   "note": "lines 4x2",
+   "box": [
+    297.71,
+    554.16,
+    501.31,
+    618.93
+   ],
+   "split": "tune",
+   "file": "tune/v0056.pdf",
+   "sha256": "eb035fcfed441eb15ce0b8bc9fdd655531efa1dee2971ddddd5307b8faa65a58"
+  },
+  {
+   "id": "v0057",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    155.34,
+    57.88,
+    536.83,
+    242.85
+   ],
+   "split": "heldout",
+   "file": "heldout/v0057.pdf",
+   "sha256": "5a34042944849b86bc176742117b24fe493b8ed14e115bc61c8e2efac001c2da"
+  },
+  {
+   "id": "v0058",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    66.29,
+    89.6,
+    491.63,
+    324.7
+   ],
+   "split": "heldout",
+   "file": "heldout/v0058.pdf",
+   "sha256": "3b8097ab7e10148d8bbe523b4220f5d40cafbe782e2f1fbaa23a8dafa7489959"
+  },
+  {
+   "id": "v0059",
+   "kind": "outlined",
+   "note": "4 words at 18.5 pt",
+   "box": [
+    187.63,
+    205.45,
+    544.77,
+    228.57
+   ],
+   "split": "tune",
+   "file": "tune/v0059.pdf",
+   "sha256": "17b191f50e75b66bd98177b1ecdfe062250abe7ef21b46c197a3178613dd5e52"
+  },
+  {
+   "id": "v0060",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    243.62,
+    706.87,
+    522.11,
+    710.87
+   ],
+   "split": "heldout",
+   "file": "heldout/v0060.pdf",
+   "sha256": "9264abbe1ed0db0a3e8e40ac0da784d39cb7c5d52dc328b3ac39ef5d0ed0b899"
+  },
+  {
+   "id": "v0061",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    155.15,
+    335.52,
+    519.82,
+    648.16
+   ],
+   "split": "tune",
+   "file": "tune/v0061.pdf",
+   "sha256": "48f98b34768cc9471e0f787f29ab4360b52135e37e3e4489aabfb9aa6eb6e969"
+  },
+  {
+   "id": "v0062",
+   "kind": "table",
+   "note": "lines 10x6",
+   "box": [
+    167.14,
+    442.3,
+    549.82,
+    677.11
+   ],
+   "split": "heldout",
+   "file": "heldout/v0062.pdf",
+   "sha256": "d33fdf2fb81937a80d0663f298e4110af9225f772411cee6af606b1eb2450c07"
+  },
+  {
+   "id": "v0063",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    158.07,
+    613.0,
+    412.28
+   ],
+   "split": "tune",
+   "file": "tune/v0063.pdf",
+   "sha256": "c9145b5b143482ef110e97acc53f359b1580a0c16b5dfda3b291eb9ca294aa2f"
+  },
+  {
+   "id": "v0064",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    104.72,
+    66.12,
+    427.8,
+    242.19
+   ],
+   "split": "heldout",
+   "file": "heldout/v0064.pdf",
+   "sha256": "e43a55169a9526ce64dfb9ce117bc2208ebbf74a21a399e848f00236ccc32bda"
+  },
+  {
+   "id": "v0065",
+   "kind": "outlined",
+   "note": "1 words at 29.2 pt",
+   "box": [
+    112.08,
+    364.51,
+    246.3,
+    401.05
+   ],
+   "split": "tune",
+   "file": "tune/v0065.pdf",
+   "sha256": "c4c6e89ce73c81a8e0bae842731f6cfac875b627f9dd940f01c2fed54056e8a5"
+  },
+  {
+   "id": "v0066",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    132.96,
+    278.75,
+    257.23,
+    282.75
+   ],
+   "split": "heldout",
+   "file": "heldout/v0066.pdf",
+   "sha256": "82e30c7e1ec57d4d37f9f29837c62b5ee9486ab46674e86d3aa96f3cb0d80a27"
+  },
+  {
+   "id": "v0067",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    223.11,
+    183.1,
+    517.46,
+    388.7
+   ],
+   "split": "tune",
+   "file": "tune/v0067.pdf",
+   "sha256": "086692702b1f7af19d4bb03c4f41c1f76e51c1a8d31130c0a12f01e905ce52ad"
+  },
+  {
+   "id": "v0068",
+   "kind": "table",
+   "note": "cells 9x3",
+   "box": [
+    41.37,
+    57.52,
+    304.2,
+    246.19
+   ],
+   "split": "heldout",
+   "file": "heldout/v0068.pdf",
+   "sha256": "9e3f858fca1164ef834eebe6c163dff25332bc254ff6a3b464ac5e1438d41047"
+  },
+  {
+   "id": "v0069",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    186.14,
+    564.19,
+    490.67,
+    596.59
+   ],
+   "split": "tune",
+   "file": "tune/v0069.pdf",
+   "sha256": "6c549b45037aa9726c57b10d85d993a90a9c86dca1f889feca94c02eb1ec8407"
+  },
+  {
+   "id": "v0070",
+   "kind": "chart",
+   "note": "pie",
+   "box": [
+    176.64,
+    78.02,
+    442.49,
+    340.79
+   ],
+   "split": "heldout",
+   "file": "heldout/v0070.pdf",
+   "sha256": "951d230394a7b67a8bc83c39ca4db7aed72cf2e1c732dd44a8796aeba12e2287"
+  },
+  {
+   "id": "v0071",
+   "kind": "outlined",
+   "note": "2 words at 35.7 pt",
+   "box": [
+    49.27,
+    479.46,
+    357.74,
+    524.06
+   ],
+   "split": "tune",
+   "file": "tune/v0071.pdf",
+   "sha256": "10dc7471b239d2ae6bbd07811273c808d57272a4c4c7aef34233a5bbd504d2bc"
+  },
+  {
+   "id": "v0072",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    151.66,
+    559.44,
+    448.06,
+    563.44
+   ],
+   "split": "tune",
+   "file": "tune/v0072.pdf",
+   "sha256": "bf574d9079c0bca7d8941178b8a4ce576170492712a92643db0770f38cca7ac4"
+  },
+  {
+   "id": "v0073",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    70.61,
+    68.54,
+    305.5,
+    354.72
+   ],
+   "split": "heldout",
+   "file": "heldout/v0073.pdf",
+   "sha256": "998e70c7c74a657b3619e9cecb1bb0ec4a0a8c998fa9cf1dd078d14032909618"
+  },
+  {
+   "id": "v0074",
+   "kind": "table",
+   "note": "cells 9x3",
+   "box": [
+    131.9,
+    150.8,
+    344.05,
+    334.1
+   ],
+   "split": "tune",
+   "file": "tune/v0074.pdf",
+   "sha256": "265ad6c8452a1f6400e5cf5b2cc6e5471c38869db5e98de077aa6db8e827604a"
+  },
+  {
+   "id": "v0075",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    229.79,
+    435.89,
+    537.98,
+    646.55
+   ],
+   "split": "heldout",
+   "file": "heldout/v0075.pdf",
+   "sha256": "5432ba226576b978d0112d5f23dcf74efae464b6cc0d7d1df3166ea2741aa5a4"
+  },
+  {
+   "id": "v0076",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    133.59,
+    50.82,
+    521.41,
+    390.18
+   ],
+   "split": "heldout",
+   "file": "heldout/v0076.pdf",
+   "sha256": "eec4c6cbb689ec6c3a5a329d6330974a34ad340c79c0c14078356310302092ef"
+  },
+  {
+   "id": "v0077",
+   "kind": "outlined",
+   "note": "1 words at 23.3 pt",
+   "box": [
+    45.57,
+    218.14,
+    191.63,
+    247.22
+   ],
+   "split": "heldout",
+   "file": "heldout/v0077.pdf",
+   "sha256": "4d538a35cff2464e7ebc30a9dff66a4eeab2062db70de5141d34ef8db57dcf10"
+  },
+  {
+   "id": "v0078",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    369.31,
+    411.56,
+    373.31,
+    543.92
+   ],
+   "split": "tune",
+   "file": "tune/v0078.pdf",
+   "sha256": "3af021192840d1a6967195252d33e34d43fbfaa54171187315f9e90886615457"
+  },
+  {
+   "id": "v0079",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    95.51,
+    190.36,
+    437.8,
+    401.24
+   ],
+   "split": "heldout",
+   "file": "heldout/v0079.pdf",
+   "sha256": "2f4a18d30bc1f801ab8179f0242a809ac93b91061b213068577096bfedd58e28"
+  },
+  {
+   "id": "v0080",
+   "kind": "table",
+   "note": "lines 11x3",
+   "box": [
+    431.06,
+    369.1,
+    573.89,
+    588.04
+   ],
+   "split": "tune",
+   "file": "tune/v0080.pdf",
+   "sha256": "8190d94a4ff0a8d821f1dcb436a42efdd1023e358fdd07161eb46a503790803c"
+  },
+  {
+   "id": "v0081",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    47.71,
+    42.79,
+    457.87,
+    254.11
+   ],
+   "split": "tune",
+   "file": "tune/v0081.pdf",
+   "sha256": "808066edb897909a13ad59e7a1b752dc1ccaf109f760598b9c744eee67bdea12"
+  },
+  {
+   "id": "v0082",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    114.78,
+    100.24,
+    460.62,
+    387.35
+   ],
+   "split": "tune",
+   "file": "tune/v0082.pdf",
+   "sha256": "bcf219b85a8f657c94d66011e6941c72b29945905e1c9733bf852c3c9e358499"
+  },
+  {
+   "id": "v0083",
+   "kind": "outlined",
+   "note": "3 words at 13.2 pt",
+   "box": [
+    167.53,
+    307.92,
+    325.14,
+    324.39
+   ],
+   "split": "tune",
+   "file": "tune/v0083.pdf",
+   "sha256": "423b6a6123b12198bcd56d08828396a7fd7de95e429eb96389bd944f5e49adee"
+  },
+  {
+   "id": "v0084",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    186.66,
+    251.71,
+    412.81,
+    255.71
+   ],
+   "split": "heldout",
+   "file": "heldout/v0084.pdf",
+   "sha256": "1408ee36513d13a20545a3aafaef3cc21f50a32ca1d601bd542acdfa0d467944"
+  },
+  {
+   "id": "v0085",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    57.17,
+    75.15,
+    363.4,
+    549.13
+   ],
+   "split": "tune",
+   "file": "tune/v0085.pdf",
+   "sha256": "9186dc8278d95792c7a757c4dd295f2f7df535d9c961aa984a52a66d4c21e6d9"
+  },
+  {
+   "id": "v0086",
+   "kind": "table",
+   "note": "lines 10x2",
+   "box": [
+    181.85,
+    289.86,
+    384.74,
+    517.63
+   ],
+   "split": "heldout",
+   "file": "heldout/v0086.pdf",
+   "sha256": "7c9e71e10c57a7381747947f8f3d9908461ae762376ea44ff50992b3897b3565"
+  },
+  {
+   "id": "v0087",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    114.24,
+    532.53,
+    564.08,
+    733.75
+   ],
+   "split": "tune",
+   "file": "tune/v0087.pdf",
+   "sha256": "aec5a264daff29ccc2cc59616b1088efb562cb975d9797c6c32b2487b2e4ee5a"
+  },
+  {
+   "id": "v0088",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    186.98,
+    251.03,
+    445.6,
+    437.05
+   ],
+   "split": "tune",
+   "file": "tune/v0088.pdf",
+   "sha256": "e8956ee73eb657d24b2726d2bef64b11257a998ef005effb3f7deead099a9d1a"
+  },
+  {
+   "id": "v0089",
+   "kind": "outlined",
+   "note": "4 words at 22.7 pt",
+   "box": [
+    62.38,
+    576.86,
+    554.58,
+    605.26
+   ],
+   "split": "heldout",
+   "file": "heldout/v0089.pdf",
+   "sha256": "dce93ac34027db4bd5779d075a14f635a51a819c3703e7e262c839905f4de65e"
+  },
+  {
+   "id": "v0090",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    278.22,
+    656.88,
+    413.53,
+    660.88
+   ],
+   "split": "heldout",
+   "file": "heldout/v0090.pdf",
+   "sha256": "2457061e4bb164a6592541c55e87378aae01d29bb64fbe5872d60ac8c689a7ca"
+  },
+  {
+   "id": "v0091",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    50.43,
+    61.14,
+    463.27,
+    494.97
+   ],
+   "split": "heldout",
+   "file": "heldout/v0091.pdf",
+   "sha256": "2ec973f95f670d9c3a8b7b390b9c129286552dc616101d9d243f87e57214c355"
+  },
+  {
+   "id": "v0092",
+   "kind": "table",
+   "note": "lines 10x3",
+   "box": [
+    136.44,
+    174.04,
+    429.1,
+    353.63
+   ],
+   "split": "tune",
+   "file": "tune/v0092.pdf",
+   "sha256": "4b17edd3acf88805ecf70f9df871ec808f937af026c7ab6f05828c700ece4a8f"
+  },
+  {
+   "id": "v0093",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    108.11,
+    153.99,
+    373.14,
+    509.57
+   ],
+   "split": "tune",
+   "file": "tune/v0093.pdf",
+   "sha256": "a380937a8ac9542ec396866aa7df0904d927d9fd3eb6c9599e60f46d0533022e"
+  },
+  {
+   "id": "v0094",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    250.78,
+    271.07,
+    503.76,
+    436.06
+   ],
+   "split": "heldout",
+   "file": "heldout/v0094.pdf",
+   "sha256": "e02843f354b6153541c9252a22d00eae04ab1988983de5fa1f72e48e66816305"
+  },
+  {
+   "id": "v0095",
+   "kind": "outlined",
+   "note": "1 words at 35.8 pt",
+   "box": [
+    86.4,
+    659.18,
+    210.44,
+    703.96
+   ],
+   "split": "heldout",
+   "file": "heldout/v0095.pdf",
+   "sha256": "b6a5565830a3d002aa38d06250a15c1ca115242a760d934a83a2caa35a7766f8"
+  },
+  {
+   "id": "v0096",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    127.27,
+    383.18,
+    378.58,
+    387.18
+   ],
+   "split": "tune",
+   "file": "tune/v0096.pdf",
+   "sha256": "0957a58259395a6361b0814c5dba4ca07dfb039755c7bc7289da6994c6eecf66"
+  },
+  {
+   "id": "v0097",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    38.54,
+    243.58,
+    388.64,
+    606.69
+   ],
+   "split": "tune",
+   "file": "tune/v0097.pdf",
+   "sha256": "4a27bfb3c9e1656177b1546bb8ffcc785f196159f7ce01e1fead9b61222cca54"
+  },
+  {
+   "id": "v0098",
+   "kind": "table",
+   "note": "lines 4x2",
+   "box": [
+    244.06,
+    316.22,
+    348.62,
+    399.58
+   ],
+   "split": "tune",
+   "file": "tune/v0098.pdf",
+   "sha256": "994a3849b12163d3f0c292f1f425e297b97580c5814ac4dbb11342ee0a354ed7"
+  },
+  {
+   "id": "v0099",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    220.74,
+    288.56,
+    482.13,
+    315.55
+   ],
+   "split": "tune",
+   "file": "tune/v0099.pdf",
+   "sha256": "d8fe727e406bbe306514447d7a4a223ecb55d5a50246cad72005059c5b92dc89"
+  },
+  {
+   "id": "v0100",
+   "kind": "chart",
+   "note": "pie",
+   "box": [
+    164.12,
+    276.0,
+    432.85,
+    558.84
+   ],
+   "split": "tune",
+   "file": "tune/v0100.pdf",
+   "sha256": "460ae34dcc322570a2d6aa90734aff101565b4bca06e117371571d0056923227"
+  },
+  {
+   "id": "v0101",
+   "kind": "outlined",
+   "note": "4 words at 23.2 pt",
+   "box": [
+    177.93,
+    303.53,
+    488.94,
+    332.54
+   ],
+   "split": "heldout",
+   "file": "heldout/v0101.pdf",
+   "sha256": "273c64cae5025aec24c773c89ae02f132798a43d428e56ca88df9650d20b2fcd"
+  },
+  {
+   "id": "v0102",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    131.58,
+    362.2,
+    429.83,
+    366.2
+   ],
+   "split": "tune",
+   "file": "tune/v0102.pdf",
+   "sha256": "0f671c47637d6522a56219ac76dc3e90e0c050d0f3b6c990bff5b678287e5f49"
+  },
+  {
+   "id": "v0103",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    108.28,
+    49.04,
+    466.13,
+    560.74
+   ],
+   "split": "tune",
+   "file": "tune/v0103.pdf",
+   "sha256": "4ed593fa462bb048b1bce5abdb4a07847776bddef419b206224ba83a30c378e4"
+  },
+  {
+   "id": "v0104",
+   "kind": "table",
+   "note": "cells 4x3",
+   "box": [
+    153.24,
+    610.46,
+    371.97,
+    675.58
+   ],
+   "split": "heldout",
+   "file": "heldout/v0104.pdf",
+   "sha256": "92628d4a183247c1aa841d2e4da9746442cff56e2bc6f8b19e7115a47a42a5fc"
+  },
+  {
+   "id": "v0105",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    106.87,
+    317.0,
+    358.38,
+    662.53
+   ],
+   "split": "heldout",
+   "file": "heldout/v0105.pdf",
+   "sha256": "32e577fd0813d5ba6058cc1f6bf27cbe1cb9c4cbcf466b0542b0843ca11a84ac"
+  },
+  {
+   "id": "v0106",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    56.13,
+    493.48,
+    360.55,
+    738.99
+   ],
+   "split": "tune",
+   "file": "tune/v0106.pdf",
+   "sha256": "993ee54a17854d5e2873f83b37dce257a7041f316ea15e059a0e8cbd9bc3ad35"
+  },
+  {
+   "id": "v0107",
+   "kind": "outlined",
+   "note": "2 words at 10.7 pt",
+   "box": [
+    110.16,
+    682.66,
+    208.83,
+    696.08
+   ],
+   "split": "tune",
+   "file": "tune/v0107.pdf",
+   "sha256": "23a65f0725b5b3c3e400f632ae53010fabcdafaa2ea25e179e55cbbb151132fc"
+  },
+  {
+   "id": "v0108",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    86.77,
+    575.51,
+    494.95,
+    579.51
+   ],
+   "split": "tune",
+   "file": "tune/v0108.pdf",
+   "sha256": "da7e6c88566ac22d5efe37beaa30bb43a57cf68e23e76defaac74be3046749bc"
+  },
+  {
+   "id": "v0109",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    310.85,
+    489.37,
+    509.59,
+    705.98
+   ],
+   "split": "tune",
+   "file": "tune/v0109.pdf",
+   "sha256": "014c27800ee5544c3aa1ff1c3b054bf3616519845aefb4ab312a14ec72156e32"
+  },
+  {
+   "id": "v0110",
+   "kind": "table",
+   "note": "lines 5x5",
+   "box": [
+    81.25,
+    317.66,
+    562.15,
+    436.48
+   ],
+   "split": "heldout",
+   "file": "heldout/v0110.pdf",
+   "sha256": "e47a0fd140d7a74cb132e88f0740bb3d73ed8093df43aa5085a63acabc1be971"
+  },
+  {
+   "id": "v0111",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    226.99,
+    613.0,
+    387.42
+   ],
+   "split": "heldout",
+   "file": "heldout/v0111.pdf",
+   "sha256": "0f1aa3442ca7c78a78d6b7cc36bb103c0a542a6bfe410c97c962c0a40f6956ad"
+  },
+  {
+   "id": "v0112",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    65.63,
+    81.74,
+    552.83,
+    311.7
+   ],
+   "split": "heldout",
+   "file": "heldout/v0112.pdf",
+   "sha256": "1b1e88926577dedb590be01e2ae1be7e5c125b35e0ccd11fbf259956214062a5"
+  },
+  {
+   "id": "v0113",
+   "kind": "outlined",
+   "note": "4 words at 35.3 pt",
+   "box": [
+    110.76,
+    311.51,
+    640.71,
+    355.67
+   ],
+   "split": "heldout",
+   "file": "heldout/v0113.pdf",
+   "sha256": "072dcb5869569f781488255e27f9814733955a784c402fe123b4a0af51e18968"
+  },
+  {
+   "id": "v0114",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    285.84,
+    296.85,
+    289.84,
+    556.03
+   ],
+   "split": "tune",
+   "file": "tune/v0114.pdf",
+   "sha256": "7db5de5ec40e8c5d6fb2bdf9cb9f41c012a980280b54a829db1f7b558e004b2c"
+  },
+  {
+   "id": "v0115",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    132.05,
+    315.02,
+    574.84,
+    734.0
+   ],
+   "split": "tune",
+   "file": "tune/v0115.pdf",
+   "sha256": "73785073c17c4461b6b973ef3eacba9f6c5d6659a77e32a644934b6e9bce5d9b"
+  },
+  {
+   "id": "v0116",
+   "kind": "table",
+   "note": "lines 4x4",
+   "box": [
+    104.54,
+    507.85,
+    434.48,
+    580.48
+   ],
+   "split": "heldout",
+   "file": "heldout/v0116.pdf",
+   "sha256": "80490099f5f7830ba6b87229069105cb1a27762f8eb28dfa741b03b10427090f"
+  },
+  {
+   "id": "v0117",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    124.18,
+    613.0,
+    228.44
+   ],
+   "split": "tune",
+   "file": "tune/v0117.pdf",
+   "sha256": "e29c52b36857e00e3932f491e46b6b75d991c2a9c4ddd9022e047345ec9172bb"
+  },
+  {
+   "id": "v0118",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    56.58,
+    450.65,
+    347.04,
+    635.5
+   ],
+   "split": "heldout",
+   "file": "heldout/v0118.pdf",
+   "sha256": "bcc4589254858a881b4ba6413adec90e166b71f1ce4afa713a07b91a164f6c92"
+  },
+  {
+   "id": "v0119",
+   "kind": "outlined",
+   "note": "4 words at 24.2 pt",
+   "box": [
+    124.71,
+    359.18,
+    618.84,
+    389.45
+   ],
+   "split": "tune",
+   "file": "tune/v0119.pdf",
+   "sha256": "b194c6d39ce9bf1a3f07d96ea8b98201503fc9f01c78f828d4b39aeacf1f9c8d"
+  },
+  {
+   "id": "v0120",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    137.36,
+    614.99,
+    532.9,
+    618.99
+   ],
+   "split": "tune",
+   "file": "tune/v0120.pdf",
+   "sha256": "71ba2e47d6e6d9892714d3ac341fc8def75841bc9f6d9f1bc9196a6d6014ef39"
+  },
+  {
+   "id": "v0121",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    348.03,
+    56.28,
+    566.97,
+    213.15
+   ],
+   "split": "tune",
+   "file": "tune/v0121.pdf",
+   "sha256": "ea908097ec557250c190ba693e7ee50a553b6d3d9a9b76997eaecf009ddd054f"
+  },
+  {
+   "id": "v0122",
+   "kind": "table",
+   "note": "cells 11x2",
+   "box": [
+    302.86,
+    298.59,
+    422.03,
+    561.32
+   ],
+   "split": "tune",
+   "file": "tune/v0122.pdf",
+   "sha256": "e4073910e95b8ea7cc9744415092e5c9022d773357772de6bad2f5ad0b6a02a4"
+  },
+  {
+   "id": "v0123",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    486.43,
+    613.0,
+    521.08
+   ],
+   "split": "tune",
+   "file": "tune/v0123.pdf",
+   "sha256": "b01d6e8ca11af6bc6f6a167bda0a274fef4ab98f6f71f9b15577f42a793f2932"
+  },
+  {
+   "id": "v0124",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    156.96,
+    228.35,
+    631.97,
+    545.81
+   ],
+   "split": "tune",
+   "file": "tune/v0124.pdf",
+   "sha256": "cdaf44e7c5f77e646b0c147ce02eabd91dcf535c10621c9ed1cc42738fc3e47d"
+  },
+  {
+   "id": "v0125",
+   "kind": "outlined",
+   "note": "3 words at 11.2 pt",
+   "box": [
+    170.94,
+    73.39,
+    380.06,
+    87.35
+   ],
+   "split": "tune",
+   "file": "tune/v0125.pdf",
+   "sha256": "93752cfc2c6090587795e1fc1d50ad6f26df944e0649655db605b2c7611c6203"
+  },
+  {
+   "id": "v0126",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    156.95,
+    130.68,
+    563.42,
+    134.68
+   ],
+   "split": "tune",
+   "file": "tune/v0126.pdf",
+   "sha256": "7cce2f0a227d5f27a619990975954c0319c894dba31e379333db84da7612d697"
+  },
+  {
+   "id": "v0127",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    73.27,
+    94.67,
+    557.8,
+    470.62
+   ],
+   "split": "heldout",
+   "file": "heldout/v0127.pdf",
+   "sha256": "2cb55122cbb17dc0352697be1f2c71c95a2e2a7ea49816b4bd5dfd7b487d39fd"
+  },
+  {
+   "id": "v0128",
+   "kind": "table",
+   "note": "lines 10x4",
+   "box": [
+    252.73,
+    167.16,
+    452.34,
+    317.16
+   ],
+   "split": "heldout",
+   "file": "heldout/v0128.pdf",
+   "sha256": "137f5f6ad5c2db0560c1f87be7f6611219ba44a0ecbb51979f2b93b45893365f"
+  },
+  {
+   "id": "v0129",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    72.64,
+    445.43,
+    143.18,
+    683.1
+   ],
+   "split": "heldout",
+   "file": "heldout/v0129.pdf",
+   "sha256": "b3173b8e7e6de3624a9998e07381e7407dcb66c97a41d05f064b99c98f8bf7f8"
+  },
+  {
+   "id": "v0130",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    294.56,
+    146.45,
+    609.8,
+    476.72
+   ],
+   "split": "tune",
+   "file": "tune/v0130.pdf",
+   "sha256": "62d4ea4029ca20b9b58ddefd44c17a9f1a73c517060d0aa03a83ba4f80f23a18"
+  },
+  {
+   "id": "v0131",
+   "kind": "outlined",
+   "note": "1 words at 28.7 pt",
+   "box": [
+    78.76,
+    601.02,
+    250.01,
+    636.93
+   ],
+   "split": "heldout",
+   "file": "heldout/v0131.pdf",
+   "sha256": "ad9aa924a22fe65bb6fe808c016a92a2fc806257b175fb7543d2fdf1ef8909c8"
+  },
+  {
+   "id": "v0132",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    398.82,
+    83.12,
+    402.82,
+    393.04
+   ],
+   "split": "heldout",
+   "file": "heldout/v0132.pdf",
+   "sha256": "d2793287f962bfecb30d8812506664f0056def7e93e40404218867a36b28fe82"
+  },
+  {
+   "id": "v0133",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    255.13,
+    215.93,
+    505.51,
+    485.75
+   ],
+   "split": "heldout",
+   "file": "heldout/v0133.pdf",
+   "sha256": "db97076e5b9a6aca0f966c1afc77a2a21564de00720afeec39ae0bc1e394f9dd"
+  },
+  {
+   "id": "v0134",
+   "kind": "table",
+   "note": "lines 5x3",
+   "box": [
+    149.53,
+    183.73,
+    458.42,
+    275.69
+   ],
+   "split": "heldout",
+   "file": "heldout/v0134.pdf",
+   "sha256": "7c50ece273fef9e96c47203cd873c453e81d6029a3ed518cd5fb57cfdfad4e28"
+  },
+  {
+   "id": "v0135",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    72.93,
+    332.58,
+    488.41,
+    553.57
+   ],
+   "split": "heldout",
+   "file": "heldout/v0135.pdf",
+   "sha256": "0659b54f727b89d9011822ac3b3aee9a0e174474c4079601a2831830c2e966a5"
+  },
+  {
+   "id": "v0136",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    147.29,
+    187.94,
+    399.55,
+    462.03
+   ],
+   "split": "heldout",
+   "file": "heldout/v0136.pdf",
+   "sha256": "a0af329fb18b9f6dc88127bd166f45d0baa7659e0c3cfc0d58f8c9123777f6b6"
+  },
+  {
+   "id": "v0137",
+   "kind": "outlined",
+   "note": "1 words at 30.2 pt",
+   "box": [
+    179.62,
+    513.85,
+    275.55,
+    551.66
+   ],
+   "split": "heldout",
+   "file": "heldout/v0137.pdf",
+   "sha256": "856bc4056603126774185ff7b4d3eac54bdaab19bc4af4acd6b99e60ef71d125"
+  },
+  {
+   "id": "v0138",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    90.86,
+    673.48,
+    208.13,
+    677.48
+   ],
+   "split": "heldout",
+   "file": "heldout/v0138.pdf",
+   "sha256": "a335ae1435bc698749e5c8b48634a05c5e44061229a22b7174baf7eabbd243c6"
+  },
+  {
+   "id": "v0139",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    103.52,
+    153.41,
+    570.11,
+    617.94
+   ],
+   "split": "tune",
+   "file": "tune/v0139.pdf",
+   "sha256": "394e0f4c4850ab89e8bccb44897ab524f7b79b13097f7833ec7172a7097d3c5e"
+  },
+  {
+   "id": "v0140",
+   "kind": "table",
+   "note": "cells 6x3",
+   "box": [
+    39.16,
+    235.48,
+    291.68,
+    355.06
+   ],
+   "split": "tune",
+   "file": "tune/v0140.pdf",
+   "sha256": "ba491302177afaef537ba6f3ba931db79d11549b517470b0363bd0eed1cb5e74"
+  },
+  {
+   "id": "v0141",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    40.72,
+    112.52,
+    508.95,
+    263.96
+   ],
+   "split": "tune",
+   "file": "tune/v0141.pdf",
+   "sha256": "caced80997506087e7b08f08d305e35470c104124e85f5a9db125af6ed0ccc5b"
+  },
+  {
+   "id": "v0142",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    143.61,
+    422.04,
+    453.03,
+    625.4
+   ],
+   "split": "heldout",
+   "file": "heldout/v0142.pdf",
+   "sha256": "300f871043b985de9a4639c6309ae3dc6e9eec8dce31cd98d4adf8e00ec17a5a"
+  },
+  {
+   "id": "v0143",
+   "kind": "outlined",
+   "note": "1 words at 26.4 pt",
+   "box": [
+    84.59,
+    559.87,
+    159.39,
+    592.91
+   ],
+   "split": "tune",
+   "file": "tune/v0143.pdf",
+   "sha256": "bd9bc84c2f8639c51f72812e6708d7f9b4f4263d73b76c69eff614b57c14250c"
+  },
+  {
+   "id": "v0144",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    51.57,
+    691.15,
+    283.65,
+    695.15
+   ],
+   "split": "tune",
+   "file": "tune/v0144.pdf",
+   "sha256": "7d8d36b3c0da9e7d3311a43fb7f47242e3a7d3ecdbdb2882fccacd1dab488ffd"
+  },
+  {
+   "id": "v0145",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    68.65,
+    114.25,
+    448.22,
+    370.07
+   ],
+   "split": "tune",
+   "file": "tune/v0145.pdf",
+   "sha256": "e29da759b261e11a9d6bd2a4ceb157405555cf005cc5533e8c169cdb8a04f7a2"
+  },
+  {
+   "id": "v0146",
+   "kind": "table",
+   "note": "cells 10x2",
+   "box": [
+    287.32,
+    425.92,
+    379.87,
+    595.31
+   ],
+   "split": "tune",
+   "file": "tune/v0146.pdf",
+   "sha256": "22719e28cfbb184fe9d6d980a1cd7f90fa081726185549665774c530ae9b6018"
+  },
+  {
+   "id": "v0147",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    162.08,
+    504.0,
+    565.61,
+    680.08
+   ],
+   "split": "tune",
+   "file": "tune/v0147.pdf",
+   "sha256": "a302fd4752d69ab23217e88c8e5281539f8545adf8b31fb9201d8d7af821a3fb"
+  },
+  {
+   "id": "v0148",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    228.81,
+    436.19,
+    561.36,
+    714.52
+   ],
+   "split": "tune",
+   "file": "tune/v0148.pdf",
+   "sha256": "aa606e9ff07b2a9d1a8a4bdae8ae9f057917ce54767934cca60138f5d6fc040e"
+  },
+  {
+   "id": "v0149",
+   "kind": "outlined",
+   "note": "4 words at 13.6 pt",
+   "box": [
+    119.05,
+    177.52,
+    294.0,
+    194.58
+   ],
+   "split": "heldout",
+   "file": "heldout/v0149.pdf",
+   "sha256": "2a5ee55de055e03ffd2c1069b5b2ee0dfb7416c701320ba15f65457db607d536"
+  },
+  {
+   "id": "v0150",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    166.04,
+    253.8,
+    440.55,
+    257.8
+   ],
+   "split": "tune",
+   "file": "tune/v0150.pdf",
+   "sha256": "2ff37d13488d5a081166a7c59f67a840e2694ee873221fc82da0dea94a4b0868"
+  },
+  {
+   "id": "v0151",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    187.69,
+    183.22,
+    464.41,
+    514.88
+   ],
+   "split": "heldout",
+   "file": "heldout/v0151.pdf",
+   "sha256": "15726c548cdc8cf2c8b9d6c0f60b6a4d5938fdf097bcb3e98349446d8d6a6219"
+  },
+  {
+   "id": "v0152",
+   "kind": "table",
+   "note": "cells 7x3",
+   "box": [
+    167.88,
+    622.5,
+    307.13,
+    735.7
+   ],
+   "split": "heldout",
+   "file": "heldout/v0152.pdf",
+   "sha256": "da4cdede4be9452e88326af8ed32f28b0d29afbb7bd5f55f7dfd02e2987dea61"
+  },
+  {
+   "id": "v0153",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    57.77,
+    440.88,
+    284.77,
+    543.77
+   ],
+   "split": "heldout",
+   "file": "heldout/v0153.pdf",
+   "sha256": "f83bde6031e9abe6300e8b7c96f395ec4c39cafba6aa4e4347fc560ee8ac2f9d"
+  },
+  {
+   "id": "v0154",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    104.98,
+    92.9,
+    565.16,
+    312.24
+   ],
+   "split": "heldout",
+   "file": "heldout/v0154.pdf",
+   "sha256": "07df92bae300e1b7f8d68db6ecb9a1539b9801f4c916cb1a73bef842e2b88944"
+  },
+  {
+   "id": "v0155",
+   "kind": "outlined",
+   "note": "4 words at 26.9 pt",
+   "box": [
+    80.76,
+    642.08,
+    397.82,
+    675.73
+   ],
+   "split": "tune",
+   "file": "tune/v0155.pdf",
+   "sha256": "329571c0cc7e3c823153c613a17f68d9b746f2a2210d4d4a0b86e511739541ff"
+  },
+  {
+   "id": "v0156",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    83.54,
+    660.09,
+    262.26,
+    664.09
+   ],
+   "split": "heldout",
+   "file": "heldout/v0156.pdf",
+   "sha256": "0a954711cfbec541db8f4d0dab3c7eabaaf1918e0e05ab945cbaf803935f0561"
+  },
+  {
+   "id": "v0157",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    146.93,
+    143.94,
+    528.77,
+    501.35
+   ],
+   "split": "heldout",
+   "file": "heldout/v0157.pdf",
+   "sha256": "51af2176e003dda6598a012eba27c5db7b4c1c5ba6b64e206a0e6477268f04df"
+  },
+  {
+   "id": "v0158",
+   "kind": "table",
+   "note": "lines 4x3",
+   "box": [
+    209.81,
+    174.99,
+    530.03,
+    255.81
+   ],
+   "split": "heldout",
+   "file": "heldout/v0158.pdf",
+   "sha256": "f10beb18f17fa81c92fbdcf18bf93900dab35034d460eb9c4b2aebb502d9aa52"
+  },
+  {
+   "id": "v0159",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    119.58,
+    613.0,
+    250.22
+   ],
+   "split": "heldout",
+   "file": "heldout/v0159.pdf",
+   "sha256": "cbca8cc2ec9386867df56ebe61bc8c66cd5bc3e9707bb64ba0e85986dc7d8a70"
+  },
+  {
+   "id": "v0160",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    113.16,
+    74.61,
+    526.85,
+    366.15
+   ],
+   "split": "tune",
+   "file": "tune/v0160.pdf",
+   "sha256": "308437f34c1aefc8506cd1432da150e5cba7e88f2d114e0f2053d57503f52333"
+  },
+  {
+   "id": "v0161",
+   "kind": "outlined",
+   "note": "2 words at 34.6 pt",
+   "box": [
+    161.79,
+    58.58,
+    631.64,
+    101.87
+   ],
+   "split": "heldout",
+   "file": "heldout/v0161.pdf",
+   "sha256": "5b43672e8116b2b0372fdf895a9f4ef2d1851b3f6fce86ac4bc8832b56b7dcc9"
+  },
+  {
+   "id": "v0162",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    42.71,
+    136.3,
+    236.54,
+    140.3
+   ],
+   "split": "tune",
+   "file": "tune/v0162.pdf",
+   "sha256": "c5eb7953296fb892a2ed22e00a37bdafccad84bc35af029f0a0ad50b456f349a"
+  },
+  {
+   "id": "v0163",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    52.52,
+    190.81,
+    520.81,
+    493.81
+   ],
+   "split": "tune",
+   "file": "tune/v0163.pdf",
+   "sha256": "083570f99c30b0aef8178515132d272b35c8e4a2899861d12c5f1f27d5fa9529"
+  },
+  {
+   "id": "v0164",
+   "kind": "table",
+   "note": "lines 11x4",
+   "box": [
+    117.12,
+    350.86,
+    317.56,
+    583.61
+   ],
+   "split": "heldout",
+   "file": "heldout/v0164.pdf",
+   "sha256": "9b3fc71ba4e27f80f1b839c1c2cba349086235e3ad839687c44ceacc445877d3"
+  },
+  {
+   "id": "v0165",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    207.0,
+    613.0,
+    498.17
+   ],
+   "split": "heldout",
+   "file": "heldout/v0165.pdf",
+   "sha256": "2abfdc8510c4f883a57b06b0b477da9c5b6e8da48cc43d3e0c795340f9bf8d41"
+  },
+  {
+   "id": "v0166",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    253.91,
+    199.91,
+    515.89,
+    440.16
+   ],
+   "split": "heldout",
+   "file": "heldout/v0166.pdf",
+   "sha256": "e8b48cb0ea463ab5b14c53ed864f4b8b6f4b2839e3a61e8fdcd0620dac126c94"
+  },
+  {
+   "id": "v0167",
+   "kind": "outlined",
+   "note": "1 words at 27.6 pt",
+   "box": [
+    122.89,
+    346.26,
+    287.4,
+    380.72
+   ],
+   "split": "heldout",
+   "file": "heldout/v0167.pdf",
+   "sha256": "8aaf4bbe5a93b25a1bc65a9f17df43977b1dabd2521199336c9a8e4222de39d9"
+  },
+  {
+   "id": "v0168",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    354.52,
+    115.94,
+    358.52,
+    229.6
+   ],
+   "split": "heldout",
+   "file": "heldout/v0168.pdf",
+   "sha256": "35c98ac04e17df34d3b47fd6b78eb7e94e7f1706861163d0f6c0cbd2acc808ea"
+  },
+  {
+   "id": "v0169",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    83.57,
+    89.33,
+    572.01,
+    626.46
+   ],
+   "split": "tune",
+   "file": "tune/v0169.pdf",
+   "sha256": "fa4f66e6ca2386596153fbbffe8b9bfa1ef41ca1d307ab1cf421f1bc534f869d"
+  },
+  {
+   "id": "v0170",
+   "kind": "table",
+   "note": "lines 8x6",
+   "box": [
+    38.2,
+    79.56,
+    639.25,
+    245.98
+   ],
+   "split": "heldout",
+   "file": "heldout/v0170.pdf",
+   "sha256": "7651747e669f4c559969214b3610966993191e1803e45b5f66d193b050293747"
+  },
+  {
+   "id": "v0171",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    139.31,
+    297.65,
+    397.85,
+    537.28
+   ],
+   "split": "tune",
+   "file": "tune/v0171.pdf",
+   "sha256": "a8b14e299c943791162a86ce807302f687a1e262bdeafdc33bda2418b79a0d56"
+  },
+  {
+   "id": "v0172",
+   "kind": "chart",
+   "note": "bar",
+   "box": [
+    194.32,
+    117.41,
+    495.27,
+    313.01
+   ],
+   "split": "heldout",
+   "file": "heldout/v0172.pdf",
+   "sha256": "6dd11bdcd6c9d90c860e18876135c6229032ab00fed9dfb7b343427a3f050c8c"
+  },
+  {
+   "id": "v0173",
+   "kind": "outlined",
+   "note": "2 words at 26.1 pt",
+   "box": [
+    135.48,
+    634.69,
+    362.42,
+    667.34
+   ],
+   "split": "tune",
+   "file": "tune/v0173.pdf",
+   "sha256": "732e93e12e20b6ed0a37fe28574ff1be4335cfe3ab34e50bdabb3eae685c66e0"
+  },
+  {
+   "id": "v0174",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    106.02,
+    202.52,
+    413.74,
+    206.52
+   ],
+   "split": "tune",
+   "file": "tune/v0174.pdf",
+   "sha256": "8d98d389c55a659577c7caeb142e7dfe0d7a00cb76bc562984feff4a28b1b664"
+  },
+  {
+   "id": "v0175",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    44.04,
+    215.52,
+    222.3,
+    701.23
+   ],
+   "split": "tune",
+   "file": "tune/v0175.pdf",
+   "sha256": "319a86d9a6304a99c44aab7e17eb0ff7a182dad551533ef0c4d62971287d9c60"
+  },
+  {
+   "id": "v0176",
+   "kind": "table",
+   "note": "cells 6x2",
+   "box": [
+    332.54,
+    51.39,
+    506.09,
+    159.1
+   ],
+   "split": "tune",
+   "file": "tune/v0176.pdf",
+   "sha256": "0b10f4bc144bc9f1b3d66136adda71e74b7fc5281ec40ca3d5644941a14f0b94"
+  },
+  {
+   "id": "v0177",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    336.48,
+    364.18,
+    549.16,
+    409.45
+   ],
+   "split": "tune",
+   "file": "tune/v0177.pdf",
+   "sha256": "a9bf029b720022252fe0cd661cf8ac49a7d3d5a26d4d2ca0d9a47670f6114aae"
+  },
+  {
+   "id": "v0178",
+   "kind": "chart",
+   "note": "pie",
+   "box": [
+    320.97,
+    498.92,
+    543.05,
+    727.3
+   ],
+   "split": "heldout",
+   "file": "heldout/v0178.pdf",
+   "sha256": "58bbf1df0ce6ef78ffb1335e9a6ef49b28a4ecbf51d05d5e1047ebb611523fe0"
+  },
+  {
+   "id": "v0179",
+   "kind": "outlined",
+   "note": "2 words at 17.0 pt",
+   "box": [
+    111.31,
+    469.02,
+    259.99,
+    490.29
+   ],
+   "split": "tune",
+   "file": "tune/v0179.pdf",
+   "sha256": "564a42d9cad3f87c5799d4ba2f5fe053f083f9fd356eb56a61937d185afc0273"
+  },
+  {
+   "id": "v0180",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    142.57,
+    611.87,
+    270.09,
+    615.87
+   ],
+   "split": "heldout",
+   "file": "heldout/v0180.pdf",
+   "sha256": "1e261641f91775b34a3bc9589a8c831bc332833749546a4f1e19852d21919dbc"
+  },
+  {
+   "id": "v0181",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    119.79,
+    426.12,
+    418.33,
+    671.76
+   ],
+   "split": "heldout",
+   "file": "heldout/v0181.pdf",
+   "sha256": "54185be3923a1acab47d63472ec8351fa6f5fef1513b45ca04ae592f7634e0b3"
+  },
+  {
+   "id": "v0182",
+   "kind": "table",
+   "note": "lines 12x5",
+   "box": [
+    89.7,
+    336.62,
+    546.4,
+    539.77
+   ],
+   "split": "heldout",
+   "file": "heldout/v0182.pdf",
+   "sha256": "60b86088e96efe3837f962e28766514684f5d788829a9a0e3228becb61325835"
+  },
+  {
+   "id": "v0183",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    51.96,
+    89.25,
+    402.93,
+    382.62
+   ],
+   "split": "heldout",
+   "file": "heldout/v0183.pdf",
+   "sha256": "dd14d8084e4bf4997de67950eea81c9a62a554d0866db4177910ea75f19dde10"
+  },
+  {
+   "id": "v0184",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    58.16,
+    102.36,
+    406.46,
+    372.82
+   ],
+   "split": "heldout",
+   "file": "heldout/v0184.pdf",
+   "sha256": "003c35dfc6100942ede745dfa5493279f45e661353da773913b5f7985dba4512"
+  },
+  {
+   "id": "v0185",
+   "kind": "outlined",
+   "note": "4 words at 25.0 pt",
+   "box": [
+    54.7,
+    582.2,
+    387.34,
+    613.48
+   ],
+   "split": "heldout",
+   "file": "heldout/v0185.pdf",
+   "sha256": "cdfa24603472fde9008cc9ff53c499cb31e6e30375720c446d7e73d021386d54"
+  },
+  {
+   "id": "v0186",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    306.76,
+    161.82,
+    429.77,
+    165.82
+   ],
+   "split": "tune",
+   "file": "tune/v0186.pdf",
+   "sha256": "f2f561e851cde368d3fcac92004d0110f1228d9e106f953aaea58ede09cdadb2"
+  },
+  {
+   "id": "v0187",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    149.52,
+    100.16,
+    456.31,
+    630.36
+   ],
+   "split": "tune",
+   "file": "tune/v0187.pdf",
+   "sha256": "107156cf8a5f5e0521ecc50c218d0b7ed1acc6f93a78f4428224d347249f7b0f"
+  },
+  {
+   "id": "v0188",
+   "kind": "table",
+   "note": "lines 9x2",
+   "box": [
+    399.15,
+    545.76,
+    545.91,
+    700.08
+   ],
+   "split": "heldout",
+   "file": "heldout/v0188.pdf",
+   "sha256": "8aaf67ba139d62228474acaa6c812413e6f7208e8d92ed49d49a7400304410aa"
+  },
+  {
+   "id": "v0189",
+   "kind": "fill",
+   "note": "band",
+   "box": [
+    -1,
+    52.5,
+    613.0,
+    231.37
+   ],
+   "split": "heldout",
+   "file": "heldout/v0189.pdf",
+   "sha256": "16f3908f5a519051345fbd3a52a2a647870bc33aa462437c1247e630af6dd57a"
+  },
+  {
+   "id": "v0190",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    105.23,
+    321.17,
+    486.8,
+    518.06
+   ],
+   "split": "heldout",
+   "file": "heldout/v0190.pdf",
+   "sha256": "6fe6e331d94b714d90989792396840ad1f0cd5039b31c4aafb0484620b1461f5"
+  },
+  {
+   "id": "v0191",
+   "kind": "outlined",
+   "note": "2 words at 19.6 pt",
+   "box": [
+    161.63,
+    184.56,
+    276.02,
+    209.03
+   ],
+   "split": "tune",
+   "file": "tune/v0191.pdf",
+   "sha256": "3433be18acf1b6d6ace2a9f4e86ce990c56d3f631bbb339e3b56fe10f8606888"
+  },
+  {
+   "id": "v0192",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    49.07,
+    625.08,
+    453.99,
+    629.08
+   ],
+   "split": "tune",
+   "file": "tune/v0192.pdf",
+   "sha256": "07d4835be71ea1da65814967c1d352cc6422d94bf08af5b10dba005d13164010"
+  },
+  {
+   "id": "v0193",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    103.41,
+    192.39,
+    510.77,
+    614.63
+   ],
+   "split": "tune",
+   "file": "tune/v0193.pdf",
+   "sha256": "9588eb090b157f723687d1798d9e5cfa50e87b9672636e698853c56a2c79aa4f"
+  },
+  {
+   "id": "v0194",
+   "kind": "table",
+   "note": "cells 8x6",
+   "box": [
+    240.11,
+    569.6,
+    519.69,
+    747.57
+   ],
+   "split": "heldout",
+   "file": "heldout/v0194.pdf",
+   "sha256": "4728c1820fd064ed47c3e19de37f5166025e072eec92c907c07e58fd6e8f4132"
+  },
+  {
+   "id": "v0195",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    235.73,
+    123.71,
+    555.15,
+    283.36
+   ],
+   "split": "heldout",
+   "file": "heldout/v0195.pdf",
+   "sha256": "626f3fd5ba40ff439381130a5e4547cb7a2ee2519722909ab28c9733a738e896"
+  },
+  {
+   "id": "v0196",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    166.37,
+    466.69,
+    553.35,
+    750.27
+   ],
+   "split": "tune",
+   "file": "tune/v0196.pdf",
+   "sha256": "c714f5dcc47cd92dd3eddf5851b3286021349f5345df16e09bca382501fe7e8c"
+  },
+  {
+   "id": "v0197",
+   "kind": "outlined",
+   "note": "1 words at 32.6 pt",
+   "box": [
+    103.18,
+    604.82,
+    334.22,
+    645.62
+   ],
+   "split": "heldout",
+   "file": "heldout/v0197.pdf",
+   "sha256": "75cad06130ef8594bd5221264b0e7606a59c0709b9bc889e10f15b60277129ef"
+  },
+  {
+   "id": "v0198",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    214.39,
+    608.31,
+    330.59,
+    612.31
+   ],
+   "split": "tune",
+   "file": "tune/v0198.pdf",
+   "sha256": "439388696385a068e6524ac6d4a25a5034d838ea2fab849cd42bb1593a06beff"
+  },
+  {
+   "id": "v0199",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    80.5,
+    212.34,
+    573.47,
+    507.72
+   ],
+   "split": "tune",
+   "file": "tune/v0199.pdf",
+   "sha256": "933950100c7b7d28c5a0dfaea5307373e7ab31f4684d29359b1cb7796ccfeaf8"
+  },
+  {
+   "id": "v0200",
+   "kind": "table",
+   "note": "lines 8x3",
+   "box": [
+    223.77,
+    286.77,
+    509.15,
+    448.12
+   ],
+   "split": "tune",
+   "file": "tune/v0200.pdf",
+   "sha256": "b5391ceaf5086f36b9443a0e52387f11b7a307ea99a405c9c4d0c114a1f456d2"
+  },
+  {
+   "id": "v0201",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    51.99,
+    521.3,
+    549.62,
+    690.11
+   ],
+   "split": "tune",
+   "file": "tune/v0201.pdf",
+   "sha256": "65e6f708d13474e7b47009340c0eab6089758cf4b7701ab896581ad1f9d48947"
+  },
+  {
+   "id": "v0202",
+   "kind": "chart",
+   "note": "pie",
+   "box": [
+    71.47,
+    477.62,
+    424.7,
+    638.53
+   ],
+   "split": "heldout",
+   "file": "heldout/v0202.pdf",
+   "sha256": "3615a9efe4a98913a3cd9e40d767d39a11150ea0e932ebb570a429f75a74040d"
+  },
+  {
+   "id": "v0203",
+   "kind": "outlined",
+   "note": "4 words at 18.0 pt",
+   "box": [
+    188.93,
+    163.85,
+    409.92,
+    186.41
+   ],
+   "split": "heldout",
+   "file": "heldout/v0203.pdf",
+   "sha256": "5cabb143659646d8dfb1583b045ed4f5e9233b57b053132f62c91996b6a53b94"
+  },
+  {
+   "id": "v0204",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    184.19,
+    104.88,
+    421.32,
+    108.88
+   ],
+   "split": "tune",
+   "file": "tune/v0204.pdf",
+   "sha256": "ad7aa11e50d14f8e3e384cfd19ec71e467a4d7957d3bb2e3f8b22a7b5d2ee778"
+  },
+  {
+   "id": "v0205",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    114.09,
+    180.54,
+    550.86,
+    516.62
+   ],
+   "split": "heldout",
+   "file": "heldout/v0205.pdf",
+   "sha256": "5fe75b59867499be34e5af1cb949b506f0e71663e3e4699291272584e0f302dc"
+  },
+  {
+   "id": "v0206",
+   "kind": "table",
+   "note": "cells 8x6",
+   "box": [
+    170.03,
+    169.22,
+    514.41,
+    315.16
+   ],
+   "split": "heldout",
+   "file": "heldout/v0206.pdf",
+   "sha256": "ffbc770399169c4f2bfaff277a1d1d7ec27beb226eb89f8b7f3eb4050e819f91"
+  },
+  {
+   "id": "v0207",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    118.36,
+    526.0,
+    345.43,
+    670.33
+   ],
+   "split": "heldout",
+   "file": "heldout/v0207.pdf",
+   "sha256": "88c740e6060c9c9fe006962e93f85abc246bc20991c8aba7a388ec2dfdff8aa1"
+  },
+  {
+   "id": "v0208",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    203.6,
+    57.93,
+    611.43,
+    342.04
+   ],
+   "split": "heldout",
+   "file": "heldout/v0208.pdf",
+   "sha256": "85332ee3ca8f72a1bab6c9768853b378542bd13788bb97e99d2eecbb514eb555"
+  },
+  {
+   "id": "v0209",
+   "kind": "outlined",
+   "note": "3 words at 15.3 pt",
+   "box": [
+    162.08,
+    513.22,
+    358.26,
+    532.35
+   ],
+   "split": "heldout",
+   "file": "heldout/v0209.pdf",
+   "sha256": "62365ffa93cbf84a3d52185a515260ca6e1bf2bc965a96a9fdf1f2af95604530"
+  },
+  {
+   "id": "v0210",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    477.77,
+    315.39,
+    481.77,
+    732.49
+   ],
+   "split": "heldout",
+   "file": "heldout/v0210.pdf",
+   "sha256": "95f2b80bd00397756552596419fa186e04d62216fb4421ab62a478f0dd67bd43"
+  },
+  {
+   "id": "v0211",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    251.57,
+    438.36,
+    497.79,
+    641.51
+   ],
+   "split": "tune",
+   "file": "tune/v0211.pdf",
+   "sha256": "e5d245f2ad1b0f5bdbe59f2e1faea05a6b0c5469d172262f3ff461f6869db3b8"
+  },
+  {
+   "id": "v0212",
+   "kind": "table",
+   "note": "cells 5x4",
+   "box": [
+    123.77,
+    396.15,
+    495.58,
+    506.41
+   ],
+   "split": "tune",
+   "file": "tune/v0212.pdf",
+   "sha256": "759283460b12f27d1b959ad742cfbbd43a71fd48686548d750e0617e6b244213"
+  },
+  {
+   "id": "v0213",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    102.09,
+    365.03,
+    512.75,
+    616.88
+   ],
+   "split": "heldout",
+   "file": "heldout/v0213.pdf",
+   "sha256": "742c85ebe41c1f46e027df8958c1330720f8a28a1a3316e8e90a78597b1c90eb"
+  },
+  {
+   "id": "v0214",
+   "kind": "chart",
+   "note": "pie",
+   "box": [
+    250.71,
+    247.06,
+    487.31,
+    485.5
+   ],
+   "split": "tune",
+   "file": "tune/v0214.pdf",
+   "sha256": "3b16ba92f75f279e8bf47b05d14d028c9281e863d6afe223f86ed500db8148d2"
+  },
+  {
+   "id": "v0215",
+   "kind": "outlined",
+   "note": "2 words at 35.6 pt",
+   "box": [
+    42.65,
+    641.16,
+    318.22,
+    685.67
+   ],
+   "split": "tune",
+   "file": "tune/v0215.pdf",
+   "sha256": "0241f500191a41f41dcb7532a8b54ebd6c52acc4fc25c49760cf4cf6a37e1c22"
+  },
+  {
+   "id": "v0216",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    145.53,
+    141.51,
+    564.07,
+    145.51
+   ],
+   "split": "tune",
+   "file": "tune/v0216.pdf",
+   "sha256": "4c4e9613ab4b50d2e2e7d2aa334552c046f7c2b05bef31c353cb6e2d419bc3f6"
+  },
+  {
+   "id": "v0217",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    178.47,
+    452.46,
+    453.15,
+    727.04
+   ],
+   "split": "heldout",
+   "file": "heldout/v0217.pdf",
+   "sha256": "c2b09756d08aa37b2640f757f878aba93ee88c643269a20ca9518d22dcaf7f56"
+  },
+  {
+   "id": "v0218",
+   "kind": "table",
+   "note": "lines 4x6",
+   "box": [
+    38.45,
+    238.62,
+    680.49,
+    336.06
+   ],
+   "split": "tune",
+   "file": "tune/v0218.pdf",
+   "sha256": "38308e30ce7135e9f25558c84b40dcd5a5adb8e5a761876a86a4e9f237f9ab53"
+  },
+  {
+   "id": "v0219",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    486.62,
+    159.87,
+    557.5,
+    414.11
+   ],
+   "split": "tune",
+   "file": "tune/v0219.pdf",
+   "sha256": "9dadf98d6d42f8270606ebfd944646f68527c9dc37f940105f9526beba65129f"
+  },
+  {
+   "id": "v0220",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    187.59,
+    44.36,
+    419.81,
+    332.77
+   ],
+   "split": "heldout",
+   "file": "heldout/v0220.pdf",
+   "sha256": "fdf14f91db0b6aca2f9659d695e1ecbe00bd333c7d24964cf93dc76fa68fdafc"
+  },
+  {
+   "id": "v0221",
+   "kind": "outlined",
+   "note": "2 words at 18.8 pt",
+   "box": [
+    116.82,
+    92.94,
+    283.41,
+    116.46
+   ],
+   "split": "heldout",
+   "file": "heldout/v0221.pdf",
+   "sha256": "6169087c323a2a75138ec31faca3c97de367ca37ad4ff1f2765f7836f3e49574"
+  },
+  {
+   "id": "v0222",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    541.19,
+    81.71,
+    545.19,
+    501.38
+   ],
+   "split": "tune",
+   "file": "tune/v0222.pdf",
+   "sha256": "23291c804534ac7d303da2e33589b7f156ea49ebd28023b265cc31e5754723f1"
+  },
+  {
+   "id": "v0223",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    329.92,
+    360.06,
+    561.47,
+    712.85
+   ],
+   "split": "heldout",
+   "file": "heldout/v0223.pdf",
+   "sha256": "b20d8f99e6e2c8196e9b79457958088841e81a224e230b61cd9d2f47221f0e50"
+  },
+  {
+   "id": "v0224",
+   "kind": "table",
+   "note": "cells 3x3",
+   "box": [
+    80.74,
+    512.22,
+    361.09,
+    568.09
+   ],
+   "split": "tune",
+   "file": "tune/v0224.pdf",
+   "sha256": "88f1a695984ffbe4487e7056ee2ffc9d20f8f4fafbe14a597c8ba497f144c698"
+  },
+  {
+   "id": "v0225",
+   "kind": "fill",
+   "note": "box",
+   "box": [
+    143.54,
+    240.36,
+    221.37,
+    523.89
+   ],
+   "split": "heldout",
+   "file": "heldout/v0225.pdf",
+   "sha256": "791875af57a293bea9a9c719088e99b437a7de7cb88c9fdb9a1fce3c4495f05f"
+  },
+  {
+   "id": "v0226",
+   "kind": "chart",
+   "note": "line",
+   "box": [
+    230.61,
+    244.24,
+    547.14,
+    405.41
+   ],
+   "split": "heldout",
+   "file": "heldout/v0226.pdf",
+   "sha256": "cf6904e7bcf2974577db47168d3813a1e838ef229be6394358659f153619e9e2"
+  },
+  {
+   "id": "v0227",
+   "kind": "outlined",
+   "note": "1 words at 29.7 pt",
+   "box": [
+    40.25,
+    91.91,
+    122.74,
+    129.05
+   ],
+   "split": "tune",
+   "file": "tune/v0227.pdf",
+   "sha256": "c772ff9f02d1f45727ac757bf2c4081ef89c687c8a7f5b11cdbf556f7535617e"
+  },
+  {
+   "id": "v0228",
+   "kind": "rule",
+   "note": "vertical",
+   "box": [
+    211.88,
+    433.68,
+    215.88,
+    664.91
+   ],
+   "split": "heldout",
+   "file": "heldout/v0228.pdf",
+   "sha256": "d2f0ec92310d7a6b53b42284b7a3a0a67697354aa84386d4280fd705e83a1ca5"
+  },
+  {
+   "id": "v0229",
+   "kind": "border",
+   "note": "single",
+   "box": [
+    88.71,
+    269.87,
+    532.2,
+    656.72
+   ],
+   "split": "heldout",
+   "file": "heldout/v0229.pdf",
+   "sha256": "7d7d1b2e6432ecada3b3b843aa1b515fdfb2e1c6d4e29a9035dc54245a589bb7"
+  },
+  {
+   "id": "v0230",
+   "kind": "table",
+   "note": "cells 3x3",
+   "box": [
+    159.37,
+    75.0,
+    419.81,
+    150.98
+   ],
+   "split": "heldout",
+   "file": "heldout/v0230.pdf",
+   "sha256": "9e82aacc6567d79fb29fdb34fca35e087bf716cddd69e1dd6e71548df4b2faf3"
+  },
+  {
+   "id": "v0231",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    96.0,
+    555.32,
+    170.71,
+    721.92
+   ],
+   "split": "tune",
+   "file": "tune/v0231.pdf",
+   "sha256": "e20448010fc206d088c67a8279d9122b1ebb0f72948586cc868591ed3e00996a"
+  },
+  {
+   "id": "v0232",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    110.86,
+    469.3,
+    595.83,
+    761.03
+   ],
+   "split": "tune",
+   "file": "tune/v0232.pdf",
+   "sha256": "7007fe4d23308b2846cd20316363e913da20d515894779d52087b86f105b71b5"
+  },
+  {
+   "id": "v0233",
+   "kind": "outlined",
+   "note": "4 words at 19.2 pt",
+   "box": [
+    75.25,
+    300.15,
+    425.91,
+    324.1
+   ],
+   "split": "tune",
+   "file": "tune/v0233.pdf",
+   "sha256": "6dc887351f533ff6882a296a716a43f714e929ab7505e2affb0767df0e0b21df"
+  },
+  {
+   "id": "v0234",
+   "kind": "rule",
+   "note": "horizontal",
+   "box": [
+    264.97,
+    518.85,
+    488.38,
+    522.85
+   ],
+   "split": "heldout",
+   "file": "heldout/v0234.pdf",
+   "sha256": "9458a18d780bf89c9c86643409eeda8db3e98594a30c84fa13b364a8e7441314"
+  },
+  {
+   "id": "v0235",
+   "kind": "border",
+   "note": "double",
+   "box": [
+    41.37,
+    147.81,
+    256.63,
+    348.07
+   ],
+   "split": "tune",
+   "file": "tune/v0235.pdf",
+   "sha256": "1931035d0902a2c8ec564c9dacfc6dd241f5bea748f647e8bb3da95e11825d84"
+  },
+  {
+   "id": "v0236",
+   "kind": "table",
+   "note": "lines 9x5",
+   "box": [
+    86.95,
+    169.75,
+    563.31,
+    338.58
+   ],
+   "split": "heldout",
+   "file": "heldout/v0236.pdf",
+   "sha256": "74e22d3b98e5517b17399b1f1c0df9f58b876685487bfe731024aadb0f1f7ed7"
+  },
+  {
+   "id": "v0237",
+   "kind": "fill",
+   "note": "rounded",
+   "box": [
+    448.02,
+    177.1,
+    533.34,
+    344.13
+   ],
+   "split": "tune",
+   "file": "tune/v0237.pdf",
+   "sha256": "083e55081c85482bb2b87428a2f0c8c6034c28d445d0d37047705c357581dde9"
+  },
+  {
+   "id": "v0238",
+   "kind": "chart",
+   "note": "diagram",
+   "box": [
+    79.13,
+    21.5,
+    567.4,
+    364.21
+   ],
+   "split": "tune",
+   "file": "tune/v0238.pdf",
+   "sha256": "d2f5483324a7b0e4294f41260452f0b9c426d64ee1a0071da650e916447bc800"
+  },
+  {
+   "id": "v0239",
+   "kind": "outlined",
+   "note": "1 words at 23.3 pt",
+   "box": [
+    130.54,
+    600.19,
+    224.52,
+    629.34
+   ],
+   "split": "tune",
+   "file": "tune/v0239.pdf",
+   "sha256": "9c26a25e09e04712c487693d550294b4845601df7d6d11faa41fe43989f159f2"
+  }
+ ]
+}
