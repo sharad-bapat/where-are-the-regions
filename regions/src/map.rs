@@ -152,7 +152,7 @@ mod tests {
     fn the_map_is_in_drawing_order() {
         let ls = lines(&[word("over", 10.0, 0, 5, false)]);
         let im = Image { x0: 0.0, y0: 0.0, x1: 600.0, y1: 800.0, px_w: 2500, px_h: 3300, dpi_x: 300.0, dpi_y: 300.0,
-            mask: false, inline: false, annot: false, obj: 4, parts: 1, pieces: vec![], clipped: false, upright: true, offpage: false, hidden: false, order: 2 };
+            mask: false, inline: false, annot: false, obj: 4, parts: 1, pieces: vec![], inline_src: None, clipped: false, upright: true, offpage: false, hidden: false, order: 2 };
         let m = map(&ls, &[im], &[], &[]);
         assert!(m.len() == 2 && m[0].what == "image" && m[1].what == "text");
     }

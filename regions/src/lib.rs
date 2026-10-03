@@ -522,7 +522,13 @@ impl<'a> Pdf<'a> {
             Some(c) if !is_xref => { decrypted = c.decrypt(n, gen, &self.data[s..e.max(s)])?; &decrypted }
             _ => &self.data[s..e.max(s)],
         };
-        let filters: Vec<Vec<u8>> = match get(&dict, b"/Filter") {
+        self.unfilter(&dict, raw.to_vec(), image)
+    }
+
+    /// Data run through the /Filter chain of `dict` (an object's dictionary, or an inline image's with its
+    /// keys spelt out); with `image`, a last image codec is left for the caller and named, as in decode.
+    fn unfilter(&self, dict: &[u8], raw: Vec<u8>, image: bool) -> Option<(Vec<u8>, Option<Vec<u8>>)> {
+        let filters: Vec<Vec<u8>> = match get(dict, b"/Filter") {
             None => Vec::new(),
             Some(Val::Name(f)) => vec![f],
             Some(Val::Array(a)) => {
@@ -534,7 +540,7 @@ impl<'a> Pdf<'a> {
             Some(Val::Ref(r)) => match self.dict(r) { Some(d) if d.starts_with(b"/") => vec![d[1..].to_vec()], _ => return None },
             _ => return None,
         };
-        let mut out = raw.to_vec();
+        let mut out = raw;
         let last = filters.len();
         for (k, f) in filters.into_iter().enumerate() {
             if image && k + 1 == last && matches!(f.as_slice(), b"DCTDecode" | b"DCT" | b"CCITTFaxDecode" | b"CCF" | b"JPXDecode" | b"JBIG2Decode") {
@@ -551,7 +557,7 @@ impl<'a> Pdf<'a> {
                 }
                 out = v;
             } else if f == b"LZWDecode" || f == b"LZW" {
-                let early = !find(&dict, b"/EarlyChange 0", 0).is_some();
+                let early = !find(dict, b"/EarlyChange 0", 0).is_some();
                 out = lzw(&out, early);
             } else if f == b"RunLengthDecode" || f == b"RL" {
                 out = run_length(&out);
@@ -773,6 +779,9 @@ pub struct Image {
     /// Each drawn piece: its object number (0 inline) and its box on the page, for judging a merged
     /// image by all its strips (kind layer, 8g). Not in the JSON.
     pub pieces: Vec<(u32, [f64; 4])>,
+    /// An inline image's dictionary (between BI and ID) and its data (between ID and EI), for its
+    /// pixels (pixels::inline_thumbnail); None for an XObject or a merged image. Not in the JSON.
+    pub inline_src: Option<std::sync::Arc<(Vec<u8>, Vec<u8>)>>,
     /// Clipping to the page cut part of the drawn box.
     pub clipped: bool,
     /// Axis-aligned on the page (the image's unit square isn't rotated or skewed).
@@ -807,7 +816,7 @@ struct RawAnnot { rect: [f64; 4], subtype: String, field: String, hidden: bool, 
 
 /// An image as drawn, before placement: its matrix (unit square to user space) and its pixels.
 #[derive(Clone)]
-struct Drawn { ctm: M, px_w: u32, px_h: u32, mask: bool, inline: bool, annot: bool, obj: u32, order: u32, clip: Option<[f64; 4]> }
+struct Drawn { ctm: M, px_w: u32, px_h: u32, mask: bool, inline: bool, annot: bool, obj: u32, order: u32, clip: Option<[f64; 4]>, src: Option<std::sync::Arc<(Vec<u8>, Vec<u8>)>> }
 
 /// Strips are joined when their edges across the join agree within STRIP_EDGE points and they
 /// touch along it within STRIP_GAP points.
@@ -1193,20 +1202,24 @@ impl<'p, 'a> Run<'p, 'a> {
                 b"BI" => {
                     // inline image: skip its data up to a whitespace-delimited EI
                     let id = find(s, b"ID", i).unwrap_or(s.len());
-                    // regions: its size comes from the dictionary between BI and ID
-                    self.inline_image(&s[i..id.min(s.len())], &g);
                     let mut k = id + 2;
                     // regions: ASCII-encoded data can hold "EI" itself, so skip to its end marker first
                     if let Some(end) = ascii_data_end(&s[i..id.min(s.len())]) {
                         if let Some(e) = find(s, end, k) { k = e + end.len(); }
                     }
-                    loop {
+                    let data_end = loop {
                         match find(s, b"EI", k) {
-                            Some(e) if (e == 0 || is_ws(s[e - 1])) && (e + 2 >= s.len() || !is_regular(s[e + 2])) => { k = e + 2; break; }
+                            Some(e) if (e == 0 || is_ws(s[e - 1])) && (e + 2 >= s.len() || !is_regular(s[e + 2])) => { k = e + 2; break e; }
                             Some(e) => k = e + 2,
-                            None => { k = s.len(); break; }
+                            None => { k = s.len(); break s.len(); }
                         }
-                    }
+                    };
+                    // regions: its size comes from the dictionary between BI and ID, its pixels from the data
+                    // between ID and EI (one white-space byte after ID and one before EI aren't data)
+                    let (dict, mut a, mut b) = (&s[i..id.min(s.len())], (id + 2).min(s.len()), data_end.max(id + 2).min(s.len()));
+                    if a < b && is_ws(s[a]) { a += 1; }
+                    if b > a && is_ws(s[b - 1]) { b -= 1; }
+                    self.inline_image(dict, &s[a..b.max(a)], &g);
                     i = k;
                 }
                 _ => {}
@@ -1227,7 +1240,7 @@ impl<'p, 'a> Run<'p, 'a> {
         if matches!(get(&d, b"/Subtype"), Some(Val::Name(s)) if s == b"Image") {
             let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
             let mask = flag(&d, b"/ImageMask");
-            self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/Width"), px_h: int(b"/Height"), mask, inline: false, annot: self.annot, obj: n, order: self.seq, clip: g.clip });
+            self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/Width"), px_h: int(b"/Height"), mask, inline: false, annot: self.annot, obj: n, order: self.seq, clip: g.clip, src: None });
             self.seq += 1;
             return;
         }
@@ -1243,14 +1256,15 @@ impl<'p, 'a> Run<'p, 'a> {
 
     /// regions: an inline image, from its dictionary (the bytes between BI and ID), with the
     /// abbreviated keys or the full ones.
-    fn inline_image(&mut self, dict: &[u8], g: &GState) {
+    fn inline_image(&mut self, dict: &[u8], data: &[u8], g: &GState) {
         let mut d = Vec::with_capacity(dict.len() + 4);
         d.extend_from_slice(b"<<");
         d.extend_from_slice(dict);
         d.extend_from_slice(b">>");
         let int = |a: &[u8], b: &[u8]| match get(&d, a).or_else(|| get(&d, b)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
         let mask = flag(&d, b"/IM") || flag(&d, b"/ImageMask");
-        self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/W", b"/Width"), px_h: int(b"/H", b"/Height"), mask, inline: true, annot: self.annot, obj: 0, order: self.seq, clip: g.clip });
+        self.drawn.push(Drawn { ctm: g.ctm, px_w: int(b"/W", b"/Width"), px_h: int(b"/H", b"/Height"), mask, inline: true, annot: self.annot, obj: 0, order: self.seq, clip: g.clip,
+                                src: Some(std::sync::Arc::new((dict.to_vec(), data.to_vec()))) });
         self.seq += 1;
     }
 
@@ -1506,7 +1520,7 @@ fn place_images(drawn: &[Drawn], pb: &PageBox) -> Vec<Image> {
         let upright = (m[1].abs() < 1e-6 && m[2].abs() < 1e-6) || (m[0].abs() < 1e-6 && m[3].abs() < 1e-6);
         out.push(Image {
             x0, y0, x1, y1, px_w: d.px_w, px_h: d.px_h, dpi_x: dpi(d.px_w, side_w), dpi_y: dpi(d.px_h, side_h),
-            mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1, pieces: vec![(d.obj, [x0, y0, x1, y1])],
+            mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1, pieces: vec![(d.obj, [x0, y0, x1, y1])], inline_src: d.src.clone(),
             clipped: offpage || hidden || cut_by_clip || x0 > bx0 + 1e-6 || y0 > by0 + 1e-6 || x1 < bx1 - 1e-6 || y1 < by1 - 1e-6, upright,
             offpage, hidden, order: d.order,
         });
@@ -1540,6 +1554,7 @@ fn merge_strips(mut imgs: Vec<Image>) -> Vec<Image> {
         p.dpi_x = p.dpi_x.min(q.dpi_x); p.dpi_y = p.dpi_y.min(q.dpi_y);
         p.parts += q.parts; p.inline |= q.inline; p.clipped |= q.clipped; p.order = p.order.min(q.order);
         p.pieces.extend(q.pieces);
+        p.inline_src = None;
         p.obj = if p.obj == 0 { q.obj } else if q.obj == 0 { p.obj } else { p.obj.min(q.obj) };
         imgs.remove(b);
     }
@@ -2067,6 +2082,9 @@ mod tests {
         assert!(v[0].inline && v[0].px_w == 6 && v[0].px_h == 3 && v[0].obj == 0 && !v[0].mask);
         assert!((v[0].dpi_x - 6.0 / (30.0 / 72.0)).abs() < 1e-6);
         assert!(v[1].mask);
+        // the dictionary and data are kept for the pixels: 18 zero bytes, without the white space around them
+        let src = v[0].inline_src.as_ref().unwrap();
+        assert!(src.0.windows(5).any(|w| w == b"/BPC ") && src.1 == vec![0u8; 18]);
     }
 
     #[test]

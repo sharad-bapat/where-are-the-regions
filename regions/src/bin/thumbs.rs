@@ -1,4 +1,4 @@
-//! Checking tool for regions::pixels and regions::kind: every image XObject the map places.
+//! Checking tool for regions::pixels and regions::kind: every image the map places, inline ones keyed -1, -2...
 //! usage: thumbs <out dir | -> [--kinds] [--list files.txt] [file.pdf...]
 //! Writes <out dir>/<file stem>_<obj>.pgm for each image it can decode (not with "-") and prints one
 //! JSON line per image: file, obj, its size, the thumbnail's size, or the reason it wasn't decoded.
@@ -35,14 +35,25 @@ fn main() {
         let stem = Path::new(&path).file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
         // each image region once; a merged one (strips) is judged from all its pieces, and its line
         // is printed for every piece's object, so a label on any strip finds it
-        let mut seen: BTreeSet<u32> = BTreeSet::new();
+        // an inline image has no object number: it's keyed -1, -2... in drawing order within the file
+        let mut seen: BTreeSet<i64> = BTreeSet::new();
+        let mut inline_n = 0i64;
         for img in doc.pages.iter().flat_map(|p| p.images.iter()) {
-            let objs: Vec<u32> = img.pieces.iter().map(|p| p.0).filter(|&o| o != 0).collect();
-            if objs.is_empty() || objs.iter().all(|o| seen.contains(o)) { continue; }
-            let result = if img.pieces.len() > 1 {
-                regions::pixels::merged_thumbnail(&data, &img.pieces, max)
-            } else {
-                regions::pixels::image_thumbnail_max(&data, objs[0], max)
+            let (objs, result): (Vec<i64>, _) = match &img.inline_src {
+                Some(src) => {
+                    inline_n += 1;
+                    (vec![-inline_n], regions::pixels::inline_thumbnail(&src.0, &src.1, max))
+                }
+                None => {
+                    let objs: Vec<u32> = img.pieces.iter().map(|p| p.0).filter(|&o| o != 0).collect();
+                    if objs.is_empty() || objs.iter().all(|&o| seen.contains(&(o as i64))) { continue; }
+                    let r = if img.pieces.len() > 1 {
+                        regions::pixels::merged_thumbnail(&data, &img.pieces, max)
+                    } else {
+                        regions::pixels::image_thumbnail_max(&data, objs[0], max)
+                    };
+                    (objs.iter().map(|&o| o as i64).collect(), r)
+                }
             };
             for &obj in &objs {
                 if !seen.insert(obj) { continue; }

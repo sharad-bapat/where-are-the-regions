@@ -57,3 +57,17 @@ One change after the numbers above were recorded (8g, D89): a merged image (stri
 | Has-text at 0.9 or more, right | 93.2% | 92.7% |
 
 (After 8g the govdocs1 counts are merged images, not strips.) On 003 (tune) the same change places every labelled image: has-text holds 304 of 383 images with text and leaves 771 of 845 without; calibration at 0.9 or more is 93.2% for the kind and 92.2% for has-text, on both tune sets together.
+
+## Inline images (3 October 2026)
+
+After the held-out run, and relocked on its own: the map now keeps an inline image's dictionary and data (the bytes between BI and ID, and between ID and EI), and regions/src/pixels.rs decodes them through the same filters and colour spaces as an image XObject, with the short keys (/W, /H, /CS, /BPC, /F and the rest) spelt out (pixels::inline_thumbnail; a colour space named from the page's resources isn't looked up yet). The thumbs tool and the WebAssembly kinds give inline images a kind, keyed -1, -2 in drawing order since they have no object number. The map's JSON doesn't change: old and new output are identical on all 1,553 files of 003, 004 and the constructed sets. Wanted by the next tool, which has to tell an inline photo from an inline scan.
+
+| Constructed set | Before (inline counted apart) | With inline images |
+|---|---|---|
+| Tune: text images found | 157 of 157 | 180 of 180 |
+| Tune: other images not called text | 85 of 85 | 100 of 100 |
+| Held-out: text images found | 149 of 150 | 179 of 180 (99.4%) |
+| Held-out: other images not called text | 88 of 88 | 100 of 100 |
+| Held-out: has-text on text images | 150 of 150 | 180 of 180 |
+
+No image is counted apart any more on either split. The one held-out miss is the full-page scan already missed before, called a graphic. The govdocs1 labels match images by object number, so inline images there are still left out of the real-page scores.

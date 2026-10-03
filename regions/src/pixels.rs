@@ -75,12 +75,53 @@ pub fn merged_thumbnail(data: &[u8], pieces: &[(u32, [f64; 4])], max: u32) -> Re
     Ok(Thumb { width, height, w, h, grey })
 }
 
+/// The thumbnail of an inline image from its dictionary (the bytes between BI and ID, short keys
+/// allowed) and its data (between ID and EI). A colour space named from the page's resources isn't
+/// looked up, and gives an error.
+pub fn inline_thumbnail(dict: &[u8], data: &[u8], max: u32) -> Result<Thumb, &'static str> {
+    let d = full_keys(dict);
+    let pdf = Pdf::index(b"%PDF-1.4\n%%EOF\n");
+    let (raw, codec) = pdf.unfilter(&d, data.to_vec(), true).ok_or("undecoded")?;
+    from_parts(&pdf, &d, raw, codec, max.max(1))
+}
+
+/// An inline image's dictionary with its short keys spelt out (ISO 32000-1 8.9.7, table 93), as an
+/// ordinary "<< ... >>" dictionary. Short filter and colour space names are read as they are.
+fn full_keys(dict: &[u8]) -> Vec<u8> {
+    let mut out = b"<<".to_vec();
+    let mut i = skip_ws(dict, 0);
+    while i < dict.len() {
+        let Val::Name(k) = parse_val(dict, i) else { break };
+        let v = skip_ws(dict, skip_val(dict, i));
+        let e = skip_val(dict, v).max(v + 1).min(dict.len());
+        let full: &[u8] = match k.as_slice() {
+            b"W" => b"Width", b"H" => b"Height", b"BPC" => b"BitsPerComponent", b"CS" => b"ColorSpace", b"D" => b"Decode",
+            b"DP" => b"DecodeParms", b"F" => b"Filter", b"IM" => b"ImageMask", b"I" => b"Interpolate", other => other,
+        };
+        out.extend(b" /");
+        out.extend(full);
+        out.push(b' ');
+        out.extend(&dict[v..e]);
+        i = skip_ws(dict, e);
+    }
+    out.extend(b" >>");
+    out
+}
+
 pub(crate) fn thumbnail(pdf: &Pdf, obj: u32, limit: u32) -> Result<Thumb, &'static str> {
     let d = pdf.dict(obj).ok_or("no_object")?;
     let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
+    if int(b"/Width") == 0 || int(b"/Height") == 0 { return Err("no_size"); }
+    let (raw, codec) = pdf.decode(obj, true).ok_or("undecoded")?;
+    from_parts(pdf, &d, raw, codec, limit)
+}
+
+/// The thumbnail from an image's dictionary and its data run through every filter but a last image codec.
+fn from_parts(pdf: &Pdf, d: &[u8], raw: Vec<u8>, codec: Option<Vec<u8>>, limit: u32) -> Result<Thumb, &'static str> {
+    let d = d.to_vec();
+    let int = |k: &[u8]| match get(&d, k).map(|v| pdf.direct(v)) { Some(Val::Num(x)) if x > 0.0 => x as u32, _ => 0 };
     let (width, height) = (int(b"/Width"), int(b"/Height"));
     if width == 0 || height == 0 { return Err("no_size"); }
-    let (raw, codec) = pdf.decode(obj, true).ok_or("undecoded")?;
     let dec: Vec<f64> = match get(&d, b"/Decode").map(|v| pdf.direct(v)) {
         Some(Val::Array(a)) => nums(&a),
         _ => Vec::new(),
@@ -446,6 +487,13 @@ mod tests {
     #[test]
     fn a_grey_image_shrinks_by_averaging() {
         // 4 x 2, 8-bit grey: left half black, right half white; 256 px limit keeps it as is
+        // an inline image, short keys: the same pixels, plain and through /AHx and /Fl
+        let i = inline_thumbnail(b"/W 4 /H 2 /CS /G /BPC 8", &[0, 0, 255, 255, 0, 0, 255, 255], 1).unwrap();
+        assert!(i.width == 4 && i.height == 2 && i.w == 1 && i.h == 1 && i.grey == vec![128], "{:?}", (i.w, i.h, &i.grey));
+        let z = miniz_oxide::deflate::compress_to_vec_zlib(&[0, 255], 6);
+        let hex: String = z.iter().map(|b| format!("{b:02X}")).collect::<String>() + ">";
+        let i = inline_thumbnail(b"/W 2 /H 1 /CS /G /BPC 8 /F [/AHx /Fl]", hex.as_bytes(), 8).unwrap();
+        assert_eq!(i.grey, vec![0, 255]);
         let t = image_thumbnail(&pdf_with("/Width 4 /Height 2 /ColorSpace /DeviceGray /BitsPerComponent 8", &[0, 0, 255, 255, 0, 0, 255, 255]), 1).unwrap();
         assert_eq!((t.w, t.h), (4, 2));
         assert_eq!(t.grey, [0, 0, 255, 255, 0, 0, 255, 255]);

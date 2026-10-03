@@ -166,7 +166,7 @@ mod tests {
     fn img(x0: f64, y0: f64, x1: f64, y1: f64, dpi: f64) -> Image {
         let px = |pt: f64| (pt / 72.0 * dpi).round() as u32;
         Image { x0, y0, x1, y1, px_w: px(x1 - x0), px_h: px(y1 - y0), dpi_x: dpi, dpi_y: dpi,
-            mask: false, inline: false, annot: false, obj: 7, parts: 1, pieces: vec![], clipped: false, upright: true, offpage: false, hidden: false, order: 0 }
+            mask: false, inline: false, annot: false, obj: 7, parts: 1, pieces: vec![], inline_src: None, clipped: false, upright: true, offpage: false, hidden: false, order: 0 }
     }
 
     fn word(x0: f64, y0: f64, x1: f64, y1: f64, invisible: bool) -> Word {
