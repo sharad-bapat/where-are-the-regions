@@ -11,6 +11,11 @@ word counts at confidence MIN_CONF or more with 3 letters or 2 digits; TEXT_WORD
 text, none is none, in between is unsure (scored as text). One page is one label, since these pages
 are a single scan each. Resumable: pages already in the output are skipped.
 
+Some pages are well logs many feet long (one is 10,014 points tall, 27,816 pixels at DPI), which
+Tesseract can't read in one piece: it ran for over 20 minutes and took 8 GB. A page longer than TILE
+pixels is read in strips of TILE along its long side, overlapping by OVERLAP so a line cut by one
+strip is whole in the next, and the words of all strips are counted together.
+
 usage: python tools/label_sodir.py [sodir snapshot dir] [out.jsonl]
 """
 import hashlib
@@ -27,6 +32,30 @@ from select_real import DPI, MIN_CONF, TEXT_WORDS, ocr_words  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 SODIR = Path("data/sodir")
 PAGES = ROOT / "data" / "real" / "sodir-pages.jsonl"
+TILE, OVERLAP = 4000, 100  # pixels at DPI
+
+
+def page_words(page):
+    """Tesseract's counted words on the page as displayed, read in strips when it is long."""
+    r = page.rect  # as displayed
+    scale = DPI / 72
+    long_side = max(r.width, r.height) * scale
+    if long_side <= TILE:
+        return ocr_words(page.get_pixmap(dpi=DPI)), 1
+    step, over = TILE / scale, OVERLAP / scale
+    words, tiles, start = [], 0, 0.0
+    tall = r.height >= r.width
+    end = r.height if tall else r.width
+    while start < end:
+        stop = min(end, start + step)
+        shown = fitz.Rect(r.x0, start, r.x1, stop) if tall else fitz.Rect(start, r.y0, stop, r.y1)
+        # get_pixmap's clip is in unrotated page space
+        words += ocr_words(page.get_pixmap(dpi=DPI, clip=shown * page.derotation_matrix))
+        tiles += 1
+        if stop >= end:
+            break
+        start = stop - over
+    return words, tiles
 
 
 def main():
@@ -52,10 +81,10 @@ def main():
                 if not checked[p["file"]]:
                     raise ValueError("sha256 differs from the page list")
                 with fitz.open(path) as doc:
-                    words = ocr_words(doc[p["page"] - 1].get_pixmap(dpi=DPI))
+                    words, tiles = page_words(doc[p["page"] - 1])
                 n = len(words)
                 label = "text" if n >= TEXT_WORDS else "none" if n == 0 else "unsure"
-                rec = {"file": p["file"], "page": p["page"], "split": p["split"], "ocr_words": n, "label": label, "sample": words[:8]}
+                rec = {"file": p["file"], "page": p["page"], "split": p["split"], "ocr_words": n, "label": label, "tiles": tiles, "sample": words[:8]}
             except Exception as e:
                 label = "error"
                 rec = {"file": p["file"], "page": p["page"], "split": p["split"], "error": f"{type(e).__name__}: {e}"[:120]}
