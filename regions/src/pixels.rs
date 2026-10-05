@@ -13,6 +13,19 @@ use crate::{get, parse_val, skip_val, skip_ws, Pdf, Val};
 /// Longest side of a thumbnail, in pixels.
 pub const THUMB: u32 = 256;
 
+/// A long thin image may have a longer thumbnail than the limit, so that its short side keeps at
+/// least limit / ASPECT pixels, up to LONG times the limit. Paper is under ASPECT (A4 1.41, legal
+/// 1.65), so a page scan is unchanged; a well log ten times taller than wide was shrunk to about a
+/// hundred pixels across and its text lost (results/kinds-sparse.md).
+pub const ASPECT: f64 = 2.0;
+pub const LONG: f64 = 8.0;
+
+/// The longest side a thumbnail of a w x h image may have, for a limit.
+pub fn long_side(w: f64, h: f64, limit: u32) -> u32 {
+    let stretch = (w.max(h) / w.min(h).max(1e-9) / ASPECT).clamp(1.0, LONG);
+    (limit as f64 * stretch).round() as u32
+}
+
 pub struct Thumb {
     /// The image's own size.
     pub width: u32, pub height: u32,
@@ -127,7 +140,7 @@ fn merged(pdf: &Pdf, pieces: &[crate::Piece], max: u32) -> Result<Thumb, &'stati
         }
     }
     if thumbs.is_empty() { return Err(first_err); }
-    ppp = ppp.min(max as f64 / bw.max(bh)).max(1e-6);
+    ppp = ppp.min(long_side(bw, bh, max) as f64 / bw.max(bh)).max(1e-6);
     let (w, h) = (((bw * ppp).round() as u32).max(1), ((bh * ppp).round() as u32).max(1));
     let mut grey = vec![255u8; (w * h) as usize];
     for (t, b) in &thumbs {
@@ -245,6 +258,7 @@ fn from_parts(pdf: &Pdf, d: &[u8], raw: Vec<u8>, codec: Option<Vec<u8>>, limit: 
     let max = if bpc == 16 { 255 } else { (1u32 << bpc) - 1 };
     let flip: Vec<bool> = (0..n).map(|c| dec.len() >= 2 * (c + 1) && dec[2 * c] > dec[2 * c + 1]).collect();
 
+    let limit = long_side(width as f64, height as f64, limit).max(1);
     let f = ((width.max(height) + limit - 1) / limit).max(1);
     let (w, h) = ((width + f - 1) / f, (height + f - 1) / f);
     // one component of up to 8 bits (scans, grey, masks; not Indexed): every sample's grey is worked
@@ -615,7 +629,8 @@ mod tests {
                 let dict = format!("/Width {} /Height {} /ColorSpace /DeviceGray /BitsPerComponent {} {}", w, h, bpc, decode);
                 let t = image_thumbnail_max(&pdf_with(&dict, &data), 1, limit).unwrap();
                 let max = (1u32 << bpc) - 1;
-                let f = (w.max(h) + limit - 1) / limit;
+                let l = long_side(w as f64, h as f64, limit);
+                let f = (w.max(h) + l - 1) / l;
                 let mut want = Vec::new();
                 for ty in 0..t.h {
                     for tx in 0..t.w {

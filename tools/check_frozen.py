@@ -5,7 +5,8 @@ What is frozen (plans/chunk7-freeze.md, D76; the kind layer joined in 8f, the ve
 regions/Cargo.toml, Cargo.lock, every file in regions/src except ocr.rs (the map, pixels, the
 decoders, kind.rs, vkind.rs), the thumbs and vkinds tools, the tools that build the test sets, label
 the images and measure the map and the kinds, the three set manifests (each lists a sha256 per PDF),
-and this file. ocr.rs and
+and this file. The Sodir has-text set joined on 5 October 2026 (results/kinds-sparse.md): its page list, its labels
+and tools/label_sodir.py. ocr.rs and
 score_regions.py are left out: the OCR scoring belongs to the next repo.
 
 Line endings are normalised to LF first, so a checkout that converts them doesn't count as a change.
@@ -25,8 +26,9 @@ THUMBS = ROOT / "regions" / "target" / "release" / "thumbs.exe"
 VKINDS = ROOT / "regions" / "target" / "release" / "vkinds.exe"
 TOOLS = ["tools/check_frozen.py", "tools/diff_exact.py", "tools/ink_check.py", "tools/score_map.py", "tools/build_marks.py", "tools/build_set.py",
          "tools/score_kinds.py", "tools/label_images.py", "tools/select_real.py", "regions/src/bin/thumbs.rs",
-         "tools/build_vectors.py", "tools/score_vkinds.py", "regions/src/bin/vkinds.rs"]
-MANIFESTS = ["data/constructed/manifest.json", "data/constructed/marks/manifest.json", "data/constructed/vectors/manifest.json"]
+         "tools/build_vectors.py", "tools/score_vkinds.py", "regions/src/bin/vkinds.rs", "tools/label_sodir.py"]
+MANIFESTS = ["data/constructed/manifest.json", "data/constructed/marks/manifest.json", "data/constructed/vectors/manifest.json",
+             "data/real/sodir-pages.jsonl", "data/real/sodir-labels.jsonl"]
 
 
 def names():

@@ -1,7 +1,7 @@
 //! Checking tool for regions::pixels and regions::kind: every image the map places, inline ones keyed -1, -2...
 //! usage: thumbs <out dir | -> [--kinds] [--list files.txt] [file.pdf...]
 //! Writes <out dir>/<file stem>_<obj>.pgm for each image it can decode (not with "-") and prints one
-//! JSON line per image: file, obj, its size, the thumbnail's size, or the reason it wasn't decoded.
+//! JSON line per image: file, the page it's first drawn on, obj, its size, the thumbnail's size, or the reason it wasn't decoded.
 //! With --kinds each line also has the image's kind, confidence, reasons and features (the kind is
 //! judged on a thumbnail of up to kind::KIND_THUMB px, so the PGM is that size too).
 use std::collections::BTreeSet;
@@ -39,7 +39,7 @@ fn main() {
         // an inline image has no object number: it's keyed -1, -2... in drawing order within the file
         let mut seen: BTreeSet<i64> = BTreeSet::new();
         let mut inline_n = 0i64;
-        for img in doc.pages.iter().flat_map(|p| p.images.iter()) {
+        for (page, img) in doc.pages.iter().flat_map(|p| p.images.iter().map(move |i| (p.n, i))) {
             let (objs, result): (Vec<i64>, _) = match &img.inline_src {
                 Some(_) => {
                     inline_n += 1;
@@ -62,7 +62,7 @@ fn main() {
                             let _ = f.write_all(&t.grey);
                         }
                     }
-                    let mut line = format!("{{\"file\":{},\"obj\":{},\"image\":{},\"parts\":{},\"width\":{},\"height\":{},\"w\":{},\"h\":{}", regions::json_str(&path), obj, objs[0], img.pieces.len(), t.width, t.height, t.w, t.h);
+                    let mut line = format!("{{\"file\":{},\"page\":{},\"obj\":{},\"image\":{},\"parts\":{},\"width\":{},\"height\":{},\"w\":{},\"h\":{}", regions::json_str(&path), page, obj, objs[0], img.pieces.len(), t.width, t.height, t.w, t.h);
                     if kinds {
                         let k = regions::kind::classify(t.w, t.h, &t.grey);
                         let f = &k.features;
@@ -73,7 +73,7 @@ fn main() {
                     }
                     println!("{}}}", line);
                 }
-                Err(e) => println!("{{\"file\":{},\"obj\":{},\"error\":\"{}\"}}", regions::json_str(&path), obj, e),
+                Err(e) => println!("{{\"file\":{},\"page\":{},\"obj\":{},\"error\":\"{}\"}}", regions::json_str(&path), page, obj, e),
             }
             }
         }

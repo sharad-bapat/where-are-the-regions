@@ -1,0 +1,175 @@
+constructed tune: kind of the pasted image, by case kind
+  background  {'blank': 20}
+  blank       {'blank': 20}
+  full_scan   {'text': 20}
+  logo        {'graphic': 19, 'blank': 1}
+  photo       {'photo': 20}
+  rule        {'blank': 20}
+  text        {'text': 120}
+  text_ocr    {'text': 40}
+  text images found: 180/180 (100.0%, target 95%)
+  other images not called text: 100/100 (100.0%, target 95%)
+  has-text on text images: 180/180; not on photos, blanks, backgrounds, rules: 80/80; logos held: 0/20
+  counted apart: {}
+govdocs1 003 has-text against image-only labels (1228 images, merged strips as one, unsure as text):
+  text found 305/383 (79.6%); none not held 769/845 (91.0%); counted apart {'jpx': 7, 'colour_space': 6, 'short': 1, 'predictor': 3}
+   has-text miss ('003038.pdf', 168, 'text', 'photo', 0.208, 54, ['Information', 'for', 'Medicare', 'Fee-for-Service'])
+   has-text miss ('003046.pdf', 3085, 'none', 'text', 0.95, 30, [])
+   has-text miss ('003046.pdf', 152, 'none', 'text', 0.95, 38, [])
+   has-text miss ('003046.pdf', 163, 'none', 'text', 0.95, 38, [])
+   has-text miss ('003046.pdf', 182, 'none', 'text', 0.95, 38, [])
+   has-text miss ('003046.pdf', 201, 'none', 'text', 0.95, 38, [])
+   has-text miss ('003051.pdf', 14, 'text', 'graphic', 0.247, 15, ['Sse', '20'])
+   has-text miss ('003051.pdf', 15, 'text', 'graphic', 0.094, 4, ['ooe'])
+   has-text miss ('003051.pdf', 24, 'text', 'graphic', 0.416, 21, ['soshue', '30', '20'])
+   has-text miss ('003053.pdf', 1504, 'text', 'graphic', 0.05, 4, ['bom'])
+   has-text miss ('003063.pdf', 7, 'text', 'graphic', 0.05, 0, ['Hickew', 'pers', 'Hee', 'fre'])
+   has-text miss ('003063.pdf', 11, 'text', 'graphic', 0.442, 6, ['30)', '320,', '20,', 'N22'])
+   has-text miss ('003063.pdf', 29, 'text', 'text', 0.05, 3, ['Bove', '(commug', 'sug', 'eerayce'])
+   has-text miss ('003063.pdf', 36, 'text', 'text', 0.188, 8, ['DSTTA'])
+   has-text miss ('003063.pdf', 62, 'text', 'graphic', 0.061, 8, ['canes', 'MILS'])
+   has-text miss ('003063.pdf', 69, 'none', 'text', 0.95, 65, [])
+   has-text miss ('003063.pdf', 94, 'none', 'text', 0.95, 83, [])
+   has-text miss ('003066.pdf', 133, 'none', 'photo', 0.95, 1939, [])
+   has-text miss ('003066.pdf', 119, 'none', 'photo', 0.95, 1885, [])
+   has-text miss ('003066.pdf', 28, 'none', 'graphic', 0.584, 27, [])
+   has-text miss ('003066.pdf', 69, 'text', 'text', 0.431, 15, ['Supply', 'Service'])
+   has-text miss ('003068.pdf', 79, 'text', 'photo', 0.05, 13, ['Mes'])
+   has-text miss ('003072.pdf', 4, 'none', 'text', 0.95, 46, [])
+   has-text miss ('003072.pdf', 23, 'none', 'graphic', 0.95, 53, [])
+   has-text miss ('003074.pdf', 649, 'text', 'photo', 0.455, 76, ['Policy'])
+   has-text miss ('003077.pdf', 57, 'text', 'graphic', 0.061, 0, ['ors'])
+   has-text miss ('003077.pdf', 65, 'text', 'graphic', 0.388, 0, ['1007', '6661', '8661', 'Addog'])
+   has-text miss ('003077.pdf', 69, 'text', 'graphic', 0.073, 0, ['uns', 'zooz', 'oo0z', '6661'])
+   has-text miss ('003077.pdf', 73, 'text', 'graphic', 0.118, 0, ['sad', '000°000°', '1007'])
+   has-text miss ('003077.pdf', 77, 'text', 'graphic', 0.106, 0, ['zad', 'paw', 'Addod', 'sad'])
+   has-text miss ('003169.pdf', 77, 'none', 'text', 0.95, 59, [])
+   has-text miss ('003179.pdf', 38, 'none', 'graphic', 0.669, 30, [])
+   has-text miss ('003179.pdf', 134, 'none', 'text', 0.708, 23, [])
+   has-text miss ('003179.pdf', 136, 'text', 'graphic', 0.134, 11, ['1008D3'])
+   has-text miss ('003179.pdf', 150, 'text', 'graphic', 0.163, 12, ['201B', '908D'])
+   has-text miss ('003183.pdf', 39, 'none', 'graphic', 0.753, 33, [])
+   has-text miss ('003184.pdf', 24, 'none', 'text', 0.95, 179, [])
+   has-text miss ('003184.pdf', 37, 'none', 'graphic', 0.809, 35, [])
+   has-text miss ('003185.pdf', 1, 'none', 'text', 0.95, 52, [])
+   has-text miss ('003185.pdf', 20, 'none', 'text', 0.95, 52, [])
+   has-text miss ('003185.pdf', 75, 'none', 'text', 0.812, 26, [])
+   has-text miss ('003187.pdf', 384, 'none', 'text', 0.95, 84, [])
+   has-text miss ('003194.pdf', 142, 'text', 'photo', 0.05, 23, ['State', 'the', 'Great', 'Lakes'])
+   has-text miss ('003194.pdf', 146, 'text', 'photo', 0.05, 24, ['State', 'the', 'Great', 'Lakes'])
+   has-text miss ('003194.pdf', 165, 'text', 'photo', 0.05, 24, ['State', 'the', 'Great', 'Lakes'])
+   has-text miss ('003194.pdf', 166, 'text', 'photo', 0.05, 23, ['State', 'the', 'Great', 'Lakes'])
+   has-text miss ('003198.pdf', 53, 'none', 'graphic', 0.95, 169, [])
+   has-text miss ('003198.pdf', 55, 'text', 'photo', 0.05, 3, ['Oot', 'Mage'])
+   has-text miss ('003198.pdf', 61, 'none', 'graphic', 0.838, 36, [])
+   has-text miss ('003198.pdf', 62, 'text', 'photo', 0.05, 0, ['MultiPROBE'])
+   has-text miss ('003207.pdf', 36, 'none', 'text', 0.95, 38, [])
+   has-text miss ('003207.pdf', 50, 'none', 'text', 0.95, 42, [])
+   has-text miss ('003280.pdf', 22, 'none', 'graphic', 0.584, 27, [])
+   has-text miss ('003280.pdf', 36, 'none', 'text', 0.95, 30, [])
+   has-text miss ('003280.pdf', 39, 'text', 'graphic', 0.05, 3, ['EPA'])
+   has-text miss ('003280.pdf', 42, 'text', 'graphic', 0.05, 4, ['PRPs'])
+   has-text miss ('003280.pdf', 44, 'text', 'graphic', 0.05, 8, ['Community'])
+   has-text miss ('003280.pdf', 54, 'none', 'text', 0.95, 38, [])
+   has-text miss ('003398.pdf', 13, 'text', 'graphic', 0.331, 18, ['functional', 'deficit'])
+   has-text miss ('003398.pdf', 37, 'text', 'photo', 0.05, 0, ['ROI:', 'centered', 'right', 'entorhinal'])
+govdocs1 003: kind by Tesseract region label (placements)
+  text    {'text': 230, 'graphic': 83, 'photo': 39, 'blank': 22}
+  none    {'graphic': 431, 'photo': 426, 'blank': 209, 'text': 77}
+  unsure  {'text': 140, 'graphic': 60, 'photo': 36, 'blank': 24}
+  text labels called text: 230/374; none labels not called text: 1066/1143
+  counted apart: {'jpx': 7, 'colour_space': 6, 'inline': 81, 'short': 1, 'predictor': 3}
+   miss ('003038.pdf', 0, 168, 'text', 'photo', 0.95, ['Matters', 'for', 'Medicare', 'Fee-for-Service'])
+   miss ('003045.pdf', 0, 22, 'text', 'graphic', 0.95, ['CONSULATE', 'GENERAL', 'THE', 'UNITED'])
+   miss ('003051.pdf', 4, 13, 'text', 'graphic', 0.95, ['run', 'distance', '100', 'experiment'])
+   miss ('003051.pdf', 4, 15, 'text', 'graphic', 0.95, ['velocity', '(km/s)', '-ana', '-0.5'])
+   miss ('003051.pdf', 4, 16, 'text', 'graphic', 0.95, ['run', 'distance', '100', '0.1'])
+   miss ('003051.pdf', 5, 20, 'text', 'graphic', 0.95, ['run', 'distance', '100', 'experiment'])
+   miss ('003051.pdf', 6, 24, 'text', 'graphic', 0.725, ['surface', 'velocity', '(km/s)', '1.6'])
+   miss ('003063.pdf', 2, 7, 'text', 'graphic', 0.95, ['TABLE', 'APOLLO', '15', 'RECOVERY'])
+   miss ('003063.pdf', 3, 11, 'text', 'graphic', 0.95, ['15a"', '30"', '158°', '26°'])
+   miss ('003063.pdf', 16, 58, 'text', 'graphic', 0.391, ['Loose', 'strand', 'Figure', 'Service'])
+   miss ('003063.pdf', 17, 62, 'text', 'graphic', 0.95, ['Plastic', 'liner', 'Approximate', 'position'])
+   miss ('003063.pdf', 25, 90, 'text', 'graphic', 0.95, ['Figure', 'Water', 'management', 'system'])
+   miss ('003063.pdf', 28, 102, 'text', 'graphic', 0.876, ['Figure', '14-12.-', 'Main', 'parachute'])
+   miss ('003066.pdf', 1, 133, 'text', 'photo', 0.95, ['MICROBIAL', 'PRODUCT', 'DATA', 'SHEET'])
+   miss ('003066.pdf', 5, 24, 'none', 'text', 0.417, [])
+   miss ('003066.pdf', 13, 133, 'text', 'photo', 0.95, ['Military', 'Food', 'Carts', 'Kio'])
+   miss ('003067.pdf', 1, 4, 'text', 'graphic', 0.299, ['IDENTIFICATION', 'GUIDE', 'FOR', 'IVORY'])
+   miss ('003074.pdf', 0, 649, 'text', 'photo', 0.95, ['Journal', 'for', 'sustainable', 'solutions'])
+   miss ('003074.pdf', 2, 14, 'text', 'graphic', 0.95, ['Hermit', 'Thrush', 'American', 'Robin'])
+   miss ('003158.pdf', 10, 45, 'text', 'graphic', 0.367, ['Trapezoid', 'Phalanges', 'ist', 'Ind'])
+   miss ('003169.pdf', 3, 66, 'text', 'graphic', 0.95, ['photo', 'photo', 'right', 'eye'])
+   miss ('003170.pdf', 7, 22, 'text', 'graphic', 0.286, ['120', '35', '100', '10'])
+   miss ('003170.pdf', 10, 38, 'text', 'graphic', 0.408, ['Jod', '15', '20', '25'])
+   miss ('003170.pdf', 12, 48, 'text', 'graphic', 0.906, ['Jod', '15', '20', '25'])
+   miss ('003170.pdf', 13, 52, 'text', 'graphic', 0.274, ['35', 'att', 'fuel', 'bulk'])
+   miss ('003170.pdf', 14, 58, 'text', 'graphic', 0.938, ['trees', 'per', '100', '600'])
+   miss ('003170.pdf', 15, 62, 'text', 'graphic', 0.457, ['35', '40', 'Canopy', '0.08'])
+   miss ('003170.pdf', 16, 68, 'text', 'graphic', 0.95, ['53', 'Jod', '15', '20'])
+   miss ('003170.pdf', 17, 72, 'text', 'graphic', 0.261, ['branchwood', '35', '30', '20'])
+   miss ('003170.pdf', 19, 82, 'text', 'graphic', 0.473, ['35', '30', '254', '40'])
+   miss ('003170.pdf', 22, 98, 'text', 'graphic', 0.408, ['Jod', '15', '20', '25'])
+   miss ('003170.pdf', 28, 128, 'text', 'graphic', 0.328, ['trees', 'per', '200', '175'])
+   miss ('003174.pdf', 0, 544, 'text', 'graphic', 0.95, ['Position', 'signalled', 'right', 'eye'])
+   miss ('003179.pdf', 8, 30, 'text', 'graphic', 0.95, ['END', 'MATCH', 'LINE', 'END'])
+   miss ('003179.pdf', 9, 38, 'text', 'graphic', 0.429, ['HALF', 'OVERLAP', 'HALF', 'OVERLAP'])
+   miss ('003179.pdf', 21, 134, 'none', 'text', 0.465, [])
+   miss ('003184.pdf', 3, 24, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 25, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 26, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 27, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 28, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 29, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 30, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 31, 'none', 'text', 0.95, [])
+   miss ('003184.pdf', 3, 32, 'none', 'text', 0.95, [])
+   miss ('003185.pdf', 0, 1, 'none', 'text', 0.92, [])
+   miss ('003185.pdf', 2, 20, 'none', 'text', 0.92, [])
+   miss ('003187.pdf', 0, 384, 'none', 'text', 0.666, [])
+   miss ('003194.pdf', 1, 142, 'text', 'photo', 0.644, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 2, 146, 'text', 'photo', 0.455, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 3, 142, 'text', 'photo', 0.644, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 4, 146, 'text', 'photo', 0.455, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 5, 142, 'text', 'photo', 0.644, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 6, 146, 'text', 'photo', 0.455, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 7, 142, 'text', 'photo', 0.644, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 8, 146, 'text', 'photo', 0.455, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 9, 142, 'text', 'photo', 0.644, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 10, 146, 'text', 'photo', 0.455, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 11, 142, 'text', 'photo', 0.644, ['State', 'the', 'Great', 'Lakes'])
+   miss ('003194.pdf', 12, 146, 'text', 'photo', 0.455, ['State', 'the', 'Great', 'Lakes'])
+sodir tune has-text by page (160 labelled pages, unsure as text):
+  text found 137/157; none not held 3/3; no decoded image 0
+  stratum low: text found 97/117, none not held 3/3
+  stratum high: text found 40/40, none not held 0/0
+   miss docs/1068/1068_6506_12_8_COMPLETION_REPORT_AND_LOG.pdf p11 unsure (3 words) 551x779 kind graphic has_text 0.05 marks 3 glyphs 9 aligned 0.56
+   miss docs/1338/1338_34_8_3_A_Completion_report.pdf p8 unsure (2 words) 616x868 kind graphic has_text 0.484 marks 8 glyphs 17 aligned 0.47
+   miss docs/17/17_01_Completion_Report.pdf p134 unsure (1 words) 725x1024 kind graphic has_text 0.11 marks 3 glyphs 15 aligned 0.40
+   miss docs/21/21_7119_7_1_COMPLETION_REPORT.pdf p7 unsure (2 words) 616x868 kind graphic has_text 0.05 marks 5 glyphs 47 aligned 0.30
+   miss docs/2872/2872_33_9_19_A__COMPLETION_REPORT_AND_COMPLETION_LOG.pdf p57 text (14 words) 575x1001 kind graphic has_text 0.05 marks 0 glyphs 202 aligned 0.01
+   miss docs/291/291_1_Completion_report_operation.pdf p15 text (5 words) 850x576 kind graphic has_text 0.05 marks 3 glyphs 111 aligned 0.23
+   miss docs/316/316_15_5_2_Completion_report.pdf p7 unsure (2 words) 616x868 kind graphic has_text 0.078 marks 9 glyphs 68 aligned 0.28
+   miss docs/3781/3781_6407_12_1_COMPLETION_LOG.pdf p1 text (15 words) 48x1024 kind graphic has_text 0.05 marks 0 glyphs 0 aligned 0.00
+   miss docs/3941/3941_6710_10_1_COMPLETION_REPORT_AND_LOG.pdf p37 text (61 words) 496x96 kind graphic has_text 0.05 marks 7 glyphs 7 aligned 1.00
+   miss docs/4189/4189_6608_11_2_COMPLETION_REPORT.pdf p53 text (15 words) 550x779 kind graphic has_text 0.354 marks 0 glyphs 179 aligned 0.21
+   miss docs/4189/4189_6608_11_2_COMPLETION_REPORT.pdf p57 text (37 words) 550x779 kind text has_text 0.05 marks 3 glyphs 534 aligned 0.75
+   miss docs/4189/4189_6608_11_2_COMPLETION_REPORT.pdf p58 text (27 words) 550x779 kind graphic has_text 0.205 marks 0 glyphs 266 aligned 0.45
+   miss docs/4261/4261_7228_7_1_B_COMPLETION_REPORT.pdf p43 text (220 words) 48x40 kind photo has_text 0.05 marks 0 glyphs 2 aligned 0.00
+   miss docs/4261/4261_7228_7_1_B_COMPLETION_REPORT.pdf p47 text (12 words) 944x448 kind graphic has_text 0.114 marks 9 glyphs 92 aligned 0.46
+   miss docs/4262/4262_6406_1_1_COMPLETION_REPORT.pdf p98 text (12 words) 550x779 kind graphic has_text 0.05 marks 0 glyphs 114 aligned 0.00
+   miss docs/4262/4262_6406_1_1_COMPLETION_REPORT.pdf p100 text (56 words) 550x779 kind graphic has_text 0.05 marks 0 glyphs 175 aligned 0.14
+   miss docs/485/485_6507_12_3_COMPLETION_REPORT_AND_LOG.pdf p9 unsure (1 words) 616x868 kind graphic has_text 0.05 marks 0 glyphs 9 aligned 0.44
+   miss docs/863/863_02_6406_3_2_Completion_report_Drilling.pdf p100 text (14 words) 725x1024 kind graphic has_text 0.433 marks 5 glyphs 115 aligned 0.17
+   miss docs/863/863_02_6406_3_2_Completion_report_Drilling.pdf p104 text (18 words) 725x1024 kind graphic has_text 0.32 marks 5 glyphs 139 aligned 0.14
+   miss docs/863/863_02_6406_3_2_Completion_report_Drilling.pdf p109 text (15 words) 725x1024 kind graphic has_text 0.174 marks 0 glyphs 99 aligned 0.10
+calibration of kind (share right by confidence band; target: 0.9 and up at least 90%):
+  0.9 to 1.0: 1189/1276 (93.2%)
+  0.7 to 0.9: 92/112 (82.1%)
+  0.5 to 0.7: 121/169 (71.6%)
+  0.0 to 0.5: 174/240 (72.5%)
+calibration of has-text (share right by confidence band; target: 0.9 and up at least 90%):
+  0.9 to 1.0: 1344/1457 (92.2%)
+  0.7 to 0.9: 70/101 (69.3%)
+  0.5 to 0.7: 60/90 (66.7%)
+  0.0 to 0.5: 0/0

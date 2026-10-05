@@ -19,9 +19,12 @@ text (D67); "held" means has_text at or above HAS_CUT.
 Calibration (D84): by confidence band, the share right. Target: at 0.9 or more, at least 90% right.
 Inline images (no object) and images that don't decode are counted apart, never dropped.
 
-usage: python tools/score_kinds.py [constructed] [real] [--heldout] [--misses]
+usage: python tools/score_kinds.py [constructed] [real] [sodir] [--heldout] [--misses]
 --heldout scores the constructed heldout split and govdocs1 004 (region labels heldout-004.jsonl,
-image labels heldout-004-image.jsonl) and is refused unless tools/check_frozen.py passes (8f).
+image labels heldout-004-image.jsonl) and the Sodir held-out pages, and is refused unless
+tools/check_frozen.py passes (8f).
+
+sodir scores has-text per scanned Sodir page (tools/label_sodir.py, data/real/sodir-labels.jsonl).
 """
 import json
 import subprocess
@@ -205,6 +208,58 @@ def real(calib, misses, hcalib=None, name="003", labels="tune-003.jsonl", image_
             print("   miss", m)
 
 
+SODIR = Path("data/sodir")
+
+
+def sodir(hcalib, misses, split="tune"):
+    """Has-text per Sodir scanned page against its Tesseract label (tools/label_sodir.py): the page holds
+    text when any image on it is held (has-text at HAS_CUT or more). Unsure counts as text (D67)."""
+    lab_path = ROOT / "data" / "real" / "sodir-labels.jsonl"
+    if not lab_path.exists():
+        print("sodir: no labels yet (tools/label_sodir.py)")
+        return
+    strata = {(j["file"], j["page"]): j["stratum"] for j in map(json.loads, filter(str.strip, (ROOT / "data" / "real" / "sodir-pages.jsonl").read_text(encoding="utf-8").splitlines()))}
+    labels = [j for j in map(json.loads, filter(str.strip, lab_path.read_text(encoding="utf-8").splitlines())) if j["split"] == split and "label" in j]
+    files = sorted({j["file"] for j in labels})
+    best = {}
+    for i in range(0, len(files), 10):
+        with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as f:
+            f.write("\n".join((SODIR / x).as_posix() for x in files[i:i + 10]))
+            lst = f.name
+        res = subprocess.run([str(THUMBS), "-", "--kinds", "--list", lst], capture_output=True, text=True, encoding="utf-8").stdout
+        Path(lst).unlink()
+        for line in res.splitlines():
+            j = json.loads(line)
+            if "has_text" not in j:
+                continue
+            key = (Path(j["file"]).relative_to(SODIR).as_posix(), j["page"])
+            if key not in best or j["has_text"] > best[key]["has_text"]:
+                best[key] = j
+    found, apart, miss = defaultdict(Counter), 0, []
+    for lab in labels:
+        key = (lab["file"], lab["page"])
+        k = best.get(key)
+        if k is None:
+            apart += 1
+            continue
+        truth = lab["label"] != "none"
+        held = k["has_text"] >= HAS_CUT
+        found[(strata.get(key, "?"), truth)][held] += 1
+        hcalib[has_band(k["has_text"])][held == truth] += 1
+        if held != truth:
+            miss.append(f"{lab['file']} p{lab['page']} {lab['label']} ({lab['ocr_words']} words) {k['w']}x{k['h']} kind {k['kind']} has_text {k['has_text']} marks {k['features']['word_marks']} glyphs {k['features']['glyphs']} aligned {k['features']['aligned']:.2f}")
+    t = sum((found[(s_, True)] for s_ in ("low", "high")), Counter())
+    nn = sum((found[(s_, False)] for s_ in ("low", "high")), Counter())
+    print(f"sodir {split} has-text by page ({len(labels)} labelled pages, unsure as text):")
+    print(f"  text found {t[True]}/{t[True] + t[False]}; none not held {nn[False]}/{nn[True] + nn[False]}; no decoded image {apart}")
+    for s_ in ("low", "high"):
+        a, b = found[(s_, True)], found[(s_, False)]
+        print(f"  stratum {s_}: text found {a[True]}/{a[True] + a[False]}, none not held {b[False]}/{b[True] + b[False]}")
+    if misses:
+        for m in miss[:80]:
+            print("   miss", m)
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     misses = "--misses" in sys.argv
@@ -222,6 +277,8 @@ def main():
             real(calib, misses, hcalib, "004", "heldout-004.jsonl", "heldout-004-image.jsonl")
         else:
             real(calib, misses, hcalib)
+    if not args or "sodir" in args:
+        sodir(hcalib, misses, "heldout" if held else "tune")
     for name, cal in (("kind", calib), ("has-text", hcalib)):
         print(f"calibration of {name} (share right by confidence band; target: 0.9 and up at least 90%):")
         for b in BANDS:

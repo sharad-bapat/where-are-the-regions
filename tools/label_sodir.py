@@ -4,7 +4,8 @@ and dense scans (results/kinds-turn.md, "Still open").
 The pages are scanned well reports from the Norwegian Offshore Directorate's FactPages, picked from
 pages with no text layer: 160 for tuning and 160 held out, split by file, so no file is in both. Each
 line of the page list gives the file's URL and sha256, so the set can be downloaded again; the PDFs
-themselves aren't redistributed.
+themselves aren't redistributed, and neither are the words read from them: a label keeps only the
+count.
 
 Each page is rendered as displayed at DPI and read with the same rules as the other labels (D67): a
 word counts at confidence MIN_CONF or more with 3 letters or 2 digits; TEXT_WORDS or more words is
@@ -84,7 +85,7 @@ def main():
                     words, tiles = page_words(doc[p["page"] - 1])
                 n = len(words)
                 label = "text" if n >= TEXT_WORDS else "none" if n == 0 else "unsure"
-                rec = {"file": p["file"], "page": p["page"], "split": p["split"], "ocr_words": n, "label": label, "tiles": tiles, "sample": words[:8]}
+                rec = {"file": p["file"], "page": p["page"], "split": p["split"], "ocr_words": n, "label": label, "tiles": tiles}
             except Exception as e:
                 label = "error"
                 rec = {"file": p["file"], "page": p["page"], "split": p["split"], "error": f"{type(e).__name__}: {e}"[:120]}
