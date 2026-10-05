@@ -13,9 +13,10 @@ pub fn extract_json(bytes: &[u8]) -> String { regions::extract(bytes).to_json(fa
 #[wasm_bindgen]
 pub fn kinds_json(bytes: &[u8]) -> String {
     let doc = regions::extract(bytes);
+    let src = regions::pixels::Source::new(bytes);
     let pages: Vec<String> = doc.pages.iter().map(|p| {
         let images: Vec<String> = p.images.iter().map(|img| {
-            match regions::pixels::placed_thumbnail(bytes, img, regions::kind::KIND_THUMB) {
+            match src.placed(img, regions::kind::KIND_THUMB) {
                 Ok(t) => {
                     let k = regions::kind::classify(t.w, t.h, &t.grey);
                     format!("{{\"kind\":\"{}\",\"confidence\":{},\"has_text\":{}}}", k.kind, k.confidence, k.has_text)

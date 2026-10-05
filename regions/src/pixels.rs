@@ -57,20 +57,35 @@ impl Turn {
     }
 }
 
-/// The thumbnail of a placed image as it shows on the page, at most `max` px on the long side: an
-/// inline image from its source, one object, or merged strips pasted together, each turned by its
-/// Turn. The one entry point for the kind layer and the router.
+/// A PDF indexed once, for every thumbnail taken from it, rather than once per image. With the fast
+/// path for one-component images in from_parts, `thumbs --kinds` on a 93-page file of 1-bit scans
+/// went from 10.0 s to under 2 s, and what-needs-ocr's router about five times faster on Sodir's
+/// scanned reports, with the same output (results/speed.md).
+pub struct Source<'a> { pdf: Pdf<'a> }
+
+impl<'a> Source<'a> {
+    pub fn new(data: &'a [u8]) -> Source<'a> { Source { pdf: Pdf::index(data) } }
+
+    /// The thumbnail of a placed image as it shows on the page, at most `max` px on the long side: an
+    /// inline image from its source, one object, or merged strips pasted together, each turned by
+    /// its Turn. The one entry point for the kind layer and the router.
+    pub fn placed(&self, img: &crate::Image, max: u32) -> Result<Thumb, &'static str> {
+        if let Some(src) = &img.inline_src {
+            let t = inline_thumbnail(&src.0, &src.1, max)?;
+            return Ok(match img.pieces.first() { Some(p) => p.turn.apply(t), None => t });
+        }
+        let objs: Vec<&crate::Piece> = img.pieces.iter().filter(|p| p.obj != 0).collect();
+        match objs.len() {
+            0 => Err("no_object"),
+            1 if img.pieces.len() == 1 => thumbnail(&self.pdf, objs[0].obj, max.max(1)).map(|t| objs[0].turn.apply(t)),
+            _ => merged(&self.pdf, &img.pieces, max),
+        }
+    }
+}
+
+/// Source::placed for a single image, indexing the file each time.
 pub fn placed_thumbnail(data: &[u8], img: &crate::Image, max: u32) -> Result<Thumb, &'static str> {
-    if let Some(src) = &img.inline_src {
-        let t = inline_thumbnail(&src.0, &src.1, max)?;
-        return Ok(match img.pieces.first() { Some(p) => p.turn.apply(t), None => t });
-    }
-    let objs: Vec<&crate::Piece> = img.pieces.iter().filter(|p| p.obj != 0).collect();
-    match objs.len() {
-        0 => Err("no_object"),
-        1 if img.pieces.len() == 1 => image_thumbnail_max(data, objs[0].obj, max).map(|t| objs[0].turn.apply(t)),
-        _ => merged_thumbnail(data, &img.pieces, max),
-    }
+    Source::new(data).placed(img, max)
 }
 
 /// The thumbnail of image XObject `obj` in the PDF `data`, at most THUMB pixels on the long side.
@@ -87,7 +102,10 @@ pub fn image_thumbnail_max(data: &[u8], obj: u32, max: u32) -> Result<Thumb, &'s
 /// at `max` px on the long side. Inline pieces, and pieces that don't decode, stay white; it fails
 /// only when no piece decodes.
 pub fn merged_thumbnail(data: &[u8], pieces: &[crate::Piece], max: u32) -> Result<Thumb, &'static str> {
-    let pdf = Pdf::index(data);
+    merged(&Pdf::index(data), pieces, max)
+}
+
+fn merged(pdf: &Pdf, pieces: &[crate::Piece], max: u32) -> Result<Thumb, &'static str> {
     let bx = pieces.iter().fold([f64::MAX, f64::MAX, f64::MIN, f64::MIN], |b, q| { let p = q.bx; [b[0].min(p[0]), b[1].min(p[1]), b[2].max(p[2]), b[3].max(p[3])] });
     let (bw, bh) = (bx[2] - bx[0], bx[3] - bx[1]);
     if bw <= 0.0 || bh <= 0.0 { return Err("no_size"); }
@@ -99,7 +117,7 @@ pub fn merged_thumbnail(data: &[u8], pieces: &[crate::Piece], max: u32) -> Resul
         let (obj, b) = (q.obj, q.bx);
         if obj == 0 { continue; }
         // turned first, so each piece's width and height are the ones its box on the page has
-        match thumbnail(&pdf, obj, max.max(1)).map(|t| q.turn.apply(t)) {
+        match thumbnail(pdf, obj, max.max(1)).map(|t| q.turn.apply(t)) {
             Ok(t) => {
                 let (pw, ph) = (b[2] - b[0], b[3] - b[1]);
                 if pw > 0.0 && ph > 0.0 { ppp = ppp.min(t.width as f64 / pw).min(t.height as f64 / ph); }
@@ -229,6 +247,52 @@ fn from_parts(pdf: &Pdf, d: &[u8], raw: Vec<u8>, codec: Option<Vec<u8>>, limit: 
 
     let f = ((width.max(height) + limit - 1) / limit).max(1);
     let (w, h) = ((width + f - 1) / f, (height + f - 1) / f);
+    // one component of up to 8 bits (scans, grey, masks; not Indexed): every sample's grey is worked
+    // out once, and each column's block once, so the loop over pixels only adds. The same sums as the
+    // general loop below, so the same thumbnail.
+    if n == 1 && bpc <= 8 && !matches!(space, Space::Indexed(..)) {
+        let lut: Vec<u32> = (0..=max).map(|s| {
+            let s = if flip[0] { max - s } else { s };
+            space.grey(&[s * 255 / max]) as u32
+        }).collect();
+        let col: Vec<u32> = (0..width).map(|x| x / f).collect();
+        let mut sum = vec![0u32; (w * h) as usize];
+        for y in 0..height as usize {
+            let r = &data[y * row..(y + 1) * row];
+            let base = (y as u32 / f * w) as usize;
+            if bpc == 1 {
+                // 1 bit a pixel: a byte's 8 pixels split into runs that share a block, each run's
+                // set bits counted at once
+                let (zero, one) = (lut[0], lut[1]);
+                for (k, &byte) in r.iter().enumerate() {
+                    let x0 = k * 8;
+                    let end = (x0 + 8).min(width as usize);
+                    let mut x = x0;
+                    while x < end {
+                        let b = col[x];
+                        let mut e = x + 1;
+                        while e < end && col[e] == b { e += 1; }
+                        // bits x..e of this byte, the first pixel in the top bit
+                        let mask = (0xFFu32 >> (x - x0)) & !(0xFFu32 >> (e - x0));
+                        let ones = (byte as u32 & mask).count_ones();
+                        sum[base + b as usize] += ones * one + (e - x - ones as usize) as u32 * zero;
+                        x = e;
+                    }
+                }
+                continue;
+            }
+            for x in 0..width as usize {
+                sum[base + col[x] as usize] += lut[sample(r, x, bpc) as usize];
+            }
+        }
+        // a block's pixel count: f by f, less at the right and bottom edges
+        let grey = sum.iter().enumerate().map(|(i, s)| {
+            let (tx, ty) = (i as u32 % w, i as u32 / w);
+            let c = (width - tx * f).min(f) * (height - ty * f).min(f);
+            ((s + c / 2) / c.max(1)) as u8
+        }).collect();
+        return Ok(Thumb { width, height, w, h, grey });
+    }
     let mut sum = vec![0u32; (w * h) as usize];
     let mut cnt = vec![0u32; (w * h) as usize];
     let mut px = vec![0u32; n];
@@ -536,6 +600,40 @@ mod tests {
         s.extend_from_slice(data);
         s.extend_from_slice(b"\nendstream endobj\ntrailer << >>\n%%EOF\n");
         s
+    }
+
+    #[test]
+    fn the_fast_path_averages_like_the_plain_sum() {
+        // odd sizes so blocks are cut at the right and bottom edges and bytes cross block edges;
+        // pixels from a fixed pseudo-random sequence; 1, 2 and 4 bits, with and without /Decode [1 0]
+        let mut seed = 12345u32;
+        let mut next = || { seed = seed.wrapping_mul(1103515245).wrapping_add(12345); (seed >> 16) as u8 };
+        for (bpc, w, h, limit) in [(1u32, 37u32, 11u32, 4u32), (1, 64, 9, 5), (2, 13, 7, 3), (4, 9, 9, 2), (8, 7, 5, 2)] {
+            let row = ((w * bpc + 7) / 8) as usize;
+            let data: Vec<u8> = (0..row * h as usize).map(|_| next()).collect();
+            for decode in ["", "/Decode [1 0]"] {
+                let dict = format!("/Width {} /Height {} /ColorSpace /DeviceGray /BitsPerComponent {} {}", w, h, bpc, decode);
+                let t = image_thumbnail_max(&pdf_with(&dict, &data), 1, limit).unwrap();
+                let max = (1u32 << bpc) - 1;
+                let f = (w.max(h) + limit - 1) / limit;
+                let mut want = Vec::new();
+                for ty in 0..t.h {
+                    for tx in 0..t.w {
+                        let (mut s, mut c) = (0u32, 0u32);
+                        for y in ty * f..((ty + 1) * f).min(h) {
+                            for x in tx * f..((tx + 1) * f).min(w) {
+                                let v = sample(&data[y as usize * row..], x as usize, bpc);
+                                let v = if decode.is_empty() { v } else { max - v };
+                                s += v * 255 / max;
+                                c += 1;
+                            }
+                        }
+                        want.push(((s + c / 2) / c) as u8);
+                    }
+                }
+                assert_eq!(t.grey, want, "bpc {bpc} {w}x{h} limit {limit} {decode:?}");
+            }
+        }
     }
 
     #[test]

@@ -32,6 +32,7 @@ fn main() {
     for path in paths {
         let Ok(data) = std::fs::read(&path) else { continue };
         let doc = regions::extract(&data);
+        let src = regions::pixels::Source::new(&data);
         let stem = Path::new(&path).file_stem().map(|s| s.to_string_lossy().into_owned()).unwrap_or_default();
         // each image region once; a merged one (strips) is judged from all its pieces, and its line
         // is printed for every piece's object, so a label on any strip finds it
@@ -42,12 +43,12 @@ fn main() {
             let (objs, result): (Vec<i64>, _) = match &img.inline_src {
                 Some(_) => {
                     inline_n += 1;
-                    (vec![-inline_n], regions::pixels::placed_thumbnail(&data, img, max))
+                    (vec![-inline_n], src.placed(img, max))
                 }
                 None => {
                     let objs: Vec<u32> = img.pieces.iter().map(|p| p.obj).filter(|&o| o != 0).collect();
                     if objs.is_empty() || objs.iter().all(|&o| seen.contains(&(o as i64))) { continue; }
-                    (objs.iter().map(|&o| o as i64).collect(), regions::pixels::placed_thumbnail(&data, img, max))
+                    (objs.iter().map(|&o| o as i64).collect(), src.placed(img, max))
                 }
             };
             for &obj in &objs {

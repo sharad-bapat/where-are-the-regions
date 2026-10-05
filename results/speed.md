@@ -32,3 +32,12 @@ For scale, the reader comparison (results/ink-baseline-readers.md) timed PyMuPDF
 python tools/speed.py <govdocs1>/003 <govdocs1>/004
 node tools/wasm_speed.mjs <govdocs1>/003 <govdocs1>/004
 ```
+
+## Thumbnails (5 October 2026)
+
+Decoding image pixels for the kind layer dominated the time on scanned files: on a 93-page file of 1-bit scans from the Norwegian Offshore Directorate, `thumbs --kinds` took 10.0 s, against 0.2 s for the page map. Two changes, with the same output:
+
+- the file is indexed once for all its thumbnails (`pixels::Source`), where it was indexed again for each image;
+- one-component images of up to 8 bits (scans, grey, masks) are averaged through a table of grey levels made once per image, and 1-bit rows a byte at a time.
+
+The same file now takes under 2 s. `thumbs --kinds` over the 866 files of the kind sets (constructed tune and held-out, govdocs1 003 and 004 labelled files, 38,762 images) took 163 s against 334 s, and its output is byte for byte the same. what-needs-ocr's router on 15 Sodir files took 39 s against 188 s.
