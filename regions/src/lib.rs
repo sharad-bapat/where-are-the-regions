@@ -759,6 +759,11 @@ pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64
 
 // regions: images
 
+/// One drawn piece of an image: its object number (0 inline), its box on the page, and which way
+/// its stored pixels face there.
+#[derive(Clone, Debug)]
+pub struct Piece { pub obj: u32, pub bx: [f64; 4], pub turn: pixels::Turn }
+
 /// One image drawn on the page, or several that tile one picture (strips), merged.
 /// The box is in points from the top-left of the visible page, clipped to it.
 #[derive(Clone, Debug)]
@@ -776,9 +781,8 @@ pub struct Image {
     pub obj: u32,
     /// How many drawn images were merged into this one (1 when it wasn't).
     pub parts: u32,
-    /// Each drawn piece: its object number (0 inline) and its box on the page, for judging a merged
-    /// image by all its strips (kind layer, 8g). Not in the JSON.
-    pub pieces: Vec<(u32, [f64; 4])>,
+    /// Each drawn piece, for judging a merged image by all its strips (kind layer, 8g). Not in the JSON.
+    pub pieces: Vec<Piece>,
     /// An inline image's dictionary (between BI and ID) and its data (between ID and EI), for its
     /// pixels (pixels::inline_thumbnail); None for an XObject or a merged image. Not in the JSON.
     pub inline_src: Option<std::sync::Arc<(Vec<u8>, Vec<u8>)>>,
@@ -1520,7 +1524,8 @@ fn place_images(drawn: &[Drawn], pb: &PageBox) -> Vec<Image> {
         let upright = (m[1].abs() < 1e-6 && m[2].abs() < 1e-6) || (m[0].abs() < 1e-6 && m[3].abs() < 1e-6);
         out.push(Image {
             x0, y0, x1, y1, px_w: d.px_w, px_h: d.px_h, dpi_x: dpi(d.px_w, side_w), dpi_y: dpi(d.px_h, side_h),
-            mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1, pieces: vec![(d.obj, [x0, y0, x1, y1])], inline_src: d.src.clone(),
+            mask: d.mask, inline: d.inline, annot: d.annot, obj: d.obj, parts: 1,
+            pieces: vec![Piece { obj: d.obj, bx: [x0, y0, x1, y1], turn: pixels::Turn::from_corners(pts[3], pts[2], pts[0]) }], inline_src: d.src.clone(),
             clipped: offpage || hidden || cut_by_clip || x0 > bx0 + 1e-6 || y0 > by0 + 1e-6 || x1 < bx1 - 1e-6 || y1 < by1 - 1e-6, upright,
             offpage, hidden, order: d.order,
         });

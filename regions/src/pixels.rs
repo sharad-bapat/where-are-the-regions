@@ -21,6 +21,58 @@ pub struct Thumb {
     pub grey: Vec<u8>,
 }
 
+/// Which way an image's stored pixels face on the displayed page, the page's /Rotate and the image's
+/// matrix together, to the nearest quarter turn: rows and columns swapped, then each displayed axis
+/// reversed. The kind layer reads rows of text left to right, so a scan stored on its side and
+/// turned by /Rotate has to be turned the same way first (results/kinds-turn.md).
+#[derive(Clone, Copy, Debug, Default, PartialEq)]
+pub struct Turn { pub transpose: bool, pub flip_x: bool, pub flip_y: bool }
+
+impl Turn {
+    /// From where the image's unit square lands on the displayed page (top-left origin): its first
+    /// stored pixel's corner (image space 0,1), the end of that first row (1,1) and the start of the
+    /// last row (0,0).
+    pub fn from_corners(first: (f64, f64), row_end: (f64, f64), last_row: (f64, f64)) -> Turn {
+        let (ux, uy) = (row_end.0 - first.0, row_end.1 - first.1);
+        let (vx, vy) = (last_row.0 - first.0, last_row.1 - first.1);
+        if ux.abs() >= uy.abs() { Turn { transpose: false, flip_x: ux < 0.0, flip_y: vy < 0.0 } }
+        else { Turn { transpose: true, flip_x: vx < 0.0, flip_y: uy < 0.0 } }
+    }
+
+    /// The thumbnail as it shows on the page. An upright image comes back untouched.
+    pub fn apply(self, t: Thumb) -> Thumb {
+        if self == Turn::default() { return t; }
+        let (tw, th) = (t.w as usize, t.h as usize);
+        let (dw, dh) = if self.transpose { (th, tw) } else { (tw, th) };
+        let mut grey = vec![255u8; dw * dh];
+        for y in 0..dh {
+            for x in 0..dw {
+                let (x2, y2) = (if self.flip_x { dw - 1 - x } else { x }, if self.flip_y { dh - 1 - y } else { y });
+                let (sx, sy) = if self.transpose { (y2, x2) } else { (x2, y2) };
+                grey[y * dw + x] = t.grey[sy * tw + sx];
+            }
+        }
+        let (width, height) = if self.transpose { (t.height, t.width) } else { (t.width, t.height) };
+        Thumb { width, height, w: dw as u32, h: dh as u32, grey }
+    }
+}
+
+/// The thumbnail of a placed image as it shows on the page, at most `max` px on the long side: an
+/// inline image from its source, one object, or merged strips pasted together, each turned by its
+/// Turn. The one entry point for the kind layer and the router.
+pub fn placed_thumbnail(data: &[u8], img: &crate::Image, max: u32) -> Result<Thumb, &'static str> {
+    if let Some(src) = &img.inline_src {
+        let t = inline_thumbnail(&src.0, &src.1, max)?;
+        return Ok(match img.pieces.first() { Some(p) => p.turn.apply(t), None => t });
+    }
+    let objs: Vec<&crate::Piece> = img.pieces.iter().filter(|p| p.obj != 0).collect();
+    match objs.len() {
+        0 => Err("no_object"),
+        1 if img.pieces.len() == 1 => image_thumbnail_max(data, objs[0].obj, max).map(|t| objs[0].turn.apply(t)),
+        _ => merged_thumbnail(data, &img.pieces, max),
+    }
+}
+
 /// The thumbnail of image XObject `obj` in the PDF `data`, at most THUMB pixels on the long side.
 pub fn image_thumbnail(data: &[u8], obj: u32) -> Result<Thumb, &'static str> { image_thumbnail_max(data, obj, THUMB) }
 
@@ -34,18 +86,20 @@ pub fn image_thumbnail_max(data: &[u8], obj: u32, max: u32) -> Result<Thumb, &'s
 /// pasted where the piece sits in the merged box, at the pieces' own resolution (the coarsest), capped
 /// at `max` px on the long side. Inline pieces, and pieces that don't decode, stay white; it fails
 /// only when no piece decodes.
-pub fn merged_thumbnail(data: &[u8], pieces: &[(u32, [f64; 4])], max: u32) -> Result<Thumb, &'static str> {
+pub fn merged_thumbnail(data: &[u8], pieces: &[crate::Piece], max: u32) -> Result<Thumb, &'static str> {
     let pdf = Pdf::index(data);
-    let bx = pieces.iter().fold([f64::MAX, f64::MAX, f64::MIN, f64::MIN], |b, (_, p)| [b[0].min(p[0]), b[1].min(p[1]), b[2].max(p[2]), b[3].max(p[3])]);
+    let bx = pieces.iter().fold([f64::MAX, f64::MAX, f64::MIN, f64::MIN], |b, q| { let p = q.bx; [b[0].min(p[0]), b[1].min(p[1]), b[2].max(p[2]), b[3].max(p[3])] });
     let (bw, bh) = (bx[2] - bx[0], bx[3] - bx[1]);
     if bw <= 0.0 || bh <= 0.0 { return Err("no_size"); }
     // pixels per point: the coarsest piece's own, and no more than the cap allows
     let mut ppp = f64::MAX;
     let mut first_err = "undecoded";
     let mut thumbs = Vec::new();
-    for &(obj, b) in pieces {
+    for q in pieces {
+        let (obj, b) = (q.obj, q.bx);
         if obj == 0 { continue; }
-        match thumbnail(&pdf, obj, max.max(1)) {
+        // turned first, so each piece's width and height are the ones its box on the page has
+        match thumbnail(&pdf, obj, max.max(1)).map(|t| q.turn.apply(t)) {
             Ok(t) => {
                 let (pw, ph) = (b[2] - b[0], b[3] - b[1]);
                 if pw > 0.0 && ph > 0.0 { ppp = ppp.min(t.width as f64 / pw).min(t.height as f64 / ph); }
@@ -541,9 +595,37 @@ mod tests {
             s.extend_from_slice(b"\nendstream endobj\n");
         }
         s.extend_from_slice(b"trailer << >>\n%%EOF\n");
-        let t = merged_thumbnail(&s, &[(1, [0.0, 0.0, 4.0, 1.0]), (2, [0.0, 1.0, 4.0, 2.0])], 256).unwrap();
+        let up = Turn::default();
+        let piece = |obj, bx| crate::Piece { obj, bx, turn: up };
+        let t = merged_thumbnail(&s, &[piece(1, [0.0, 0.0, 4.0, 1.0]), piece(2, [0.0, 1.0, 4.0, 2.0])], 256).unwrap();
         assert_eq!((t.w, t.h), (4, 2));
         assert_eq!(t.grey, [0, 0, 0, 0, 255, 255, 255, 255]);
+        // the same strips on a page turned by /Rotate 90: stored 4 x 1, each shows as 1 x 4, side by
+        // side, the first one drawn on the right (results/kinds-turn.md)
+        let r90 = Turn { transpose: true, flip_x: true, flip_y: false };
+        let piece = |obj, bx| crate::Piece { obj, bx, turn: r90 };
+        let t = merged_thumbnail(&s, &[piece(1, [1.0, 0.0, 2.0, 4.0]), piece(2, [0.0, 0.0, 1.0, 4.0])], 256).unwrap();
+        assert_eq!((t.w, t.h), (2, 4));
+        assert_eq!(t.grey, [255, 0, 255, 0, 255, 0, 255, 0]);
+    }
+
+    #[test]
+    fn turn_follows_the_page_rotation() {
+        // an image filling a W x H page, its unit square's corners mapped as PageBox::map does
+        let (w, h) = (2.0, 3.0);
+        let map = |rot: u32, x: f64, y: f64| { let (u, v) = (x, h - y); match rot { 90 => (h - v, u), 180 => (w - u, h - v), 270 => (v, w - u), _ => (u, v) } };
+        let turn = |rot| Turn::from_corners(map(rot, 0.0, h), map(rot, w, h), map(rot, 0.0, 0.0));
+        assert_eq!(turn(0), Turn::default());
+        assert_eq!(turn(90), Turn { transpose: true, flip_x: true, flip_y: false });
+        assert_eq!(turn(180), Turn { transpose: false, flip_x: true, flip_y: true });
+        assert_eq!(turn(270), Turn { transpose: true, flip_x: false, flip_y: true });
+        // an image drawn upside down by its own matrix (negative height) on an upright page
+        assert_eq!(Turn::from_corners((0.0, 3.0), (2.0, 3.0), (0.0, 0.0)), Turn { transpose: false, flip_x: false, flip_y: true });
+        // a 2 x 1 thumbnail [a b] turned a quarter clockwise shows a over b
+        let t = Thumb { width: 2, height: 1, w: 2, h: 1, grey: vec![10, 20] };
+        let r = turn(90).apply(t);
+        assert_eq!((r.w, r.h, r.width, r.height), (1, 2, 1, 2));
+        assert_eq!(r.grey, [10, 20]);
     }
 
     #[test]

@@ -1,0 +1,31 @@
+constructed heldout: kind of the pasted image, by case kind
+  background  {'blank': 20}
+  blank       {'blank': 20}
+  full_scan   {'text': 19, 'graphic': 1}
+  logo        {'graphic': 18, 'blank': 2}
+  photo       {'photo': 20}
+  rule        {'blank': 20}
+  text        {'text': 120}
+  text_ocr    {'text': 40}
+  text images found: 179/180 (99.4%, target 95%)
+  other images not called text: 100/100 (100.0%, target 95%)
+  has-text on text images: 180/180; not on photos, blanks, backgrounds, rules: 80/80; logos held: 0/20
+  counted apart: {}
+govdocs1 004 has-text against image-only labels (1129 images, merged strips as one, unsure as text):
+  text found 322/413 (78.0%); none not held 651/716 (90.9%); counted apart {'not placed': 4, 'jpx': 7}
+govdocs1 004: kind by Tesseract region label (placements)
+  text    {'text': 240, 'graphic': 106, 'blank': 30, 'photo': 5}
+  none    {'graphic': 455, 'photo': 405, 'blank': 181, 'text': 68}
+  unsure  {'text': 123, 'graphic': 109, 'blank': 101, 'photo': 16}
+  text labels called text: 240/381; none labels not called text: 1041/1109
+  counted apart: {'not placed by the map': 4, 'inline': 54, 'jpx': 7}
+calibration of kind (share right by confidence band; target: 0.9 and up at least 90%):
+  0.9 to 1.0: 1255/1366 (91.9%)
+  0.7 to 0.9: 103/123 (83.7%)
+  0.5 to 0.7: 61/85 (71.8%)
+  0.0 to 0.5: 141/196 (71.9%)
+calibration of has-text (share right by confidence band; target: 0.9 and up at least 90%):
+  0.9 to 1.0: 1146/1234 (92.9%)
+  0.7 to 0.9: 53/86 (61.6%)
+  0.5 to 0.7: 34/69 (49.3%)
+  0.0 to 0.5: 0/0

@@ -15,17 +15,7 @@ pub fn kinds_json(bytes: &[u8]) -> String {
     let doc = regions::extract(bytes);
     let pages: Vec<String> = doc.pages.iter().map(|p| {
         let images: Vec<String> = p.images.iter().map(|img| {
-            let objs: Vec<u32> = img.pieces.iter().map(|q| q.0).filter(|&o| o != 0).collect();
-            let t = if let Some(src) = &img.inline_src {
-                regions::pixels::inline_thumbnail(&src.0, &src.1, regions::kind::KIND_THUMB)
-            } else if objs.is_empty() {
-                return "null".into();
-            } else if img.pieces.len() > 1 {
-                regions::pixels::merged_thumbnail(bytes, &img.pieces, regions::kind::KIND_THUMB)
-            } else {
-                regions::pixels::image_thumbnail_max(bytes, objs[0], regions::kind::KIND_THUMB)
-            };
-            match t {
+            match regions::pixels::placed_thumbnail(bytes, img, regions::kind::KIND_THUMB) {
                 Ok(t) => {
                     let k = regions::kind::classify(t.w, t.h, &t.grey);
                     format!("{{\"kind\":\"{}\",\"confidence\":{},\"has_text\":{}}}", k.kind, k.confidence, k.has_text)

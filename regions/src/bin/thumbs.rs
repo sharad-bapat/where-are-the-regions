@@ -40,19 +40,14 @@ fn main() {
         let mut inline_n = 0i64;
         for img in doc.pages.iter().flat_map(|p| p.images.iter()) {
             let (objs, result): (Vec<i64>, _) = match &img.inline_src {
-                Some(src) => {
+                Some(_) => {
                     inline_n += 1;
-                    (vec![-inline_n], regions::pixels::inline_thumbnail(&src.0, &src.1, max))
+                    (vec![-inline_n], regions::pixels::placed_thumbnail(&data, img, max))
                 }
                 None => {
-                    let objs: Vec<u32> = img.pieces.iter().map(|p| p.0).filter(|&o| o != 0).collect();
+                    let objs: Vec<u32> = img.pieces.iter().map(|p| p.obj).filter(|&o| o != 0).collect();
                     if objs.is_empty() || objs.iter().all(|&o| seen.contains(&(o as i64))) { continue; }
-                    let r = if img.pieces.len() > 1 {
-                        regions::pixels::merged_thumbnail(&data, &img.pieces, max)
-                    } else {
-                        regions::pixels::image_thumbnail_max(&data, objs[0], max)
-                    };
-                    (objs.iter().map(|&o| o as i64).collect(), r)
+                    (objs.iter().map(|&o| o as i64).collect(), regions::pixels::placed_thumbnail(&data, img, max))
                 }
             };
             for &obj in &objs {
