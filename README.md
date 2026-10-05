@@ -72,6 +72,8 @@ The image kinds met their held-out targets (results/kind-heldout.md). On the con
 
 One fix since (results/kinds-turn.md): the kind layer read each image as stored, not as shown. A scan stored on its side and turned by the page's /Rotate was called a graphic with no text, and strips on such a page were squeezed to a few dozen pixels. Thumbnails are now turned to how the image shows on the page. On scanned well reports from the Norwegian Offshore Directorate, the router in what-needs-ocr skipped 323 of 1,105 image regions in 10 files before the fix and 17 after. On govdocs1 003 and 004 no score moved by more than four images.
 
+A second change since (results/kinds-sparse.md), for scanned reports: polarity chosen by glyph count when an image is about half dark (a black scanner margin had turned a page into white on black), long thin images given a thumbnail wide enough to read, sideways text counted, and has-text on nearly empty pages that carry a heading or two. On 160 held-out Sodir pages with no text layer, has-text found 149 of 157 pages with text, against 40. On govdocs1 004 it found 6 more images with text and held 9 more without; both calibration targets are still met.
+
 Speed, median a page (results/speed.md): 2.03 ms on 003 and 1.69 ms on 004 natively, and 1.90 and 2.55 ms in WebAssembly under Node. A few files set the totals: one 76-page file in 004 takes about 1.3 s a page. The WebAssembly build is 816 KB, 331 KB gzipped, since it decodes inline images' pixels too (772 KB before).
 
 ## Findings about other software
