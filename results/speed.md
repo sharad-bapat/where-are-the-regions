@@ -42,4 +42,4 @@ Decoding image pixels for the kind layer dominated the time on scanned files: on
 
 The same file now takes under 2 s. `thumbs --kinds` over the 866 files of the kind sets (constructed tune and held-out, govdocs1 003 and 004 labelled files, 38,762 images) took 163 s against 334 s, and its output is byte for byte the same. what-needs-ocr's router on 15 Sodir files took 39 s against 188 s.
 
-Rebuilt with the has-text changes (results/kinds-sparse.md), the WebAssembly build is 821,098 bytes, 333,537 gzipped, and its output is identical to the native build's on 50 files: the demo samples, 20 constructed held-out pages, two rotated scans and 24 Sodir scans.
+Rebuilt with the has-text changes (results/kinds-sparse.md), the WebAssembly build is 821,098 bytes, 333,537 gzipped, and its output is identical to the native build's on 50 files: the demo samples, 20 constructed held-out pages, two rotated scans and 24 Sodir scans. Over the full constructed tune and held-out sets and govdocs1 003 and 004 (1,113 files), extract_json and kinds_json are identical to the native build on all 1,113, and the vector kinds on all 49,724 clusters.
