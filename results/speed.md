@@ -22,7 +22,7 @@ The target set before the held-out runs (D76), a median under 5 ms a page native
 
 The totals are set by a few files. On 004, one file (004991, 76 pages, about 1.3 s a page natively) takes most of the 118 seconds; on 003 the slowest page is 003190's single page at 1.5 s. Neither has been profiled yet.
 
-The browser build runs at about the native speed at the median and is slower in the tail (004's total is about 1.5 times the native one). Its output is identical to the native build's on all 1,553 test files (tools/wasm_check.mjs). It is 772,557 bytes, 315,451 gzipped. Rebuilt on 5 October 2026 with the width fix and inline-image pixels, it's 814,274 bytes, 330,152 gzipped, and its output is identical to the native build's on the 300 constructed tuning pages.
+The browser build runs at about the native speed at the median and is slower in the tail (004's total is about 1.5 times the native one). Its output is identical to the native build's on all 1,553 test files (tools/wasm_check.mjs). It is 772,557 bytes, 315,451 gzipped. Rebuilt on 5 October 2026 with the width fix and inline-image pixels, it's 814,274 bytes, 330,152 gzipped, and its output is identical to the native build's on the 300 constructed tuning pages. Rebuilt again with thumbnails turned to the page (8019e6d), it's 815,615 bytes, 331,470 gzipped, and its output is identical to the native build's on 26 files: the demo samples, 20 constructed held-out pages and two rotated scans.
 
 For scale, the reader comparison (results/ink-baseline-readers.md) timed PyMuPDF's get_bboxlog at 2.19 ms a page median on 003, with the file already open and parsed, and pdfplumber at 93.6 ms.
 

@@ -72,7 +72,7 @@ The image kinds met their held-out targets (results/kind-heldout.md). On the con
 
 One fix since (results/kinds-turn.md): the kind layer read each image as stored, not as shown. A scan stored on its side and turned by the page's /Rotate was called a graphic with no text, and strips on such a page were squeezed to a few dozen pixels. Thumbnails are now turned to how the image shows on the page. On scanned well reports from the Norwegian Offshore Directorate, the router in what-needs-ocr skipped 323 of 1,105 image regions in 10 files before the fix and 17 after. On govdocs1 003 and 004 no score moved by more than four images.
 
-Speed, median a page (results/speed.md): 2.03 ms on 003 and 1.69 ms on 004 natively, and 1.90 and 2.55 ms in WebAssembly under Node. A few files set the totals: one 76-page file in 004 takes about 1.3 s a page. The WebAssembly build is 814 KB, 330 KB gzipped, since it decodes inline images' pixels too (772 KB before).
+Speed, median a page (results/speed.md): 2.03 ms on 003 and 1.69 ms on 004 natively, and 1.90 and 2.55 ms in WebAssembly under Node. A few files set the totals: one 76-page file in 004 takes about 1.3 s a page. The WebAssembly build is 816 KB, 331 KB gzipped, since it decodes inline images' pixels too (772 KB before).
 
 ## Findings about other software
 
