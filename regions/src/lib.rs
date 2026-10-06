@@ -15,13 +15,9 @@
 use std::collections::HashMap;
 
 mod ccitt;
-mod cff;
-mod cmap;
 // regions: images to OCR regions
 pub mod ocr;
 pub use ocr::Region;
-mod font;
-mod outline;
 pub mod map;
 /// Image pixels as grey thumbnails, for the kind layer (chunk 8).
 pub mod pixels;
@@ -32,16 +28,14 @@ pub mod vkind;
 pub use map::{Entry, Line};
 pub mod vector;
 pub use vector::{Path, Vector};
-mod tables;
-mod truetype;
-mod type1;
 
 pub use font::Kind;
 
 const MAX_FORM_DEPTH: usize = 8;
 
 // The PDF reading itself (byte helpers, values, filters, the object index, decryption, the page
-// tree) is pdf-core's, shared with scan-or-text and wordbox.
+// tree, and the fonts: programs, encodings, CMaps, glyph outlines) is pdf-core's, shared with
+// scan-or-text and wordbox.
 pub(crate) use pdf_core::*;
 
 /// What a colour space's components mean for telling white: 1 gray (DeviceGray, CalGray, ICCBased
