@@ -93,6 +93,8 @@ The vector kinds are experimental (above). Only PDFs are read, not image files. 
 
 ## Commands
 
+The PDF reading (object index, stream filters, decryption, page tree) is in [pdf-core](https://github.com/sharad-bapat/pdf-core), shared with scan-or-text and wordbox; clone it next to this repo, since regions/Cargo.toml refers to it by path (../../pdf-core).
+
 ```
 cargo build --release --manifest-path regions/Cargo.toml
 regions/target/release/regions-cli file.pdf

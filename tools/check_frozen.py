@@ -6,7 +6,8 @@ regions/Cargo.toml, Cargo.lock, every file in regions/src except ocr.rs (the map
 decoders, kind.rs, vkind.rs), the thumbs and vkinds tools, the tools that build the test sets, label
 the images and measure the map and the kinds, the three set manifests (each lists a sha256 per PDF),
 and this file. The Sodir has-text set joined on 5 October 2026 (results/kinds-sparse.md): its page list, its labels
-and tools/label_sodir.py. ocr.rs and
+and tools/label_sodir.py. Since 6 October 2026 the PDF reading is pdf-core's, a path dependency
+(D4): its commit is recorded, and it must be at that commit with nothing changed. ocr.rs and
 score_regions.py are left out: the OCR scoring belongs to the next repo.
 
 Line endings are normalised to LF first, so a checkout that converts them doesn't count as a change.
@@ -16,6 +17,7 @@ usage: python tools/check_frozen.py            check
        python tools/check_frozen.py --write    record the current source (at the freeze only)
 """
 import hashlib
+import subprocess
 import sys
 from pathlib import Path
 
@@ -36,6 +38,13 @@ def names():
     return ["regions/Cargo.toml", "regions/Cargo.lock"] + src + TOOLS + MANIFESTS
 
 
+PDF_CORE = ROOT.parent / "pdf-core"
+
+
+def pdf_core(*args):
+    return subprocess.run(["git", "-C", str(PDF_CORE), *args], capture_output=True, text=True).stdout.strip()
+
+
 def digest_of(name):
     return hashlib.sha256((ROOT / name).read_bytes().replace(b"\r\n", b"\n")).hexdigest()
 
@@ -48,6 +57,12 @@ def problems():
     recorded = {}
     for line in RECORD.read_text(encoding="utf-8").splitlines():
         digest, name = line.split(None, 1)
+        if name == "pdf-core":
+            if digest != pdf_core("rev-parse", "HEAD"):
+                out.append(f"pdf-core is at {pdf_core('rev-parse', '--short', 'HEAD') or '?'}, frozen at {digest[:7]}")
+            if pdf_core("status", "--porcelain", "--", "src", "Cargo.toml"):
+                out.append("pdf-core has uncommitted changes")
+            continue
         recorded[name] = digest
         if not (ROOT / name).exists():
             out.append(f"MISSING {name}")
@@ -73,8 +88,9 @@ def require_frozen():
 if __name__ == "__main__":
     if "--write" in sys.argv:
         ns = names()
-        RECORD.write_text("".join(f"{digest_of(n)}  {n}\n" for n in ns), encoding="utf-8", newline="\n")
-        print(f"recorded {len(ns)} files")
+        pin = f"{pdf_core('rev-parse', 'HEAD')}  pdf-core\n"
+        RECORD.write_text("".join(f"{digest_of(n)}  {n}\n" for n in ns) + pin, encoding="utf-8", newline="\n")
+        print(f"recorded {len(ns)} files and pdf-core at {pdf_core('rev-parse', '--short', 'HEAD')}")
         sys.exit(0)
     bad = problems()
     print("frozen source: " + ("ok" if not bad else f"{len(bad)} problem(s)"))
