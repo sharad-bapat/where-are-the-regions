@@ -2,3 +2,4 @@ target/
 __pycache__/
 data/constructed/**/*.pdf
 wasm/pkg/
+data/sodir/

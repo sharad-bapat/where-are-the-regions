@@ -16,7 +16,7 @@ path = "src/main.rs"
 miniz_oxide = "0.8"
 # JPEG (DCTDecode) images for the kind layer (D84). Pinned; no SIMD, so native and wasm decode alike.
 zune-jpeg = { version = "=0.5.15", default-features = false, features = ["std"] }
-# The PDF reading shared with scan-or-text and wordbox (D4): object index, filters, decryption, pages.
+# The PDF reading shared with scan-or-text and wordbox: object index, filters, decryption, pages.
 pdf-core = { path = "../../pdf-core" }
 wasm-bindgen = { version = "0.2", optional = true }
 ttf-parser = { version = "0.25.1", default-features = false, features = ["std", "glyph-names"] }

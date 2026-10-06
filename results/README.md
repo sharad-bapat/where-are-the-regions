@@ -13,6 +13,8 @@ Every number in the top-level README comes from a file here. Reports are Markdow
 | kind-tune.md | The image kinds on tuning data |
 | kind-heldout.md | The image kinds' held-out run, and the striped-image fix after it |
 | vkind-heldout.md | The vector kinds' held-out run, which missed its calibration target |
+| kinds-turn.md | Images judged as they show on the page, not as stored: the fix for scans turned by /Rotate, with kind scores before and after |
+| kinds-sparse.md | Has-text on scanned well reports: polarity, long images, sideways text and nearly empty pages, tuned and then held out on Sodir pages |
 | speed.md | Native and WebAssembly timings on all of 003 and 004 |
 | findings.md | Facts found about other software and real PDFs, with the evidence |
 | handcheck-tune-003.md | A hand check of the Tesseract labels used for 003 |
@@ -28,4 +30,6 @@ Every number in the top-level README comes from a file here. Reports are Markdow
 | marks-heldout.txt, regions-heldout.txt | tools/score_map.py and tools/score_regions.py on the held-out splits |
 | kinds-heldout.txt, kinds-heldout-post.txt | tools/score_kinds.py, the held-out run and after the strip fix |
 | vkinds-heldout.txt | tools/score_vkinds.py --heldout |
-| frozen.sha256 | the frozen files and their hashes, checked by tools/check_frozen.py |
+| kinds-heldout-turn.txt | tools/score_kinds.py --heldout after the page-turn fix |
+| kinds-sparse-tune.txt, kinds-sparse-heldout.txt | tools/score_kinds.py on the tune data and, once, on the held-out data after the has-text changes |
+| frozen.sha256 | the frozen files and their hashes, and the pdf-core commit, checked by tools/check_frozen.py |

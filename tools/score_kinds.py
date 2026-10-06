@@ -27,6 +27,7 @@ tools/check_frozen.py passes (8f).
 sodir scores has-text per scanned Sodir page (tools/label_sodir.py, data/real/sodir-labels.jsonl).
 """
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -208,7 +209,8 @@ def real(calib, misses, hcalib=None, name="003", labels="tune-003.jsonl", image_
             print("   miss", m)
 
 
-SODIR = Path("data/sodir")
+# the downloaded Sodir PDFs, at the paths data/real/sodir-pages.jsonl gives (data/sodir, or SODIR)
+SODIR = Path(os.environ.get("SODIR", ROOT / "data" / "sodir"))
 
 
 def sodir(hcalib, misses, split="tune"):

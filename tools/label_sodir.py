@@ -21,6 +21,7 @@ usage: python tools/label_sodir.py [sodir snapshot dir] [out.jsonl]
 """
 import hashlib
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -31,7 +32,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 from select_real import DPI, MIN_CONF, TEXT_WORDS, ocr_words  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
-SODIR = Path("data/sodir")
+# the downloaded PDFs, at the paths the page list gives (data/sodir, or the SODIR environment variable)
+SODIR = Path(os.environ.get("SODIR", ROOT / "data" / "sodir"))
 PAGES = ROOT / "data" / "real" / "sodir-pages.jsonl"
 TILE, OVERLAP = 4000, 100  # pixels at DPI
 

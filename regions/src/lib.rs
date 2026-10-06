@@ -41,7 +41,7 @@ pub use font::Kind;
 const MAX_FORM_DEPTH: usize = 8;
 
 // The PDF reading itself (byte helpers, values, filters, the object index, decryption, the page
-// tree) is pdf-core's, shared with scan-or-text and wordbox (D4).
+// tree) is pdf-core's, shared with scan-or-text and wordbox.
 pub(crate) use pdf_core::*;
 
 /// What a colour space's components mean for telling white: 1 gray (DeviceGray, CalGray, ICCBased

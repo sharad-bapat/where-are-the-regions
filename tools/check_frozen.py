@@ -7,7 +7,7 @@ decoders, kind.rs, vkind.rs), the thumbs and vkinds tools, the tools that build 
 the images and measure the map and the kinds, the three set manifests (each lists a sha256 per PDF),
 and this file. The Sodir has-text set joined on 5 October 2026 (results/kinds-sparse.md): its page list, its labels
 and tools/label_sodir.py. Since 6 October 2026 the PDF reading is pdf-core's, a path dependency
-(D4): its commit is recorded, and it must be at that commit with nothing changed. ocr.rs and
+(github.com/sharad-bapat/pdf-core): its commit is recorded, and it must be at that commit with nothing changed. ocr.rs and
 score_regions.py are left out: the OCR scoring belongs to the next repo.
 
 Line endings are normalised to LF first, so a checkout that converts them doesn't count as a change.
