@@ -19,7 +19,6 @@ zune-jpeg = { version = "=0.5.15", default-features = false, features = ["std"] 
 # The PDF reading shared with scan-or-text and wordbox: object index, filters, decryption, pages.
 pdf-core = { path = "../../pdf-core" }
 wasm-bindgen = { version = "0.2", optional = true }
-ttf-parser = { version = "0.25.1", default-features = false, features = ["std", "glyph-names"] }
 
 [features]
 wasm = ["dep:wasm-bindgen"]
