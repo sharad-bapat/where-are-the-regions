@@ -1,6 +1,6 @@
 # Has-text on scanned reports (5 October 2026)
 
-Changes after the held-out run, frozen at 43e5fcd and run once on held-out data, reported apart from the original held-out numbers.
+Changes after the held-out run, frozen at 25e5c12 and run once on held-out data, reported apart from the original held-out numbers.
 
 ## The problem
 
@@ -28,13 +28,13 @@ thumbs now prints the page each image is first drawn on, so pages can be scored.
 
 ## The Sodir set
 
-320 scanned pages from the sample, picked before any of the changes (data/real/sodir-pages.jsonl, 1d4b26e). From pages with no text layer I took 120 where the router's has-text was under 0.1 and 40 where it was 0.1 or more, for a tune split and a held-out split each, split by file (90 and 84 files, none in both). Every file I'd looked at while finding the causes went to tune. The labels come from Tesseract with the same rules as the other image labels, one per page (tools/label_sodir.py). Each line of the page list gives the file's URL and sha256; the PDFs, and the words read from them, aren't redistributed. To rerun the scoring, download them into data/sodir, or point the SODIR environment variable at them.
+320 scanned pages from the sample, picked before any of the changes (data/real/sodir-pages.jsonl, a91f3fd). From pages with no text layer I took 120 where the router's has-text was under 0.1 and 40 where it was 0.1 or more, for a tune split and a held-out split each, split by file (90 and 84 files, none in both). Every file I'd looked at while finding the causes went to tune. The labels come from Tesseract with the same rules as the other image labels, one per page (tools/label_sodir.py). Each line of the page list gives the file's URL and sha256; the PDFs, and the words read from them, aren't redistributed. To rerun the scoring, download them into data/sodir, or point the SODIR environment variable at them.
 
 Pages longer than 4,000 px at the label resolution are read in strips. The first 60 tune pages were labelled before that, and 8 well logs among them came back with no words when read whole. Read in strips, all 8 hold text, from 67 to 3,890 words, and one has a whole column of lithology descriptions. I relabelled all 13 long pages from that first batch before tuning finished. Only 3 of the 160 tune pages, and 3 of the 160 held-out pages, are labelled none, so the Sodir set measures finding text; holding text where there's none is measured on govdocs1.
 
 ## Results
 
-Before is the committed code (62c1645, with thumbs' page output added so pages can be scored); after is the frozen code (43e5fcd). Tune results are in kinds-sparse-tune.txt, and the held-out run, done once, in kinds-sparse-heldout.txt.
+Before is the committed code (b31da19, with thumbs' page output added so pages can be scored); after is the frozen code (25e5c12). Tune results are in kinds-sparse-tune.txt, and the held-out run, done once, in kinds-sparse-heldout.txt.
 
 | Measure | Before | After |
 |---|---|---|
