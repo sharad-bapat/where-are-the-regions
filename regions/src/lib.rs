@@ -156,7 +156,7 @@ pub struct Word {
     pub order: u32,
 }
 
-pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region>, pub lines: Vec<Line>, pub paths: Vec<Path>, pub vectors: Vec<Vector>, pub annots: Vec<Annot>, pub map: Vec<Entry> }
+pub struct Page { pub n: usize, pub width: f64, pub height: f64, pub rotate: i64, pub glyphs: Vec<Glyph>, pub words: Vec<Word>, pub verdict: &'static str, pub images: Vec<Image>, pub regions: Vec<Region>, pub lines: Vec<Line>, pub paths: Vec<Path>, pub vectors: Vec<Vector>, pub annots: Vec<Annot>, pub map: Vec<Entry>, pub rules: Vec<[f64; 4]> }
 
 // regions: images
 
@@ -226,6 +226,12 @@ struct Drawn { ctm: M, px_w: u32, px_h: u32, mask: bool, inline: bool, annot: bo
 /// Strips are joined when their edges across the join agree within STRIP_EDGE points and they
 /// touch along it within STRIP_GAP points.
 pub const STRIP_EDGE: f64 = 0.5;
+/// Rules: the straight horizontal and vertical lines a page draws (table borders, underlines, frames), for
+/// a caller that builds table cells from them. A segment counts when it's level or upright within RULE_SKEW
+/// points and at least RULE_MIN long; a filled bar no thicker than RULE_BAR counts as its centre line.
+pub const RULE_MIN: f64 = 4.0;
+pub const RULE_SKEW: f64 = 0.5;
+pub const RULE_BAR: f64 = 2.5;
 pub const STRIP_GAP: f64 = 1.0;
 
 /// Share of glyphs a verdict needs: half of the visible glyphs invisible makes an OCR layer, and half
@@ -278,6 +284,9 @@ impl Default for GState {
 /// A painted path or shading as drawn: its box in default user space (None: the whole clip, or
 /// the page when there's no clip), before placement on the page.
 #[derive(Clone)]
+/// A rule segment in default user space, with the clip it was drawn under.
+struct RawRule { a: (f64, f64), b: (f64, f64), clip: Option<[f64; 4]> }
+
 struct RawPath { b: Option<[f64; 4]>, clip: Option<[f64; 4]>, order: u32, fill: bool, stroke: bool, shading: bool, white: bool, annot: bool, dot: bool, empty: bool, lines: u32, curves: u32, rect: bool, closed: bool, seg_rows: u32, seg_cols: u32 }
 
 fn grow(b: &mut Option<[f64; 4]>, x: f64, y: f64) {
@@ -373,7 +382,7 @@ fn matrix_of(pdf: &Pdf, d: &[u8]) -> M {
     }
 }
 
-struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn>, paths: Vec<RawPath>, annots: Vec<RawAnnot>, seq: u32 }
+struct Run<'p, 'a> { pdf: &'p Pdf<'a>, fonts: Fonts, out: Vec<Glyph>, annot: bool, drawn: Vec<Drawn>, paths: Vec<RawPath>, annots: Vec<RawAnnot>, seq: u32, rules: Vec<RawRule> }
 
 impl<'p, 'a> Run<'p, 'a> {
     /// Show a string: one glyph per character code, each placed by the text rendering matrix
@@ -528,6 +537,7 @@ impl<'p, 'a> Run<'p, 'a> {
                             let curves = subs.iter().map(|s| s.0.iter().filter(|x| matches!(x, vector::Seg::Curve(..))).count() as u32).sum();
                             let closed = subs.iter().any(|s| s.1);
                             let (seg_rows, seg_cols) = vector::seg_grid(&subs, &b);
+                            if !white { self.rules.extend(rules_of(&subs, &b, stroke, fill, had_re, g.clip)); }
                             self.paths.push(RawPath { b: Some(v), clip: g.clip, order: self.seq, fill, stroke, shading: false, white, annot: self.annot, dot, empty: point && !dot && !fill, lines, curves, rect: had_re, closed, seg_rows, seg_cols });
                             self.seq += 1;
                         }
@@ -818,6 +828,48 @@ fn cut(b: [f64; 4], clip: [f64; 4]) -> Option<([f64; 4], bool)> {
     Some((v, cutoff))
 }
 
+/// The rule segments of one painted path: its level and upright line segments when it's stroked or drawn
+/// with re (a filled rectangle's edges bound a cell too), or the centre line of a thin filled bar.
+fn rules_of(subs: &[(Vec<vector::Seg>, bool, (f64, f64))], b: &[f64; 4], stroke: bool, fill: bool, had_re: bool,
+            clip: Option<[f64; 4]>) -> Vec<RawRule> {
+    let (w, h) = (b[2] - b[0], b[3] - b[1]);
+    if fill && !stroke && (w <= RULE_BAR && h >= RULE_MIN || h <= RULE_BAR && w >= RULE_MIN) {
+        let (a, e) = if w <= RULE_BAR { (((b[0] + b[2]) / 2.0, b[1]), ((b[0] + b[2]) / 2.0, b[3])) } else { ((b[0], (b[1] + b[3]) / 2.0), (b[2], (b[1] + b[3]) / 2.0)) };
+        return vec![RawRule { a, b: e, clip }];
+    }
+    if !stroke && !had_re { return Vec::new(); }
+    let mut out = Vec::new();
+    for (segs, _, _) in subs {
+        for s in segs {
+            if let vector::Seg::Line(p, q) = s {
+                let level = (p.1 - q.1).abs() <= RULE_SKEW && (p.0 - q.0).abs() >= RULE_MIN;
+                let upright = (p.0 - q.0).abs() <= RULE_SKEW && (p.1 - q.1).abs() >= RULE_MIN;
+                if level || upright { out.push(RawRule { a: *p, b: *q, clip }); }
+            }
+        }
+    }
+    out
+}
+
+/// Rules on the displayed page, each cut to its clip and the page, as [x0, y0, x1, y1] with x0 <= x1 and
+/// y0 <= y1; a rule cut to nothing, or under RULE_MIN long once cut, is left out, and repeats are dropped.
+fn place_rules(raw: &[RawRule], pb: &PageBox) -> Vec<[f64; 4]> {
+    let (w, h) = pb.size();
+    let page = [0.0, 0.0, w, h];
+    let mut out: Vec<[f64; 4]> = Vec::new();
+    for r in raw {
+        let (p, q) = (pb.map(r.a.0, r.a.1), pb.map(r.b.0, r.b.1));
+        let mut v = [p.0.min(q.0), p.1.min(q.1), p.0.max(q.0), p.1.max(q.1)];
+        for c in [Some(page), r.clip.map(|c| page_rect(pb, c))].into_iter().flatten() {
+            v = [v[0].max(c[0]), v[1].max(c[1]), v[2].min(c[2]), v[3].min(c[3])];
+        }
+        if v[2] < v[0] || v[3] < v[1] || (v[2] - v[0]).max(v[3] - v[1]) < RULE_MIN { continue; }
+        let v = [r1(v[0]), r1(v[1]), r1(v[2]), r1(v[3])];
+        if !out.contains(&v) { out.push(v); }
+    }
+    out
+}
+
 fn place_annots(raw: &[RawAnnot], pb: &PageBox) -> Vec<Annot> {
     let (w, h) = pb.size();
     raw.iter().map(|r| {
@@ -1050,7 +1102,7 @@ pub fn extract(data: &[u8]) -> Doc {
     if find(data, b"/Encrypt", 0).is_some() && pdf.crypt.is_none() {
         return Doc { status: "encrypted", pages: Vec::new(), fonts: Vec::new() };
     }
-    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new(), paths: Vec::new(), annots: Vec::new(), seq: 0 };
+    let mut r = Run { pdf: &pdf, fonts: Fonts { by_obj: HashMap::new(), list: Vec::new() }, out: Vec::new(), annot: false, drawn: Vec::new(), paths: Vec::new(), annots: Vec::new(), seq: 0, rules: Vec::new() };
     let mut pages = Vec::new();
     for (k, p) in pdf.pages().iter().enumerate() {
         let (content, resources) = page_content(&pdf, *p);
@@ -1070,7 +1122,8 @@ pub fn extract(data: &[u8]) -> Doc {
         let vectors = vector::cluster(&paths, width, height);
         let annots = place_annots(&std::mem::take(&mut r.annots), &pb);
         let map = map::map(&lines, &images, &vectors, &annots);
-        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, paths, vectors, annots, map });
+        let rules = place_rules(&std::mem::take(&mut r.rules), &pb);
+        pages.push(Page { n: k + 1, width, height, rotate: pb.rotate, glyphs, words: ws, verdict: v, images, regions, lines, paths, vectors, annots, map, rules });
     }
     let fonts = r.fonts.list.iter().map(|f| FontInfo {
         base: f.base.clone(), kind: f.kind, encoding: f.encoding.clone(), to_unicode: f.has_to_unicode(), embedded: f.embedded, widths: f.metrics.source,
@@ -1133,8 +1186,9 @@ impl Doc {
             )).collect();
             let gl = if glyphs {
                 let g: Vec<String> = p.glyphs.iter().map(|g| format!(
-                    "{{\"c\":{},\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"ox\":{},\"oy\":{},\"size\":{}{}{}}}",
+                    "{{\"c\":{},\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"ox\":{},\"oy\":{},\"size\":{},\"f\":{}{}{}}}",
                     json_str(if g.mapped { &g.text } else { "\u{fffd}" }), r1(g.x0), r1(g.y0), r1(g.x1), r1(g.y1), r1(g.ox), r1(g.oy), r1(g.size),
+                    if g.font == u32::MAX { -1 } else { g.font as i64 },
                     if g.mapped { "" } else { ",\"unmapped\":true" }, flags(g.invisible, g.white, g.annot, g.offpage, g.hidden)
                 )).collect();
                 format!(",\"glyphs\":[{}]", g.join(","))
@@ -1189,8 +1243,9 @@ impl Doc {
                 format!("{{\"id\":{},\"what\":\"{}\",\"x0\":{},\"y0\":{},\"x1\":{},\"y1\":{},\"order\":{},{},\"flags\":[{}]}}",
                     id, e.what, r1(e.x0), r1(e.y0), r1(e.x1), r1(e.y1), e.order, src, fl.join(","))
             }).collect();
-            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"paths\":[{}],\"annots\":[{}],\"map\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
-                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), paths.join(","), annots.join(","), map.join(","), regions.join(","), words.join(","), gl)
+            let rules: Vec<String> = p.rules.iter().map(|r| format!("[{},{},{},{}]", r[0], r[1], r[2], r[3])).collect();
+            format!("{{\"n\":{},\"width\":{},\"height\":{},\"rotate\":{},\"verdict\":\"{}\",\"glyph_count\":{},\"unmapped\":{},\"images\":[{}],\"paths\":[{}],\"annots\":[{}],\"map\":[{}],\"rules\":[{}],\"regions\":[{}],\"words\":[{}]{}}}",
+                p.n, r1(p.width), r1(p.height), p.rotate, p.verdict, p.glyphs.len(), unmapped, images.join(","), paths.join(","), annots.join(","), map.join(","), rules.join(","), regions.join(","), words.join(","), gl)
         }).collect();
         format!("{{\"status\":\"{}\",\"pages\":[{}],\"fonts\":[{}]}}", self.status, pages.join(","), self.fonts_json())
     }

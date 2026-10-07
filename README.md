@@ -13,6 +13,7 @@ regions-cli prints one JSON object per file. Coordinates are PDF points from the
 - `map`: every region in drawing order, each with `what` (`text`, `image`, `vector` or `annot`), a box, `order` and `flags`. Text is mapped by line, vector paths by cluster of touching paths.
 - `words`: every word with its box and baseline, grouped by wordbox's rules, plus `ink` when the glyphs' outlines reach past that box (italic overhang, capitals taller than the font's /Ascent).
 - `images`, `paths` and `annots`: the parts the map's regions are built from, each with its own box and flags.
+- `rules`: the straight level and upright lines the page draws, each as `[x0, y0, x1, y1]`: stroked segments, the edges of rectangles drawn with `re`, and the centre line of a thin filled bar, at least 4 points long and not white (results/rules.md). A caller can build table cells or find fraction bars from them.
 - `regions`: images scored as OCR candidates by `regions/src/ocr.rs`, kept here until the OCR tool exists.
 
 ```json
@@ -27,7 +28,7 @@ The kind layer is in the library's `kind` and `vkind` modules. The browser build
 ## Layout
 
 - `regions/`: the library, the CLI (`regions-cli`), and `thumbs` and `vkinds` for the kind layer. The PDF reading (object index, stream filters, decryption, page tree) and the fonts (programs, encodings, CMaps, glyph outlines, and the generated tables) are [pdf-core](https://github.com/sharad-bapat/pdf-core), shared with scan-or-text and wordbox; they moved there on 6 October 2026 without changing the output. Clone it next to this repo, since regions/Cargo.toml gives it by path.
-- `wasm/`: the browser build, `extract_json(bytes)` and `kinds_json(bytes)`. It's a separate crate so the frozen library stays untouched. `tools/wasm_check.mjs` confirms its output equals the native output byte for byte on all 1,553 test files.
+- `wasm/`: the browser build, `extract_json(bytes)` and `kinds_json(bytes)`. It's a separate crate so the frozen library stays untouched. `tools/wasm_check.mjs` confirmed its output equals the native output byte for byte on all 1,553 test files, as last built; it hasn't been rebuilt since `rules` and the glyphs' fonts were added, so it lacks those two fields.
 - `demo/`: the browser demo. pdf.js 6.3.289 (Apache-2.0, bundled with its licence) draws the page, and the map's regions are boxed on top, one colour per layer, with the kinds and flags listed beside it. `tools/samples.py` makes its four made-up sample PDFs, and `tools/demo_check.mjs` drives it in headless Chrome.
 - `tools/`: the test sets, the ink test (`ink_check.py`), the scorers, the freeze check, the reader comparison (`ink_baseline.py`) and the timing scripts.
 - `data/real/`: the labels for the real pages.
@@ -70,9 +71,11 @@ bboxlog is MuPDF reporting on MuPDF's own render, so it has the advantage on thi
 
 The image kinds met their held-out targets (results/kind-heldout.md). On the constructed set, 147 of 150 text images were found and none of the 88 other images was called text. On real and constructed images together, 91.4% of the kinds given at confidence 0.9 or more were right. The vector kinds didn't (results/vkind-heldout.md): the constructed set was right 117 of 117, but on real held-out pages only 66.7% of the kinds given at 0.9 or more were right, against a target of 90%. On 003, where the rules were tuned, the same figure was 90.2%, so they fit those files and didn't carry over. I'd treat the vector kinds as experimental.
 
-Two changes came later, each with its own write-up and reported apart from the numbers above. The first (results/kinds-turn.md): the kind layer judged each image as stored, not as shown, so a scan stored on its side and turned by the page's /Rotate looked like a graphic with no text, and the strips of such a scan were squeezed to a few dozen pixels. Thumbnails are now turned to how the image shows on the page. I found it on scanned well reports from the Norwegian Offshore Directorate (Sodir): in 10 of them, what-needs-ocr's router skipped 323 of 1,105 image regions before the fix and 17 after. On govdocs1 003 and 004 no score moved by more than four images.
+Three changes came later, each with its own write-up and reported apart from the numbers above. The first (results/kinds-turn.md): the kind layer judged each image as stored, not as shown, so a scan stored on its side and turned by the page's /Rotate looked like a graphic with no text, and the strips of such a scan were squeezed to a few dozen pixels. Thumbnails are now turned to how the image shows on the page. I found it on scanned well reports from the Norwegian Offshore Directorate (Sodir): in 10 of them, what-needs-ocr's router skipped 323 of 1,105 image regions before the fix and 17 after. On govdocs1 003 and 004 no score moved by more than four images.
 
 The second (results/kinds-sparse.md) is four changes for those scans. The ink side is picked by glyph count when an image is about half dark (a black scanner margin had made a page read as white on black), a long thin image such as a well log gets a thumbnail wide enough to read, text printed sideways counts, and a nearly empty page with a heading on it holds text. On 160 held-out Sodir pages with no text layer, has-text (the kind layer's confidence that an image holds text) found 149 of the 157 pages with text, against 40 before. On govdocs1 004 it found 6 more images with text and held 9 more that have none; both calibration targets are still met.
+
+The third (results/rules.md) adds output and changes none: each page's `rules`, and each glyph's font in `--glyphs` output. On the 1,113 files of the test sets, everything else in the output is identical to before, and the files hold 388,715 rules.
 
 Speed, median a page (results/speed.md): 2.03 ms on 003 and 1.69 ms on 004 natively, and 1.90 and 2.55 ms in WebAssembly under Node. A few files set the totals: one 76-page file in 004 takes about 1.3 s a page. The WebAssembly build is 821 KB, 334 KB gzipped.
 
@@ -96,6 +99,7 @@ The vector kinds are experimental (above). Only PDFs are read, not image files. 
 ```
 cargo build --release --manifest-path regions/Cargo.toml
 regions/target/release/regions-cli file.pdf
+regions/target/release/regions-cli --glyphs file.pdf     # plus every glyph with its box, baseline, size and font
 cargo test --release --manifest-path regions/Cargo.toml
 (cd wasm && wasm-pack build --release --target web)   # then copy pkg/regions_wasm.js and pkg/regions_wasm_bg.wasm into demo/
 python tools/samples.py demo/samples
