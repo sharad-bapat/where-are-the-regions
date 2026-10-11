@@ -98,6 +98,8 @@ fn translate(tx: f64, ty: f64) -> M { [1.0, 0.0, 0.0, 1.0, tx, ty] }
 pub const WORD_GAP: f64 = 0.15;      // a gap along the baseline wider than this starts a new word
 pub const BACKSTEP: f64 = 0.5;      // moving back further than this starts a new word (and a new line)
 pub const BASELINE_SHIFT: f64 = 0.5; // a baseline moving more than this starts a new word and line
+pub const TIGHT_GAP: f64 = 0.12;     // tight type: a gap this much wider than the line's usual gap inside words
+pub const TIGHT_MIN: usize = 6;      // is a word break, on a line with at least this many such gaps (words())
 
 /// One drawn glyph. Boxes are in points from the top-left of the visible page (after CropBox and /Rotate).
 #[derive(Clone, Debug)]
@@ -1061,6 +1063,51 @@ fn words(glyphs: &[Glyph]) -> Vec<Word> {
         }
     }
     if let Some((f, l)) = cur { close(&mut out, f, l); }
+    // Tight type: some newspapers set letters overlapping and spaces of only about 0.14 of the font size,
+    // without space glyphs, so WORD_GAP joins whole lines into one word. Within a run of words on one
+    // baseline, a gap between two glyphs of a word wider than the run's median gap inside words by more
+    // than TIGHT_GAP of the font size is a word break, once the run has TIGHT_MIN such gaps to measure.
+    let gap = |a: &Glyph, b: &Glyph| ((b.ux - a.ex) * a.dx + (b.uy - a.ey) * a.dy) / a.size.max(b.size).max(1e-6);
+    let mut split: Vec<Word> = Vec::with_capacity(out.len());
+    let mut k = 0;
+    while k < out.len() {
+        // the run: words that follow on along one baseline, as the line rule below decides
+        let mut e = k + 1;
+        while e < out.len() {
+            let (a, b) = (&glyphs[out[e - 1].first + out[e - 1].count - 1], &glyphs[out[e].first]);
+            let start = &glyphs[out[k].first];
+            let size = a.size.max(b.size).max(1e-6);
+            let across = (start.dx * (b.uy - start.uy) - start.dy * (b.ux - start.ux)).abs();
+            let along = (b.ux - a.ex) * a.dx + (b.uy - a.ey) * a.dy;
+            if a.dx * b.dx + a.dy * b.dy <= 0.99 || across > BASELINE_SHIFT * size || along < -BACKSTEP * size { break; }
+            e += 1;
+        }
+        let mut inner: Vec<f64> = Vec::new();
+        for w in &out[k..e] {
+            for i in w.first..w.first + w.count - 1 { inner.push(gap(&glyphs[i], &glyphs[i + 1])); }
+        }
+        let median = { let mut v = inner.clone(); v.sort_by(|a, b| a.partial_cmp(b).unwrap()); if v.is_empty() { 0.0 } else { v[v.len() / 2] } };
+        // only type set with its letters overlapping (a usual gap inside words below zero) is tight
+        if inner.len() < TIGHT_MIN || median >= 0.0 {
+            for w in &out[k..e] { close(&mut split, w.first, w.first + w.count - 1); }
+        } else {
+            for w in &out[k..e] {
+                let mut f = w.first;
+                for i in w.first..w.first + w.count - 1 {
+                    // never a single glyph cut off ("W ith"): a gap round one letter is more often kerning;
+                    // never between two digits ("10 00"): figures are often set apart for alignment
+                    let digits = glyphs[i].text.chars().all(|c| c.is_ascii_digit()) && glyphs[i + 1].text.chars().all(|c| c.is_ascii_digit());
+                    if gap(&glyphs[i], &glyphs[i + 1]) - median > TIGHT_GAP && i >= f + 1 && i + 2 <= w.first + w.count - 1 && !digits {
+                        close(&mut split, f, i);
+                        f = i + 1;
+                    }
+                }
+                close(&mut split, f, w.first + w.count - 1);
+            }
+        }
+        k = e;
+    }
+    let mut out = split;
     // lines: same direction and baseline (within half the font size), and not moving backwards
     let mut line = 0;
     for k in 1..out.len() {
