@@ -2,9 +2,9 @@
 
 Where are the regions? This tool reads a PDF and lists everything each page draws, in the order it's drawn: every line of text, every image, every drawn shape (lines, boxes, charts) and every annotation, each with a box saying where it sits on the page. It reads the file itself and never renders the page. It also marks things a reader can't see, such as white text, invisible text over a scan, or an image that's clipped away or off the edge of the page. A second step guesses what each image or drawing is (a photo, a scanned page of text, a table, a chart), and says how sure it is.
 
-It's the fourth in a series, after [file-checker](https://github.com/sharad-bapat/file-checker) (what is this upload?), [scan-or-text](https://github.com/sharad-bapat/scan-or-text) (does this PDF need OCR?) and [wordbox](https://github.com/sharad-bapat/wordbox) (where is the text?). Deciding what to send to OCR is left to a later tool that reads this map.
+It's the fourth in a series, after [file-checker](https://github.com/DscvryAI/file-checker) (what is this upload?), [scan-or-text](https://github.com/DscvryAI/scan-or-text) (does this PDF need OCR?) and [wordbox](https://github.com/DscvryAI/wordbox) (where is the text?). Deciding what to send to OCR is left to a later tool that reads this map.
 
-The write-up, with a demo you can try, is at https://sharadbapat.com/experiments/where-are-the-regions/.
+The write-up, with a demo you can try, is at https://dscvryai.com/insights/where-are-the-regions/.
 
 ## Output
 
@@ -27,7 +27,7 @@ The kind layer is in the library's `kind` and `vkind` modules. The browser build
 
 ## Layout
 
-- `regions/`: the library, the CLI (`regions-cli`), and `thumbs` and `vkinds` for the kind layer. The PDF reading (object index, stream filters, decryption, page tree) and the fonts (programs, encodings, CMaps, glyph outlines, and the generated tables) are [pdf-core](https://github.com/sharad-bapat/pdf-core), shared with scan-or-text and wordbox; they moved there on 6 October 2026 without changing the output. Clone it next to this repo, since regions/Cargo.toml gives it by path.
+- `regions/`: the library, the CLI (`regions-cli`), and `thumbs` and `vkinds` for the kind layer. The PDF reading (object index, stream filters, decryption, page tree) and the fonts (programs, encodings, CMaps, glyph outlines, and the generated tables) are [pdf-core](https://github.com/DscvryAI/pdf-core), shared with scan-or-text and wordbox; they moved there on 6 October 2026 without changing the output. Clone it next to this repo, since regions/Cargo.toml gives it by path.
 - `wasm/`: the browser build, `extract_json(bytes)` and `kinds_json(bytes)`. It's a separate crate so the frozen library stays untouched. `tools/wasm_check.mjs` confirmed its output equals the native output byte for byte on all 1,553 test files, as last built; it hasn't been rebuilt since `rules` and the glyphs' fonts were added, so it lacks those two fields.
 - `demo/`: the browser demo. pdf.js 6.3.289 (Apache-2.0, bundled with its licence) draws the page, and the map's regions are boxed on top, one colour per layer, with the kinds and flags listed beside it. `tools/samples.py` makes its four made-up sample PDFs, and `tools/demo_check.mjs` drives it in headless Chrome.
 - `tools/`: the test sets, the ink test (`ink_check.py`), the scorers, the freeze check, the reader comparison (`ink_baseline.py`) and the timing scripts.
